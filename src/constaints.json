@@ -1,0 +1,23 @@
+{
+    "actions": {
+        "string": [
+            "eq"
+        ],
+        "int": [
+            "eq",
+            "lt",
+            "gt"
+        ],
+        "timestamp": [
+            "eq",
+            "lt",
+            "gt"
+        ]
+    },
+
+    "read_as": {
+        "eq": "equal",
+        "lt": "less than",
+        "gt": "greater than"
+    }
+}

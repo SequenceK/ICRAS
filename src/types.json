@@ -1,0 +1,20 @@
+{
+    "room": {
+        "type": "string",
+        "capacity": "int",
+        "whiteboards": "int",
+        "chairs": "int"
+    },
+    "course": {
+        "sections": "int"
+    },
+    "lecture": {
+        "days": "string",
+        "time": "timestamp"
+    },
+    "instructor": {
+        "hours": "int",
+        "start": "timestamp",
+        "end": "timestamp"
+    }
+}
