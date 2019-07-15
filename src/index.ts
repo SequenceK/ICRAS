@@ -18,71 +18,79 @@ import {
   TabItem,
   InputSelect,
   Table,
-  Colors
+  Colors,
+  QueryList,
+  ControlGroup
 } from "construct-ui";
-import {ICountryModel, countries} from "./countries";
 import types from "./types.json";
 import constraints from "./types.json";
+import { FormConstructor } from './type_components';
+import {IListLabel} from './util';
+import { intructors } from './instructors';
 
 console.log(types);
-
-const CountryList = SelectList.ofType<ICountryModel>();
+let QList = SelectList.ofType<IListLabel>();
 class Configurator {
-  private selectedItem: ICountryModel = countries[0];
+  private list : IListLabel[];
+  private selectedItem: IListLabel;
   private closeOnSelect = true;
   private header = false;
   private footer = false;
   private loading = false;
+  
 
   public view(vnode: any) {
-    return m(Card, 
+    this.list = vnode.attrs.list;
+    this.selectedItem = this.list[0];
+
+    return m(".stack", 
       {
         fluid: true,
       },
-      m("h4", "Configure " + vnode.attrs.sublabel), 
       [
-        m(CountryList, {
+        m(ControlGroup, {size:"xl"}, [
+        m(QList, {
           closeOnSelect: this.closeOnSelect,
-          header: this.header ? m('h4', 'Header content') : undefined,
-          footer: this.footer ? m('h4[style=margin: 15px 0 0 0]', 'Footer content') : undefined,
-          items: countries,
+          label: "Select:",
+          items: this.list,
           itemRender: this.renderItem,
           itemPredicate: this.itemPredicate,
           onSelect: this.handleSelect,
           loading: this.loading,
           popoverAttrs: {
             hasArrow: false,
-            position: "auto-start"
+            position: "auto"
           },
           trigger: m(Button, {
-            fluid: true,
+            fluid: false,
+            size: "xl",
             iconRight: Icons.CHEVRON_DOWN,
-            // sublabel: vnode.attrs.sublabel,
-            label: this.selectedItem && this.selectedItem.name.substring(0,20),
-            style: 'min-width: 200px'
+            sublabel: vnode.attrs.sublabel,
+            label: this.selectedItem && this.selectedItem.label.substring(0,20),
           })
-  }),
+      }),
       m(Button, {
         label: "Save Changes",
         iconLeft: Icons.SAVE,
-        style: 'margin-top: 10px',
-        fluid: true
-      }, "hello")
+        fluid: false,
+        size: "xl",
+        onclick: ()=>document.cookie = JSON.stringify(sitem),
+      })
+    ])
     ]
     );
   }
 
-  private renderItem = (item: ICountryModel) => m(ListItem, {
-    contentRight: m('', { style: `color:${Colors.BLUE_GREY200}` }, item.code),
-    label: item.name,
-    selected: this.selectedItem && this.selectedItem.name === item.name
+  private renderItem = (item: IListLabel) => m(ListItem, {
+    label: item.label,
+    selected: this.selectedItem && this.selectedItem.label === item.label,
   })
 
-  private itemPredicate(query: string, item: ICountryModel) {
-    return item.name.toLowerCase().includes(query.toLowerCase());
+  private itemPredicate(query: string, item: any) {
+    return item.label.toLowerCase().includes(query.toLowerCase());
   }
 
-  private handleSelect = (item: ICountryModel) => this.selectedItem = item;
+  private handleSelect = (item: IListLabel) => this.selectedItem = item;
 
 }
 class Home {
@@ -90,33 +98,58 @@ class Home {
     return m("h1", "Home")
   }
 }
+var sitem = document.cookie && JSON.parse(document.cookie);
+if(!sitem) {
+  sitem = {};
+}
 class Instrutors {
   view(vnode: any) {
-    return m(Grid, {gutter: 10},[
-      m(Col, {}, [m(Configurator, {sublabel: "Instructor"})]),
-      m(Col, {}, m("h1", "Instructor Profile")),
+    return m("div", {gutter: 10},[
+      m(Configurator, {sublabel: "Instructor", list: intructors}),
+      m("h1", "Instructor Profile"), m(FormConstructor, {type:"instructor", selectedItem: sitem}),
     ])
   }
 }
 class Courses {
   view(vnode: any) {
-    return m(Grid, {gutter: 10},[
-      m(Col, {}, [m(Configurator, {sublabel: "Course"})]),
-      m(Col, {}, m("h1", "Course Profile")),
+    return m("div", {gutter: 10},[
+      m(Configurator, {sublabel: "Course", list: intructors}),
+      m("h1", "Course Profile"), m(FormConstructor, {type:"course", selectedItem: sitem}),
     ])
   }
 }
-class Rooms {
+class Profile {
+  active: string = "p";
+  loading: boolean = false;
+  type: string;
   view(vnode: any) {
-    return m(Grid, {gutter: 10},[
-      m(Col, {}, [m(Configurator, {sublabel: "Room"})]),
-      m(Col, {}, m("h1", "Room Profile")),
+    this.type = vnode.attrs.type;
+
+    return m("div", {gutter: 10},[
+      m(Configurator, {sublabel: this.type, list: intructors}),
+      m("h1", this.type + " Profile"), 
+      m(Tabs, {
+        align: "left",
+        fluid: true,
+        bordered: true,
+        size: "l",
+      }, [
+        m(TabItem, {
+            label: "Properties",
+            active: this.active === "p",
+            loading: this.loading,
+            onclick: () => {this.active = "p";},
+            align: "center",
+          })
+        ]),
+      m(FormConstructor, {type:this.type, selectedItem: sitem}),
     ])
   }
 }
-var Body = Instrutors;
+
+
 class Tab {
-  constructor(public tabobj : any, public bodyobj : any){
+  constructor(public tabobj : any, public bodyobj : any, public attrs: any){
 
   }
 }
@@ -125,13 +158,13 @@ const tabs = [
   new Tab([m(Icon, {
     name: Icons.HOME,
     style: 'margin-right: 5px'
-  }), 'ICRAS'], Home),
-  new Tab('Instructors',Instrutors),
-  new Tab('Courses',Courses),
-  new Tab('Rooms', Rooms)
+  }), 'ICRAS'], Home, {}),
+  new Tab('Instructors',Profile, {type:"instructor"}),
+  new Tab('Courses',Profile, {type:"course"}),
+  new Tab('Rooms', Profile, {type:"room"})
 ];
 
-
+var Body = tabs[0]
 class Header {
   private active: string | any[] = 'Projects';
   private isLoading: boolean = false;
@@ -149,7 +182,7 @@ class Header {
             label: item.tabobj,
             active: this.active === item.tabobj,
             loading: item.tabobj === 'Projects' && this.isLoading,
-            onclick: () => {this.active = item.tabobj; Body = item.bodyobj;},
+            onclick: () => {this.active = item.tabobj; Body = item;},
             align: "center",
             class: "topnav-tab"
           }))
@@ -160,8 +193,8 @@ class Header {
 
 class App {
   view(vnode: any) {
-    return m('div', [m(Header), m(Body)]);
+    return m('div', [m(Header), m(".stack.body", {}, m(Body.bodyobj, Body.attrs))]);
   }
 }
-
 m.mount(document.body, App)
+

@@ -1,23 +1,26 @@
 {
-    "actions": {
-        "string": [
-            "eq"
-        ],
-        "int": [
-            "eq",
-            "lt",
-            "gt"
-        ],
-        "timestamp": [
-            "eq",
-            "lt",
-            "gt"
-        ]
-    },
-
-    "read_as": {
-        "eq": "equal",
-        "lt": "less than",
-        "gt": "greater than"
+    "constraints": {
+        "eq": {
+            "types": [
+                "time",
+                "string",
+                "number",
+                "int"
+            ]
+        },
+        "lt": {
+            "types": [
+                "time",
+                "string",
+                "int"
+            ]
+        },
+        "gt": {
+            "types": [
+                "time",
+                "string",
+                "int"
+            ]
+        }
     }
 }

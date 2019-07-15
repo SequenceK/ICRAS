@@ -1,4 +1,10 @@
 {
+    "base_types": [
+        "string",
+        "int",
+        "time",
+        "bool"
+    ],
     "room": {
         "type": "string",
         "capacity": "int",
@@ -6,15 +12,15 @@
         "chairs": "int"
     },
     "course": {
-        "sections": "int"
+        "sections": "lecture[]"
     },
     "lecture": {
+        "section": "int",
         "days": "string",
-        "time": "timestamp"
+        "minutes": "int"
     },
     "instructor": {
-        "hours": "int",
-        "start": "timestamp",
-        "end": "timestamp"
+        "start": "time",
+        "end": "time"
     }
 }
