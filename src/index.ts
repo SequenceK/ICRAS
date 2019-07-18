@@ -24,7 +24,7 @@ import {
 } from "construct-ui";
 import types from "./types.json";
 import constraints from "./types.json";
-import { FormConstructor } from './type_components';
+import { Properties as Properties } from './type_components';
 import {IListLabel} from './util';
 import { intructors } from './instructors';
 
@@ -106,7 +106,7 @@ class Instrutors {
   view(vnode: any) {
     return m("div", {gutter: 10},[
       m(Configurator, {sublabel: "Instructor", list: intructors}),
-      m("h1", "Instructor Profile"), m(FormConstructor, {type:"instructor", selectedItem: sitem}),
+      m("h1", "Instructor Profile"), m(Properties, {type:"instructor", selectedItem: sitem}),
     ])
   }
 }
@@ -114,7 +114,7 @@ class Courses {
   view(vnode: any) {
     return m("div", {gutter: 10},[
       m(Configurator, {sublabel: "Course", list: intructors}),
-      m("h1", "Course Profile"), m(FormConstructor, {type:"course", selectedItem: sitem}),
+      m("h1", "Course Profile"), m(Properties, {type:"course", selectedItem: sitem}),
     ])
   }
 }
@@ -125,24 +125,12 @@ class Profile {
   view(vnode: any) {
     this.type = vnode.attrs.type;
 
+    var form : any = Properties;
+
     return m("div", {gutter: 10},[
       m(Configurator, {sublabel: this.type, list: intructors}),
       m("h1", this.type + " Profile"), 
-      m(Tabs, {
-        align: "left",
-        fluid: true,
-        bordered: true,
-        size: "l",
-      }, [
-        m(TabItem, {
-            label: "Properties",
-            active: this.active === "p",
-            loading: this.loading,
-            onclick: () => {this.active = "p";},
-            align: "center",
-          })
-        ]),
-      m(FormConstructor, {type:this.type, selectedItem: sitem}),
+      m(Properties, {type:this.type, selectedItem: sitem}),
     ])
   }
 }

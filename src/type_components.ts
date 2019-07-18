@@ -97,22 +97,17 @@ class ArrComponent {
 
     var forms = [];
     for(var i in this.selectedItem[this.fid]) {
-      forms.push(m(".stack", {style:"margin-left: 1em;"}, [
-        m(FormConstructor, {type: this.ftype, selectedItem: this.selectedItem[this.fid][i]}),
-        m(DeleteButton, {selectedItem:this.selectedItem, fid:this.fid, index:i})
-      ]))
-      forms.push(
-        m("hr")
-      )
+      forms.push(m("tr.stack", [
+        m("td.left.prop", m(Properties, {type: this.ftype, selectedItem: this.selectedItem[this.fid][i]})),
+        m("td.right.prop", m(DeleteButton, {selectedItem:this.selectedItem, fid:this.fid, index:i}))
+      ]));
+
     }
-    
     forms.push(
-      m(ListItem, {
-        label: m(Button, {fluid: true, label: m(Icon, {name: Icons.PLUS}),  onclick: ()=>this.addElem()})
-      })
+      m(Button, {fluid: true, label: m(Icon, {name: Icons.PLUS}),style: "margin-left: 1em;",  onclick: ()=>this.addElem()})
     )
 
-    return m("span.stack", {interactive:false}, forms);
+    return m("table", {interactive:false}, forms);
   }
 
   addElem() {
@@ -212,7 +207,50 @@ function getComponent(fid : string, ftype : string, item : any) {
   ]);
 }
 
-export class FormConstructor {
+class Constraint {
+  view(vnode: any) {
+    return m("div", {}, "TEST")
+  }
+}
+
+class Constraints {
+  selectedItem : any;
+  type : string;
+  view(vnode: any) {
+    this.selectedItem = vnode.attrs.selectedItem;
+    this.type = vnode.attrs.type;
+
+    var forms = [];
+    forms.push(m("h5", "Constraints"));
+    for(var i in this.selectedItem["constraints"]) {
+      forms.push([
+        m("tr.alt", [
+          m("td", m(Constraint, {type: this.type, selectedItem: this.selectedItem["constraints"][i]})),
+          m("td.right", m(DeleteButton, {selectedItem:this.selectedItem, fid:"constraints", index:i}))
+        ])
+      ])
+      
+    }
+    forms.push(
+      m(ListItem, {
+        label: m(Button, {label: "add constraint",  onclick: ()=>this.addElem(), style:"text-align:center;"})
+      })
+    )
+
+    return m(Card, {}, m("table.stack", {interactive:false}, forms));
+  }
+
+  addElem() {
+    if(!this.selectedItem["constraints"]) {
+      this.selectedItem["constraints"] = []
+    }
+    this.selectedItem["constraints"].push({});
+    m.redraw();
+  }
+  
+}
+
+export class Properties {
   propForm: any[] = [];
   active : string | any[] = "p";
   loading: boolean = false;
@@ -233,19 +271,12 @@ export class FormConstructor {
       this.generateView(types[type]);
     }
 
-    switch(this.active) {
-      case "p":
-        this.formBody = this.propForm;
-        break;
-      case "c":
-      default:
-        this.formBody = [];
-        break;
-    }
 
     return m("div", {}, [
       m("br"),
-      m(Form,{gutter: 15}, this.formBody)
+      m("div",{gutter: 15}, this.propForm),
+      m("br"),
+      m(Constraints, {selectedItem: this.selectedItem, type: type})
     ]);
   }
 }

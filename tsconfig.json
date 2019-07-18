@@ -1,10 +1,6 @@
 {
     "compilerOptions": {
-      "target": "es6",
-      "module": "es6",
-      "moduleResolution": "node",
-      "experimentalDecorators": true,
-      "noImplicitAny": false,
+      "module": "commonjs",
       "allowSyntheticDefaultImports": true,
       "resolveJsonModule": true
     },

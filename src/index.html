@@ -3,7 +3,6 @@
         /* Add a black background color to the top navigation */
 .topnav {
   background-color: #333;
-  flex:auto;
   z-index: 100;
 }
 
@@ -15,7 +14,7 @@
 }
 
 .stack {
-  --space: 1.5rem;
+  --space: 0.5rem;
 }
 
 .stack > * {
@@ -25,6 +24,50 @@
 
 .stack > * + * {
   margin-top: var(--space);
+}
+
+
+table {
+  font-family: arial, sans-serif;
+  width: 100%;
+}
+
+td, th {
+  text-align: left;
+  padding: 8px;
+}
+
+td.prop {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid #dddddd;
+}
+
+td.right {
+  text-align: right;
+  width: fit-content;
+  column-span: all;
+  padding: 8px;
+}
+
+td.right {
+  text-align: right;
+  padding: 8px;
+  width: 1%;
+}
+
+.alt:nth-child(even) {
+  background-color: #b3b2b2;
+}
+
+hr {
+  display: block;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  margin-left: auto;
+  margin-right: auto;
+  border-style: groove;
+  border-width: 1px;
 }
 
 </style>
