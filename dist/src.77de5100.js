@@ -117,7 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel/src/builtins/bundle-url.js":[function(require,module,exports) {
+})({"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -149,7 +149,7 @@ function getBaseURL(url) {
 
 exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
-},{}],"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel/src/builtins/css-loader.js":[function(require,module,exports) {
+},{}],"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
 var bundle = require('./bundle-url');
 
 function updateLink(link) {
@@ -184,12 +184,12 @@ function reloadCSS() {
 }
 
 module.exports = reloadCSS;
-},{"./bundle-url":"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel/src/builtins/bundle-url.js"}],"../node_modules/construct-ui/lib/index.css":[function(require,module,exports) {
+},{"./bundle-url":"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"../node_modules/construct-ui/lib/index.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel/src/builtins/css-loader.js"}],"../node_modules/mithril/mithril.js":[function(require,module,exports) {
+},{"_css_loader":"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../node_modules/mithril/mithril.js":[function(require,module,exports) {
 var global = arguments[3];
 ;(function() {
 "use strict"
@@ -8897,14 +8897,14 @@ function () {
 }();
 
 exports.List = List;
-},{"tslib":"../node_modules/tslib/tslib.es6.js","mithril":"../node_modules/mithril/mithril.js","classnames":"../node_modules/classnames/index.js","../../_shared":"../node_modules/construct-ui/lib/esm/_shared/index.js"}],"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports) {
+},{"tslib":"../node_modules/tslib/tslib.es6.js","mithril":"../node_modules/mithril/mithril.js","classnames":"../node_modules/classnames/index.js","../../_shared":"../node_modules/construct-ui/lib/esm/_shared/index.js"}],"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel-bundler/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports) {
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel/node_modules/inherits/inherits_browser.js":[function(require,module,exports) {
+},{}],"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel-bundler/node_modules/util/node_modules/inherits/inherits_browser.js":[function(require,module,exports) {
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -8929,7 +8929,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel/node_modules/process/browser.js":[function(require,module,exports) {
+},{}],"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel-bundler/node_modules/process/browser.js":[function(require,module,exports) {
 
 // shim for using process in browser
 var process = module.exports = {}; // cached from whatever global is present so that test runners that stub it
@@ -9138,7 +9138,7 @@ process.chdir = function (dir) {
 process.umask = function () {
   return 0;
 };
-},{}],"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel/node_modules/util/util.js":[function(require,module,exports) {
+},{}],"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel-bundler/node_modules/util/util.js":[function(require,module,exports) {
 var process = require("process");
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -9859,7 +9859,7 @@ function callbackify(original) {
 }
 
 exports.callbackify = callbackify;
-},{"./support/isBuffer":"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel/node_modules/util/support/isBufferBrowser.js","inherits":"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel/node_modules/inherits/inherits_browser.js","process":"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel/node_modules/process/browser.js"}],"../node_modules/construct-ui/lib/esm/components/list/ListItem.js":[function(require,module,exports) {
+},{"./support/isBuffer":"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel-bundler/node_modules/util/support/isBufferBrowser.js","inherits":"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel-bundler/node_modules/util/node_modules/inherits/inherits_browser.js","process":"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel-bundler/node_modules/process/browser.js"}],"../node_modules/construct-ui/lib/esm/components/list/ListItem.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9925,7 +9925,7 @@ function () {
 }();
 
 exports.ListItem = ListItem;
-},{"tslib":"../node_modules/tslib/tslib.es6.js","mithril":"../node_modules/mithril/mithril.js","classnames":"../node_modules/classnames/index.js","../../_shared":"../node_modules/construct-ui/lib/esm/_shared/index.js","util":"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel/node_modules/util/util.js"}],"../node_modules/construct-ui/lib/esm/components/list/index.js":[function(require,module,exports) {
+},{"tslib":"../node_modules/tslib/tslib.es6.js","mithril":"../node_modules/mithril/mithril.js","classnames":"../node_modules/classnames/index.js","../../_shared":"../node_modules/construct-ui/lib/esm/_shared/index.js","util":"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel-bundler/node_modules/util/util.js"}],"../node_modules/construct-ui/lib/esm/components/list/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -13715,34 +13715,12 @@ Object.keys(_utils).forEach(function (key) {
     }
   });
 });
-},{"./_shared":"../node_modules/construct-ui/lib/esm/_shared/index.js","./components":"../node_modules/construct-ui/lib/esm/components/index.js","./utils":"../node_modules/construct-ui/lib/esm/utils/index.js"}],"types.json":[function(require,module,exports) {
-module.exports = {
-  "base_types": ["string", "int", "time", "bool"],
-  "room": {
-    "type": "string",
-    "capacity": "int",
-    "whiteboards": "int",
-    "chairs": "int"
-  },
-  "course": {
-    "sections": "lecture[]"
-  },
-  "lecture": {
-    "section": "int",
-    "days": "string",
-    "minutes": "int"
-  },
-  "instructor": {
-    "start": "time",
-    "end": "time"
-  }
-};
-},{}],"../node_modules/flatpickr/dist/themes/light.css":[function(require,module,exports) {
+},{"./_shared":"../node_modules/construct-ui/lib/esm/_shared/index.js","./components":"../node_modules/construct-ui/lib/esm/components/index.js","./utils":"../node_modules/construct-ui/lib/esm/utils/index.js"}],"../node_modules/flatpickr/dist/themes/light.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel/src/builtins/css-loader.js"}],"../node_modules/flatpickr/dist/flatpickr.js":[function(require,module,exports) {
+},{"_css_loader":"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../node_modules/flatpickr/dist/flatpickr.js":[function(require,module,exports) {
 var define;
 var global = arguments[3];
 /* flatpickr v4.6.1, @license MIT */
@@ -16288,8 +16266,73 @@ var global = arguments[3];
 
   return flatpickr;
 });
-},{}],"type_components.ts":[function(require,module,exports) {
+},{}],"../types.json":[function(require,module,exports) {
+module.exports = {
+  "base_types": ["string", "int", "time", "bool"],
+  "room": {
+    "classtype": "string",
+    "capacity": "int",
+    "whiteboards": "int",
+    "lab": "bool",
+    "smart": "bool",
+    "media": "bool"
+  },
+  "course": {
+    "lectures": "lecture[]"
+  },
+  "lecture": {
+    "section": "int",
+    "days": "string",
+    "minutes": "int"
+  },
+  "instructor": {
+    "teaches": "course*"
+  }
+};
+},{}],"../constaints.json":[function(require,module,exports) {
+module.exports = {
+  "actions": {
+    "eq": {
+      "label": "equal",
+      "types": ["time", "string", "int", "instructor", "course", "lecture", "room"],
+      "varsnum": 1
+    },
+    "gt": {
+      "label": "greater than",
+      "types": ["time", "int"],
+      "varsnum": 1
+    },
+    "lt": {
+      "label": "less than",
+      "types": ["time", "int"],
+      "varsnum": 1
+    },
+    "bt": {
+      "label": "between",
+      "types": ["time", "int"],
+      "varsnum": 2
+    }
+  },
+  "for": {
+    "course": {
+      "on": ["time", "room"]
+    },
+    "lecture": {
+      "on": ["time", "room"]
+    },
+    "room": {
+      "on": ["time", "course"]
+    }
+  }
+};
+},{}],"util.ts":[function(require,module,exports) {
 "use strict";
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 var __importDefault = this && this.__importDefault || function (mod) {
   return mod && mod.__esModule ? mod : {
@@ -16297,7 +16340,151 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var mithril_1 = __importDefault(require("mithril"));
+
+var construct_ui_1 = require("construct-ui");
+
+exports.AppToaster = new construct_ui_1.Toaster();
+
+var DBUtil =
+/*#__PURE__*/
+function () {
+  function DBUtil() {
+    _classCallCheck(this, DBUtil);
+
+    this.lists = {};
+    this.items = {};
+    this.loading = {};
+  }
+
+  _createClass(DBUtil, [{
+    key: "loadList",
+    value: function loadList(db) {
+      var _this = this;
+
+      var url = "/db/all/" + db;
+
+      if (this.loading[url]) {
+        return;
+      }
+
+      mithril_1.default.request({
+        method: "GET",
+        url: "/db/all/" + db
+      }).then(function (result) {
+        _this.lists[db] = result;
+        _this.loading[url] = false;
+        mithril_1.default.redraw();
+      }).catch(function (error) {
+        console.error(error);
+        _this.loading[url] = false;
+      });
+      this.loading[url] = true;
+    }
+  }, {
+    key: "getList",
+    value: function getList(db) {
+      if (!this.lists[db]) {
+        this.loadList(db);
+      }
+
+      return this.lists[db];
+    }
+  }, {
+    key: "loadItem",
+    value: function loadItem(db, id) {
+      var _this2 = this;
+
+      var url = "/db/" + db + "/" + id;
+
+      if (this.loading[url]) {
+        return;
+      }
+
+      mithril_1.default.request({
+        method: "GET",
+        url: url
+      }).then(function (result) {
+        if (!_this2.items[db]) {
+          _this2.items[db] = {};
+        }
+
+        _this2.items[db][id] = result;
+        _this2.loading[url] = false;
+        mithril_1.default.redraw();
+      }).catch(function (error) {
+        console.error(error);
+        _this2.loading[url] = false;
+      });
+      this.loading[url] = true;
+    }
+  }, {
+    key: "getItem",
+    value: function getItem(db, id) {
+      if (id == null) {
+        return null;
+      }
+
+      if (!this.items[db]) {
+        this.items[db] = {};
+      }
+
+      if (!this.items[db][id]) {
+        this.loadItem(db, id);
+      }
+
+      return this.items[db][id];
+    }
+  }, {
+    key: "putitem",
+    value: function putitem(db, item) {
+      var _this3 = this;
+
+      var url = "/db/" + db + "/" + item._id;
+      mithril_1.default.request({
+        method: "PUT",
+        url: url,
+        data: item
+      }).then(function (done) {
+        exports.AppToaster.show({
+          message: "Save Successful",
+          icon: construct_ui_1.Icons.SAVE,
+          timeout: 1000
+        });
+      }).catch(function (error) {
+        console.error(error);
+        _this3.loading[url] = false;
+      });
+    }
+  }]);
+
+  return DBUtil;
+}();
+
+exports.DBUtil = DBUtil;
+exports.DB = new DBUtil();
+},{"mithril":"../node_modules/mithril/mithril.js","construct-ui":"../node_modules/construct-ui/lib/esm/index.js"}],"type_components.ts":[function(require,module,exports) {
+"use strict";
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 require("flatpickr/dist/themes/light.css");
 
@@ -16309,173 +16496,361 @@ var mithril_1 = __importDefault(require("mithril"));
 
 var construct_ui_1 = require("construct-ui");
 
-var types_json_1 = __importDefault(require("./types.json"));
+var types_json_1 = __importDefault(require("../types.json"));
+
+var constaints_json_1 = __importDefault(require("../constaints.json"));
+
+var util_1 = require("./util");
+
+var type_map = {
+  "instructor": "instructors",
+  "course": "courses",
+  "room": "rooms"
+};
+
+function isBaseType(type) {
+  for (var i in types_json_1.default["base_types"]) {
+    var btype = types_json_1.default.base_types[i];
+    if (btype == type) return true;
+  }
+
+  return false;
+}
+
+var BoolInput =
+/*#__PURE__*/
+function () {
+  function BoolInput() {
+    _classCallCheck(this, BoolInput);
+  }
+
+  _createClass(BoolInput, [{
+    key: "view",
+    value: function view(vnode) {
+      var _this = this;
+
+      this.selectedItem = vnode.attrs.selectedItem;
+      this.fid = vnode.attrs.fid;
+      this.ftype = vnode.attrs.ftype;
+
+      if (!this.selectedItem[this.fid]) {
+        this.selectedItem[this.fid] = false;
+      }
+
+      return mithril_1.default(construct_ui_1.Checkbox, {
+        checked: this.selectedItem[this.fid],
+        class: "checkbox",
+        size: "xl",
+        onchange: function onchange(e) {
+          return _this.onchange(e);
+        }
+      });
+    }
+  }, {
+    key: "onchange",
+    value: function onchange(e) {
+      this.selectedItem[this.fid] = !this.selectedItem[this.fid];
+    }
+  }]);
+
+  return BoolInput;
+}();
 
 var Timepicker =
-/** @class */
+/*#__PURE__*/
 function () {
-  function Timepicker() {}
+  function Timepicker() {
+    _classCallCheck(this, Timepicker);
+  }
 
-  Timepicker.prototype.oncreate = function (vnode) {
-    var _this = this;
+  _createClass(Timepicker, [{
+    key: "oncreate",
+    value: function oncreate(vnode) {
+      var _this2 = this;
 
-    this.selectedItem = vnode.attrs.selectedItem;
-    this.fid = vnode.attrs.fid;
-    this.ftype = vnode.attrs.ftype;
-    if (this.picker) this.picker.destroy();
-    this.picker = flatpickr_1["default"](vnode.dom, {
-      enableTime: true,
-      noCalendar: true,
-      dateFormat: "H:i",
-      defaultDate: "8:00",
-      onChange: function onChange(selectedDates, dateStr, instance) {
-        _this.selectedItem[_this.fid] = dateStr;
-        mithril_1["default"].redraw();
-      }
-    });
-  };
-
-  Timepicker.prototype.onremove = function () {
-    if (this.picker) this.picker.destroy();
-  };
-
-  Timepicker.prototype.view = function (vnode) {
-    this.selectedItem = vnode.attrs.selectedItem;
-    this.fid = vnode.attrs.fid;
-    this.ftype = vnode.attrs.ftype;
-    return mithril_1["default"](construct_ui_1.Input, {
-      value: this.selectedItem[this.fid]
-    });
-  };
+      this.selectedItem = vnode.attrs.selectedItem;
+      this.fid = vnode.attrs.fid;
+      this.ftype = vnode.attrs.ftype;
+      if (this.picker) this.picker.destroy();
+      this.picker = flatpickr_1.default(vnode.dom, {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        defaultDate: "8:00",
+        onChange: function onChange(selectedDates, dateStr, instance) {
+          _this2.selectedItem[_this2.fid] = dateStr;
+          mithril_1.default.redraw();
+        }
+      });
+    }
+  }, {
+    key: "onremove",
+    value: function onremove() {
+      if (this.picker) this.picker.destroy();
+    }
+  }, {
+    key: "view",
+    value: function view(vnode) {
+      this.selectedItem = vnode.attrs.selectedItem;
+      this.fid = vnode.attrs.fid;
+      this.ftype = vnode.attrs.ftype;
+      return mithril_1.default(StringInput, {
+        fid: this.fid,
+        ftype: this.ftype,
+        selectedItem: this.selectedItem
+      });
+    }
+  }]);
 
   return Timepicker;
 }();
 
 var DeleteButton =
-/** @class */
+/*#__PURE__*/
 function () {
-  function DeleteButton() {}
+  function DeleteButton() {
+    _classCallCheck(this, DeleteButton);
+  }
 
-  DeleteButton.prototype.view = function (vnode) {
-    var _this = this;
+  _createClass(DeleteButton, [{
+    key: "view",
+    value: function view(vnode) {
+      var _this3 = this;
 
-    this.selectedItem = vnode.attrs.selectedItem;
-    this.fid = vnode.attrs.fid;
-    this.index = vnode.attrs.index;
-    return mithril_1["default"](construct_ui_1.Button, {
-      label: "Delete",
-      iconLeft: construct_ui_1.Icons.X,
-      onclick: function onclick(e) {
-        _this.onclick(e);
-      }
-    });
-  };
-
-  DeleteButton.prototype.onclick = function (e) {
-    var elem = e.target;
-    this.selectedItem[this.fid].splice(this.index, 1);
-  };
+      this.selectedItem = vnode.attrs.selectedItem;
+      this.fid = vnode.attrs.fid;
+      this.index = vnode.attrs.index;
+      return mithril_1.default(construct_ui_1.Button, {
+        label: "Delete",
+        iconLeft: construct_ui_1.Icons.X,
+        onclick: function onclick(e) {
+          _this3.onclick(e);
+        },
+        class: "listdelete"
+      });
+    }
+  }, {
+    key: "onclick",
+    value: function onclick(e) {
+      var elem = e.target;
+      this.selectedItem[this.fid].splice(this.index, 1);
+    }
+  }]);
 
   return DeleteButton;
 }();
 
 var ArrComponent =
-/** @class */
+/*#__PURE__*/
 function () {
-  function ArrComponent() {}
+  function ArrComponent() {
+    _classCallCheck(this, ArrComponent);
+  }
 
-  ArrComponent.prototype.view = function (vnode) {
-    var _this = this;
+  _createClass(ArrComponent, [{
+    key: "view",
+    value: function view(vnode) {
+      var _this4 = this;
 
-    this.selectedItem = vnode.attrs.selectedItem;
-    this.fid = vnode.attrs.fid;
-    this.ftype = vnode.attrs.ftype;
-    var forms = [];
+      this.selectedItem = vnode.attrs.selectedItem;
+      this.fid = vnode.attrs.fid;
+      this.ftype = vnode.attrs.ftype;
+      var forms = [];
 
-    for (var i in this.selectedItem[this.fid]) {
-      forms.push(mithril_1["default"]("tr.stack", [mithril_1["default"]("td.left.prop", mithril_1["default"](Properties, {
-        type: this.ftype,
-        selectedItem: this.selectedItem[this.fid][i]
-      })), mithril_1["default"]("td.right.prop", mithril_1["default"](DeleteButton, {
-        selectedItem: this.selectedItem,
-        fid: this.fid,
-        index: i
-      }))]));
-    }
-
-    forms.push(mithril_1["default"](construct_ui_1.Button, {
-      fluid: true,
-      label: mithril_1["default"](construct_ui_1.Icon, {
-        name: construct_ui_1.Icons.PLUS
-      }),
-      style: "margin-left: 1em;",
-      onclick: function onclick() {
-        return _this.addElem();
+      for (var i in this.selectedItem[this.fid]) {
+        forms.push(mithril_1.default(".listgrid", [mithril_1.default(".listitem", mithril_1.default(Properties, {
+          type: this.ftype,
+          selectedItem: this.selectedItem[this.fid][i]
+        })), mithril_1.default(DeleteButton, {
+          selectedItem: this.selectedItem,
+          fid: this.fid,
+          index: i
+        })]));
+        forms.push(mithril_1.default(construct_ui_1.ListItem, {}));
       }
-    }));
-    return mithril_1["default"]("table", {
-      interactive: false
-    }, forms);
-  };
 
-  ArrComponent.prototype.addElem = function () {
-    if (!this.selectedItem[this.fid]) {
-      this.selectedItem[this.fid] = [];
+      forms.push(mithril_1.default("br"));
+      forms.push(mithril_1.default(construct_ui_1.Card, {
+        class: "listadd",
+        fluid: true
+      }, mithril_1.default(construct_ui_1.Button, {
+        label: "add " + this.ftype,
+        onclick: function onclick() {
+          return _this4.addElem();
+        },
+        fluid: true,
+        basic: true
+      })));
+      return forms;
     }
+  }, {
+    key: "addElem",
+    value: function addElem() {
+      if (!this.selectedItem[this.fid]) {
+        this.selectedItem[this.fid] = [];
+      }
 
-    this.selectedItem[this.fid].push({});
-    mithril_1["default"].redraw();
-  };
+      this.selectedItem[this.fid].push({});
+      mithril_1.default.redraw();
+    }
+  }]);
 
   return ArrComponent;
 }();
 
-var IntInput =
-/** @class */
+var Pointer =
+/*#__PURE__*/
 function () {
-  function IntInput() {}
+  function Pointer() {
+    _classCallCheck(this, Pointer);
+  }
 
-  IntInput.prototype.view = function (vnode) {
-    var _this = this;
+  _createClass(Pointer, [{
+    key: "view",
+    value: function view(vnode) {
+      var _this5 = this;
 
-    this.selectedItem = vnode.attrs.selectedItem;
-    this.fid = vnode.attrs.fid;
-    this.ftype = vnode.attrs.ftype;
-    return mithril_1["default"](construct_ui_1.Input, {
-      id: this.fid,
-      name: this.ftype,
-      fluid: true,
-      value: this.selectedItem[this.fid],
-      onchange: function onchange(e) {
-        _this.selectedItem[_this.fid] = parseInt(e.target.value);
+      this.type = vnode.attrs.type;
+      this.selectedItem = vnode.attrs.selectedItem;
+      this.index = vnode.attrs.index;
+      var initvalue = null;
+
+      if (this.selectedItem[this.index]) {
+        initvalue = this.selectedItem[this.index];
       }
-    });
-  };
+
+      return mithril_1.default(Selector, {
+        type: this.type,
+        onselect: function onselect(item) {
+          return _this5.onselect(item);
+        },
+        initialvalue: initvalue
+      });
+    }
+  }, {
+    key: "onselect",
+    value: function onselect(item) {
+      this.selectedItem[this.index] = item;
+    }
+  }]);
+
+  return Pointer;
+}();
+
+var PArrComponent =
+/*#__PURE__*/
+function () {
+  function PArrComponent() {
+    _classCallCheck(this, PArrComponent);
+  }
+
+  _createClass(PArrComponent, [{
+    key: "view",
+    value: function view(vnode) {
+      var _this6 = this;
+
+      this.selectedItem = vnode.attrs.selectedItem;
+      this.fid = vnode.attrs.fid;
+      this.ftype = vnode.attrs.ftype;
+      var forms = [];
+
+      for (var i in this.selectedItem[this.fid]) {
+        forms.push(mithril_1.default(".listgrid", [mithril_1.default(".listitem", mithril_1.default(Pointer, {
+          type: this.ftype,
+          selectedItem: this.selectedItem[this.fid],
+          index: i
+        })), mithril_1.default(DeleteButton, {
+          selectedItem: this.selectedItem,
+          fid: this.fid,
+          index: i
+        })]));
+        forms.push(mithril_1.default(construct_ui_1.ListItem, {}));
+      }
+
+      forms.push(mithril_1.default("br"));
+      forms.push(mithril_1.default(construct_ui_1.Card, {
+        class: "listadd",
+        fluid: true
+      }, mithril_1.default(construct_ui_1.Button, {
+        label: "add " + this.ftype,
+        onclick: function onclick() {
+          return _this6.addElem();
+        },
+        fluid: true,
+        basic: true
+      })));
+      return forms;
+    }
+  }, {
+    key: "addElem",
+    value: function addElem() {
+      if (!this.selectedItem[this.fid]) {
+        this.selectedItem[this.fid] = [];
+      }
+
+      this.selectedItem[this.fid].push("");
+      mithril_1.default.redraw();
+    }
+  }]);
+
+  return PArrComponent;
+}();
+
+var IntInput =
+/*#__PURE__*/
+function () {
+  function IntInput() {
+    _classCallCheck(this, IntInput);
+  }
+
+  _createClass(IntInput, [{
+    key: "view",
+    value: function view(vnode) {
+      var _this7 = this;
+
+      this.selectedItem = vnode.attrs.selectedItem;
+      this.fid = vnode.attrs.fid;
+      this.ftype = vnode.attrs.ftype;
+      return mithril_1.default(construct_ui_1.Input, {
+        id: this.fid,
+        name: this.ftype,
+        value: this.selectedItem[this.fid],
+        onchange: function onchange(e) {
+          _this7.selectedItem[_this7.fid] = parseInt(e.target.value);
+        },
+        type: "number"
+      });
+    }
+  }]);
 
   return IntInput;
 }();
 
 var StringInput =
-/** @class */
+/*#__PURE__*/
 function () {
-  function StringInput() {}
+  function StringInput() {
+    _classCallCheck(this, StringInput);
+  }
 
-  StringInput.prototype.view = function (vnode) {
-    var _this = this;
+  _createClass(StringInput, [{
+    key: "view",
+    value: function view(vnode) {
+      var _this8 = this;
 
-    this.selectedItem = vnode.attrs.selectedItem;
-    this.fid = vnode.attrs.fid;
-    this.ftype = vnode.attrs.ftype;
-    return mithril_1["default"](construct_ui_1.Input, {
-      id: this.fid,
-      name: this.ftype,
-      fluid: true,
-      value: this.selectedItem[this.fid],
-      onchange: function onchange(e) {
-        _this.selectedItem[_this.fid] = e.target.value;
-      }
-    });
-  };
+      this.selectedItem = vnode.attrs.selectedItem;
+      this.fid = vnode.attrs.fid;
+      this.ftype = vnode.attrs.ftype;
+      return mithril_1.default(construct_ui_1.Input, {
+        id: this.fid,
+        name: this.ftype,
+        value: this.selectedItem[this.fid],
+        onchange: function onchange(e) {
+          _this8.selectedItem[_this8.fid] = e.target.value;
+        }
+      });
+    }
+  }]);
 
   return StringInput;
 }();
@@ -16486,14 +16861,13 @@ function getComponent(fid, ftype, item) {
     sm: 12,
     md: 6
   };
-  var label = mithril_1["default"](construct_ui_1.FormLabel, {
-    "for": fid
-  }, mithril_1["default"]("h4", fid));
-  var input = mithril_1["default"]("input");
+  var label = mithril_1.default("h4", fid); //m(FormLabel, { for: fid }, m("h4", fid));
+
+  var input = mithril_1.default("input");
 
   switch (ftype) {
     case "int":
-      input = mithril_1["default"](IntInput, {
+      input = mithril_1.default(IntInput, {
         fid: fid,
         ftype: ftype,
         selectedItem: item
@@ -16501,7 +16875,7 @@ function getComponent(fid, ftype, item) {
       break;
 
     case "string":
-      input = mithril_1["default"](StringInput, {
+      input = mithril_1.default(StringInput, {
         fid: fid,
         ftype: ftype,
         selectedItem: item
@@ -16509,7 +16883,15 @@ function getComponent(fid, ftype, item) {
       break;
 
     case "time":
-      input = mithril_1["default"](Timepicker, {
+      input = mithril_1.default(Timepicker, {
+        fid: fid,
+        ftype: ftype,
+        selectedItem: item
+      });
+      break;
+
+    case "bool":
+      input = mithril_1.default(BoolInput, {
         fid: fid,
         ftype: ftype,
         selectedItem: item
@@ -16517,140 +16899,470 @@ function getComponent(fid, ftype, item) {
       break;
 
     default:
-      if (ftype.search('[a-zA-Z]+\[\]$')) {
-        var arrtype = ftype.substr(0, ftype.length - 2);
-        label = [mithril_1["default"]("h3", fid), mithril_1["default"]("hr")];
-        input = mithril_1["default"](ArrComponent, {
-          fid: fid,
-          ftype: arrtype,
-          selectedItem: item
-        });
+      var lchar = ftype[ftype.length - 1];
+
+      if (lchar == "]" || lchar == "*") {
+        if (lchar == "]") {
+          var arrtype = ftype.substr(0, ftype.length - 2);
+          label = mithril_1.default("div", [mithril_1.default("h3", fid), mithril_1.default("hr")]);
+          input = mithril_1.default(ArrComponent, {
+            fid: fid,
+            ftype: arrtype,
+            selectedItem: item
+          });
+        } else {
+          var arrtype = ftype.substr(0, ftype.length - 1);
+          label = mithril_1.default("div", [mithril_1.default("h3", fid), mithril_1.default("hr")]);
+          input = mithril_1.default(PArrComponent, {
+            fid: fid,
+            ftype: arrtype,
+            selectedItem: item
+          });
+        }
       } else {
-        return mithril_1["default"](construct_ui_1.FormGroup, {}, [fid, " unsupported type " + ftype]);
+        return [];
       }
 
+      return mithril_1.default("div", [label, input]);
       break;
   }
 
-  return mithril_1["default"](construct_ui_1.FormGroup, {
-    span: span
-  }, [label, input]);
+  return mithril_1.default(".property", {}, [label, input]);
 }
 
-var Constraint =
-/** @class */
-function () {
-  function Constraint() {}
+function getInputComponent(fid, ftype, item) {
+  var input = mithril_1.default("input");
 
-  Constraint.prototype.view = function (vnode) {
-    return mithril_1["default"]("div", {}, "TEST");
-  };
+  switch (ftype) {
+    case "int":
+      input = mithril_1.default(IntInput, {
+        fid: fid,
+        ftype: ftype,
+        selectedItem: item
+      });
+      break;
+
+    case "string":
+      input = mithril_1.default(StringInput, {
+        fid: fid,
+        ftype: ftype,
+        selectedItem: item
+      });
+      break;
+
+    case "time":
+      input = mithril_1.default(Timepicker, {
+        fid: fid,
+        ftype: ftype,
+        selectedItem: item
+      });
+      break;
+
+    case "bool":
+      input = mithril_1.default(BoolInput, {
+        fid: fid,
+        ftype: ftype,
+        selectedItem: item
+      });
+      break;
+
+    default:
+      input = mithril_1.default(Pointer, {
+        type: ftype,
+        selectedItem: item,
+        index: fid
+      });
+      break;
+  }
+
+  return input;
+}
+
+var ConstraintData = function ConstraintData() {
+  _classCallCheck(this, ConstraintData);
+};
+
+var Constraint =
+/*#__PURE__*/
+function () {
+  function Constraint() {
+    _classCallCheck(this, Constraint);
+
+    this.constraintobj = {};
+  }
+
+  _createClass(Constraint, [{
+    key: "view",
+    value: function view(vnode) {
+      this.type = vnode.attrs.type;
+      this.selectedItem = vnode.attrs.selectedItem;
+
+      if (!this.selectedItem) {
+        this.selectedItem = new ConstraintData();
+      }
+
+      var onoptions = constaints_json_1.default.for[this.type].on;
+
+      if (!this.selectedItem.selectedOn) {
+        this.selectedItem.selectedOn = onoptions[0];
+      }
+
+      if (!this.selectedItem.selectedAction) {
+        this.selectedItem.selectedAction = "";
+      }
+
+      var onMenu = this.createOnMenu(onoptions);
+      var btype = "";
+      var pointer = false;
+
+      if (this.selectedItem.selectedOn == "time") {
+        btype = "time";
+      } else {
+        var split = this.selectedItem.selectedOn.split('.');
+
+        if (split.length > 1) {
+          var parent = split[split.length - 2];
+          var base = split[split.length - 1];
+
+          if (base == "_id") {
+            btype = parent;
+            pointer = true;
+          } else {
+            btype = types_json_1.default[parent][base];
+          }
+        }
+      }
+
+      this.selectedItem.type = btype;
+      if (pointer) this.selectedItem.type = "_id";
+      var actions = this.createActionsMenu(constaints_json_1.default.actions, btype);
+      var onbutton = mithril_1.default(construct_ui_1.Button, {
+        //basic: true,
+        label: this.selectedItem.selectedOn,
+        iconRight: construct_ui_1.Icons.CHEVRON_DOWN
+      });
+      var buttonLabel = constaints_json_1.default.actions[this.selectedItem.selectedAction] && constaints_json_1.default.actions[this.selectedItem.selectedAction].label;
+      var actionbutton = mithril_1.default(construct_ui_1.Button, {
+        //basic: true,
+        label: buttonLabel,
+        iconRight: construct_ui_1.Icons.CHEVRON_DOWN
+      });
+      var inputComponents = [];
+
+      if (this.selectedItem.selectedAction && this.selectedItem.selectedOn) {
+        var actionobj = constaints_json_1.default.actions[this.selectedItem.selectedAction];
+        var varsnum = actionobj.varsnum;
+        this.selectedItem.varsnum = actionobj.varsnum;
+
+        for (var i = 0; i < varsnum; i++) {
+          inputComponents.push(getInputComponent("var" + i, btype, this.selectedItem));
+        }
+      }
+
+      return mithril_1.default(".constraint", {}, mithril_1.default(construct_ui_1.ButtonGroup, {}, [mithril_1.default(construct_ui_1.PopoverMenu, {
+        trigger: onbutton,
+        content: onMenu,
+        style: "constraint-button",
+        position: "auto",
+        closeOnContentClick: true
+      }), mithril_1.default(construct_ui_1.PopoverMenu, {
+        trigger: actionbutton,
+        content: actions,
+        style: "constraint-button",
+        position: "auto",
+        closeOnContentClick: true
+      }), inputComponents]));
+    }
+  }, {
+    key: "setOn",
+    value: function setOn(e) {
+      this.selectedItem.selectedOn = e.currentTarget.innerText;
+    }
+  }, {
+    key: "setAction",
+    value: function setAction(e) {
+      for (var action in constaints_json_1.default.actions) {
+        var a = constaints_json_1.default.actions[action];
+
+        if (e.currentTarget.innerText == a.label) {
+          this.selectedItem.selectedAction = action;
+        }
+      }
+    }
+  }, {
+    key: "createOnMenu",
+    value: function createOnMenu(onoptions) {
+      var _this9 = this;
+
+      var menu = [];
+
+      for (var i in onoptions) {
+        var type = onoptions[i];
+
+        if (type == "time") {
+          menu.push(mithril_1.default(construct_ui_1.MenuItem, {
+            label: "time",
+            onclick: function onclick(e) {
+              return _this9.setOn(e);
+            }
+          }));
+        } else if (types_json_1.default[type]) {
+          var submenu = [];
+          submenu.push(mithril_1.default(construct_ui_1.MenuItem, {
+            label: type + "._id",
+            onclick: function onclick(e) {
+              return _this9.setOn(e);
+            }
+          }));
+
+          for (var p in types_json_1.default[type]) {
+            if (isBaseType(types_json_1.default[type][p])) {
+              submenu.push(mithril_1.default(construct_ui_1.MenuItem, {
+                label: type + "." + p,
+                onclick: function onclick(e) {
+                  return _this9.setOn(e);
+                }
+              }));
+            }
+          }
+
+          menu.push(mithril_1.default(construct_ui_1.MenuItem, {
+            label: type,
+            submenu: submenu
+          }));
+        }
+      }
+
+      return menu;
+    }
+  }, {
+    key: "createActionsMenu",
+    value: function createActionsMenu(actions, ontype) {
+      var _this10 = this;
+
+      var menu = [];
+
+      for (var action in actions) {
+        var a = actions[action];
+        var found = false;
+
+        for (var i in a.types) {
+          var type = a.types[i];
+
+          if (type == ontype) {
+            found = true;
+            break;
+          }
+        }
+
+        if (found) {
+          if (!this.selectedItem.selectedAction) this.selectedItem.selectedAction = action;
+          menu.push(mithril_1.default(construct_ui_1.MenuItem, {
+            label: a.label,
+            onclick: function onclick(e) {
+              return _this10.setAction(e);
+            }
+          }));
+        }
+      }
+
+      return menu;
+    }
+  }]);
 
   return Constraint;
 }();
 
 var Constraints =
-/** @class */
+/*#__PURE__*/
 function () {
-  function Constraints() {}
+  function Constraints() {
+    _classCallCheck(this, Constraints);
+  }
 
-  Constraints.prototype.view = function (vnode) {
-    var _this = this;
+  _createClass(Constraints, [{
+    key: "view",
+    value: function view(vnode) {
+      var _this11 = this;
 
-    this.selectedItem = vnode.attrs.selectedItem;
-    this.type = vnode.attrs.type;
-    var forms = [];
-    forms.push(mithril_1["default"]("h5", "Constraints"));
+      this.selectedItem = vnode.attrs.selectedItem;
+      this.type = vnode.attrs.type;
+      var forms = [];
 
-    for (var i in this.selectedItem["constraints"]) {
-      forms.push([mithril_1["default"]("tr.alt", [mithril_1["default"]("td", mithril_1["default"](Constraint, {
-        type: this.type,
-        selectedItem: this.selectedItem["constraints"][i]
-      })), mithril_1["default"]("td.right", mithril_1["default"](DeleteButton, {
-        selectedItem: this.selectedItem,
-        fid: "constraints",
-        index: i
-      }))])]);
+      for (var i in this.selectedItem["constraints"]) {
+        forms.push(mithril_1.default("span.constraints", [mithril_1.default(Constraint, {
+          type: this.type,
+          selectedItem: this.selectedItem["constraints"][i]
+        }), mithril_1.default(DeleteButton, {
+          selectedItem: this.selectedItem,
+          fid: "constraints",
+          index: i
+        })]));
+        forms.push(mithril_1.default(construct_ui_1.ListItem, {}));
+      }
+
+      forms.push(mithril_1.default(construct_ui_1.ListItem, {
+        label: mithril_1.default(construct_ui_1.Button, {
+          label: "add constraint",
+          onclick: function onclick() {
+            return _this11.addElem();
+          },
+          class: ".listadd",
+          fluid: true,
+          basic: true
+        })
+      }));
+      return mithril_1.default("span", {
+        interactive: false
+      }, forms);
     }
+  }, {
+    key: "addElem",
+    value: function addElem() {
+      if (!this.selectedItem["constraints"]) {
+        this.selectedItem["constraints"] = [];
+      }
 
-    forms.push(mithril_1["default"](construct_ui_1.ListItem, {
-      label: mithril_1["default"](construct_ui_1.Button, {
-        label: "add constraint",
-        onclick: function onclick() {
-          return _this.addElem();
-        },
-        style: "text-align:center;"
-      })
-    }));
-    return mithril_1["default"](construct_ui_1.Card, {}, mithril_1["default"]("table.stack", {
-      interactive: false
-    }, forms));
-  };
-
-  Constraints.prototype.addElem = function () {
-    if (!this.selectedItem["constraints"]) {
-      this.selectedItem["constraints"] = [];
+      this.selectedItem["constraints"].push({});
+      mithril_1.default.redraw();
     }
-
-    this.selectedItem["constraints"].push({});
-    mithril_1["default"].redraw();
-  };
+  }]);
 
   return Constraints;
 }();
 
 var Properties =
-/** @class */
+/*#__PURE__*/
 function () {
   function Properties() {
+    _classCallCheck(this, Properties);
+
     this.propForm = [];
     this.active = "p";
     this.loading = false;
     this.selectedItem = {};
   }
 
-  Properties.prototype.generateView = function (type) {
-    for (var f in type) {
-      this.propForm.push(getComponent(f, type[f], this.selectedItem));
+  _createClass(Properties, [{
+    key: "generateView",
+    value: function generateView(type) {
+      for (var f in type) {
+        this.propForm.push(getComponent(f, type[f], this.selectedItem));
+      }
     }
-  };
+  }, {
+    key: "view",
+    value: function view(vnode) {
+      var type = vnode.attrs.type;
+      this.selectedItem = vnode.attrs.selectedItem;
+      this.selectedItem.type = type;
+      this.propForm = [];
 
-  Properties.prototype.view = function (vnode) {
-    var type = vnode.attrs.type;
-    this.selectedItem = vnode.attrs.selectedItem;
-    this.propForm = [];
+      if (types_json_1.default[type]) {
+        this.generateView(types_json_1.default[type]);
+      }
 
-    if (types_json_1["default"][type]) {
-      this.generateView(types_json_1["default"][type]);
+      var constraintsElem = [];
+
+      if (constaints_json_1.default.for[type]) {
+        constraintsElem = mithril_1.default("fieldset.properties", [mithril_1.default("legend.properties-legend", "Constraints"), mithril_1.default(Constraints, {
+          selectedItem: this.selectedItem,
+          type: type
+        })]);
+      }
+
+      return mithril_1.default(".profile-form", {}, [mithril_1.default("br"), mithril_1.default("fieldset.properties", [mithril_1.default("legend.properties-legend", "Properties"), this.propForm]), mithril_1.default("br"), constraintsElem]);
     }
-
-    return mithril_1["default"]("div", {}, [mithril_1["default"]("br"), mithril_1["default"]("div", {
-      gutter: 15
-    }, this.propForm), mithril_1["default"]("br"), mithril_1["default"](Constraints, {
-      selectedItem: this.selectedItem,
-      type: type
-    })]);
-  };
+  }]);
 
   return Properties;
 }();
 
 exports.Properties = Properties;
-},{"flatpickr/dist/themes/light.css":"../node_modules/flatpickr/dist/themes/light.css","flatpickr":"../node_modules/flatpickr/dist/flatpickr.js","construct-ui/lib/index.css":"../node_modules/construct-ui/lib/index.css","mithril":"../node_modules/mithril/mithril.js","construct-ui":"../node_modules/construct-ui/lib/esm/index.js","./types.json":"types.json"}],"instructors.ts":[function(require,module,exports) {
+var QList = construct_ui_1.SelectList.ofType();
+
+var Selector =
+/*#__PURE__*/
+function () {
+  function Selector() {
+    var _this12 = this;
+
+    _classCallCheck(this, Selector);
+
+    this.closeOnSelect = true;
+    this.loading = false;
+
+    this.renderItem = function (item) {
+      return mithril_1.default(construct_ui_1.ListItem, {
+        label: item,
+        selected: _this12.selectedItem === item
+      });
+    };
+
+    this.handleSelect = function (item) {
+      _this12.selectedItem = item;
+
+      _this12.onselect(item);
+    };
+  }
+
+  _createClass(Selector, [{
+    key: "view",
+    value: function view(vnode) {
+      this.type = vnode.attrs.type;
+      this.db = type_map[this.type];
+      this.onselect = vnode.attrs.onselect;
+      this.initialvalue = vnode.attrs.initialvalue;
+
+      if (this.initialvalue != null && !this.selectedItem) {
+        this.selectedItem = this.initialvalue;
+      }
+
+      this.list = util_1.DB.getList(this.db);
+
+      if (this.list == null) {
+        this.list = [];
+        this.selectedItem = "";
+        this.loading = true;
+      } else {
+        this.loading = false;
+      }
+
+      return mithril_1.default(QList, {
+        closeOnSelect: this.closeOnSelect,
+        items: this.list,
+        itemRender: this.renderItem,
+        itemPredicate: this.itemPredicate,
+        onSelect: this.handleSelect,
+        loading: this.loading,
+        popoverAttrs: {
+          hasArrow: true,
+          position: "auto"
+        },
+        trigger: mithril_1.default(construct_ui_1.Button, {
+          iconRight: construct_ui_1.Icons.CHEVRON_DOWN,
+          sublabel: this.type,
+          label: this.selectedItem && this.selectedItem.substring(0, 20)
+        })
+      });
+    }
+  }, {
+    key: "itemPredicate",
+    value: function itemPredicate(query, item) {
+      return item.toLowerCase().includes(query.toLowerCase());
+    }
+  }]);
+
+  return Selector;
+}();
+},{"flatpickr/dist/themes/light.css":"../node_modules/flatpickr/dist/themes/light.css","flatpickr":"../node_modules/flatpickr/dist/flatpickr.js","construct-ui/lib/index.css":"../node_modules/construct-ui/lib/index.css","mithril":"../node_modules/mithril/mithril.js","construct-ui":"../node_modules/construct-ui/lib/esm/index.js","../types.json":"../types.json","../constaints.json":"../constaints.json","./util":"util.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
-exports.__esModule = true;
-exports.intructors = [{
-  label: "c"
-}, {
-  label: "v"
-}, {
-  label: "b"
-}, {
-  label: "n"
-}];
-},{}],"index.ts":[function(require,module,exports) {
-"use strict";
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 var __importDefault = this && this.__importDefault || function (mod) {
   return mod && mod.__esModule ? mod : {
@@ -16658,7 +17370,9 @@ var __importDefault = this && this.__importDefault || function (mod) {
   };
 };
 
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 require("construct-ui/lib/index.css");
 
@@ -16666,20 +17380,19 @@ var mithril_1 = __importDefault(require("mithril"));
 
 var construct_ui_1 = require("construct-ui");
 
-var types_json_1 = __importDefault(require("./types.json"));
-
 var type_components_1 = require("./type_components");
 
-var instructors_1 = require("./instructors");
+var util_1 = require("./util");
 
-console.log(types_json_1["default"]);
 var QList = construct_ui_1.SelectList.ofType();
 
 var Configurator =
-/** @class */
+/*#__PURE__*/
 function () {
   function Configurator() {
     var _this = this;
+
+    _classCallCheck(this, Configurator);
 
     this.closeOnSelect = true;
     this.header = false;
@@ -16687,199 +17400,242 @@ function () {
     this.loading = false;
 
     this.renderItem = function (item) {
-      return mithril_1["default"](construct_ui_1.ListItem, {
-        label: item.label,
-        selected: _this.selectedItem && _this.selectedItem.label === item.label
+      return mithril_1.default(construct_ui_1.ListItem, {
+        label: item,
+        selected: _this.profile.id === item
       });
     };
 
     this.handleSelect = function (item) {
-      return _this.selectedItem = item;
+      _this.selectedItem = item;
+      _this.profile.id = item;
+
+      _this.profile.load();
+
+      mithril_1.default.route.set("/tab/" + _this.profile.type + "/" + _this.profile.id);
     };
   }
 
-  Configurator.prototype.view = function (vnode) {
-    this.list = vnode.attrs.list;
-    this.selectedItem = this.list[0];
-    return mithril_1["default"](".stack", {
-      fluid: true
-    }, [mithril_1["default"](construct_ui_1.ControlGroup, {
-      size: "xl"
-    }, [mithril_1["default"](QList, {
-      closeOnSelect: this.closeOnSelect,
-      label: "Select:",
-      items: this.list,
-      itemRender: this.renderItem,
-      itemPredicate: this.itemPredicate,
-      onSelect: this.handleSelect,
-      loading: this.loading,
-      popoverAttrs: {
-        hasArrow: false,
-        position: "auto"
-      },
-      trigger: mithril_1["default"](construct_ui_1.Button, {
-        fluid: false,
-        size: "xl",
-        iconRight: construct_ui_1.Icons.CHEVRON_DOWN,
-        sublabel: vnode.attrs.sublabel,
-        label: this.selectedItem && this.selectedItem.label.substring(0, 20)
-      })
-    }), mithril_1["default"](construct_ui_1.Button, {
-      label: "Save Changes",
-      iconLeft: construct_ui_1.Icons.SAVE,
-      fluid: false,
-      size: "xl",
-      onclick: function onclick() {
-        return document.cookie = JSON.stringify(sitem);
-      }
-    })])]);
-  };
+  _createClass(Configurator, [{
+    key: "view",
+    value: function view(vnode) {
+      this.profile = vnode.attrs.profile;
 
-  Configurator.prototype.itemPredicate = function (query, item) {
-    return item.label.toLowerCase().includes(query.toLowerCase());
-  };
+      if (this.profile.db != this.db) {
+        this.selectedItem = null;
+        this.profile.reset();
+      }
+
+      this.db = this.profile.db;
+      this.list = util_1.DB.getList(this.db);
+
+      if (this.list == null) {
+        this.list = [];
+        this.selectedItem = "";
+        this.loading = true;
+      } else {
+        this.loading = false;
+      }
+
+      return mithril_1.default(QList, {
+        closeOnSelect: this.closeOnSelect,
+        items: this.list,
+        itemRender: this.renderItem,
+        itemPredicate: this.itemPredicate,
+        onSelect: this.handleSelect,
+        loading: this.loading,
+        popoverAttrs: {
+          hasArrow: true,
+          position: "auto"
+        },
+        trigger: mithril_1.default(construct_ui_1.Button, {
+          size: "xl",
+          iconRight: construct_ui_1.Icons.CHEVRON_DOWN,
+          sublabel: this.profile.type,
+          label: this.profile.id && this.profile.id.substring(0, 20)
+        })
+      });
+    }
+  }, {
+    key: "itemPredicate",
+    value: function itemPredicate(query, item) {
+      return item.toLowerCase().includes(query.toLowerCase());
+    }
+  }]);
 
   return Configurator;
 }();
 
 var Home =
-/** @class */
+/*#__PURE__*/
 function () {
-  function Home() {}
+  function Home() {
+    _classCallCheck(this, Home);
+  }
 
-  Home.prototype.view = function (vnode) {
-    return mithril_1["default"]("h1", "Home");
-  };
+  _createClass(Home, [{
+    key: "view",
+    value: function view(vnode) {
+      return mithril_1.default("h1", "Home");
+    }
+  }]);
 
   return Home;
 }();
 
+var sitemdb;
 var sitem = document.cookie && JSON.parse(document.cookie);
-
-if (!sitem) {
-  sitem = {};
-}
-
-var Instrutors =
-/** @class */
-function () {
-  function Instrutors() {}
-
-  Instrutors.prototype.view = function (vnode) {
-    return mithril_1["default"]("div", {
-      gutter: 10
-    }, [mithril_1["default"](Configurator, {
-      sublabel: "Instructor",
-      list: instructors_1.intructors
-    }), mithril_1["default"]("h1", "Instructor Profile"), mithril_1["default"](type_components_1.Properties, {
-      type: "instructor",
-      selectedItem: sitem
-    })]);
-  };
-
-  return Instrutors;
-}();
-
-var Courses =
-/** @class */
-function () {
-  function Courses() {}
-
-  Courses.prototype.view = function (vnode) {
-    return mithril_1["default"]("div", {
-      gutter: 10
-    }, [mithril_1["default"](Configurator, {
-      sublabel: "Course",
-      list: instructors_1.intructors
-    }), mithril_1["default"]("h1", "Course Profile"), mithril_1["default"](type_components_1.Properties, {
-      type: "course",
-      selectedItem: sitem
-    })]);
-  };
-
-  return Courses;
-}();
+var type_map = {
+  "instructor": "instructors",
+  "course": "courses",
+  "room": "rooms"
+};
+var last_selected_id = {};
 
 var Profile =
-/** @class */
+/*#__PURE__*/
 function () {
   function Profile() {
+    _classCallCheck(this, Profile);
+
     this.active = "p";
     this.loading = false;
   }
 
-  Profile.prototype.view = function (vnode) {
-    this.type = vnode.attrs.type;
-    var form = type_components_1.Properties;
-    return mithril_1["default"]("div", {
-      gutter: 10
-    }, [mithril_1["default"](Configurator, {
-      sublabel: this.type,
-      list: instructors_1.intructors
-    }), mithril_1["default"]("h1", this.type + " Profile"), mithril_1["default"](type_components_1.Properties, {
-      type: this.type,
-      selectedItem: sitem
-    })]);
-  };
+  _createClass(Profile, [{
+    key: "view",
+    value: function view(vnode) {
+      var _this2 = this;
+
+      this.type = mithril_1.default.route.param("type");
+
+      if (this.type == "home") {
+        return mithril_1.default("h1", "Home");
+      }
+
+      var tdb = type_map[this.type];
+      var id = mithril_1.default.route.param("id");
+
+      if (this.db != tdb || this.id != id) {
+        this.reset();
+      }
+
+      this.db = tdb;
+      this.id = id;
+
+      if (!this.id && last_selected_id[this.type]) {
+        this.id = last_selected_id[this.type];
+        mithril_1.default.route.set("/tab/" + this.type + "/" + this.id);
+      }
+
+      if (this.id) {
+        this.item = util_1.DB.getItem(this.db, this.id);
+        last_selected_id[this.type] = this.id;
+      }
+
+      var props = mithril_1.default("div");
+
+      if (this.item) {
+        props = mithril_1.default(type_components_1.Properties, {
+          type: this.type,
+          selectedItem: this.item
+        });
+      }
+
+      return mithril_1.default(".profile", [mithril_1.default(".profile-top", [mithril_1.default(Configurator, {
+        profile: this
+      }), mithril_1.default(construct_ui_1.Button, {
+        label: "Save",
+        onclick: function onclick() {
+          return _this2.save();
+        },
+        class: "profile-top-right",
+        size: "xl"
+      })]), props]);
+    }
+  }, {
+    key: "load",
+    value: function load() {
+      this.item = util_1.DB.getItem(this.db, this.id);
+    }
+  }, {
+    key: "reset",
+    value: function reset() {
+      this.id = null;
+      this.item = null;
+    }
+  }, {
+    key: "save",
+    value: function save() {
+      if (this.item) {
+        util_1.DB.putitem(this.db, this.item);
+      }
+    }
+  }]);
 
   return Profile;
 }();
 
-var Tab =
-/** @class */
-function () {
-  function Tab(tabobj, bodyobj, attrs) {
-    this.tabobj = tabobj;
-    this.bodyobj = bodyobj;
-    this.attrs = attrs;
-  }
+var Tab = function Tab(tabobj, bodyobj, attrs) {
+  _classCallCheck(this, Tab);
 
-  return Tab;
-}();
+  this.tabobj = tabobj;
+  this.bodyobj = bodyobj;
+  this.attrs = attrs;
+};
 
-var tabs = [new Tab([mithril_1["default"](construct_ui_1.Icon, {
+var tabs = [new Tab([mithril_1.default(construct_ui_1.Icon, {
   name: construct_ui_1.Icons.HOME,
   style: 'margin-right: 5px'
-}), 'ICRAS'], Home, {}), new Tab('Instructors', Profile, {
-  type: "instructor"
+}), 'ICRAS'], Profile, {
+  type: "home"
+}), new Tab('Instructors', Profile, {
+  type: "instructor",
+  db: "instructors"
 }), new Tab('Courses', Profile, {
-  type: "course"
+  type: "course",
+  db: "courses"
 }), new Tab('Rooms', Profile, {
-  type: "room"
+  type: "room",
+  db: "rooms"
 })];
 var Body = tabs[0];
 
 var Header =
-/** @class */
+/*#__PURE__*/
 function () {
   function Header() {
+    _classCallCheck(this, Header);
+
     this.active = 'Projects';
     this.isLoading = false;
   }
 
-  Header.prototype.view = function (vnode) {
-    var _this = this;
+  _createClass(Header, [{
+    key: "view",
+    value: function view(vnode) {
+      var _this3 = this;
 
-    return mithril_1["default"]('.topnav', {}, [mithril_1["default"](construct_ui_1.Tabs, {
-      align: "center",
-      fluid: true,
-      bordered: true,
-      size: "l",
-      "class": "topnav-tabs"
-    }, [tabs.map(function (item) {
-      return mithril_1["default"](construct_ui_1.TabItem, {
-        label: item.tabobj,
-        active: _this.active === item.tabobj,
-        loading: item.tabobj === 'Projects' && _this.isLoading,
-        onclick: function onclick() {
-          _this.active = item.tabobj;
-          Body = item;
-        },
+      return mithril_1.default('.topnav', {}, [mithril_1.default(construct_ui_1.Tabs, {
         align: "center",
-        "class": "topnav-tab"
-      });
-    })])]);
-  };
+        fluid: true,
+        bordered: true,
+        size: "lg",
+        class: "topnav-tabs"
+      }, [tabs.map(function (item) {
+        return mithril_1.default(construct_ui_1.TabItem, {
+          label: item.tabobj,
+          active: _this3.active === item.tabobj,
+          loading: item.tabobj === 'Projects' && _this3.isLoading,
+          onclick: mithril_1.default.route.link,
+          align: "center",
+          class: "topnav-tab",
+          href: "/tab/" + item.attrs.type + "/",
+          oncreate: mithril_1.default.route.link
+        });
+      })])]);
+    }
+  }]);
 
   return Header;
 }();
@@ -16887,19 +17643,30 @@ function () {
 ;
 
 var App =
-/** @class */
+/*#__PURE__*/
 function () {
-  function App() {}
+  function App() {
+    _classCallCheck(this, App);
+  }
 
-  App.prototype.view = function (vnode) {
-    return mithril_1["default"]('div', [mithril_1["default"](Header), mithril_1["default"](".stack.body", {}, mithril_1["default"](Body.bodyobj, Body.attrs))]);
-  };
+  _createClass(App, [{
+    key: "view",
+    value: function view(vnode) {
+      return mithril_1.default('div', [mithril_1.default(Header), mithril_1.default(Body.bodyobj, Body.attrs), mithril_1.default(util_1.AppToaster, {
+        clearOnEscapeKey: true,
+        position: "top-end"
+      })]);
+    }
+  }]);
 
   return App;
 }();
 
-mithril_1["default"].mount(document.body, App);
-},{"construct-ui/lib/index.css":"../node_modules/construct-ui/lib/index.css","mithril":"../node_modules/mithril/mithril.js","construct-ui":"../node_modules/construct-ui/lib/esm/index.js","./types.json":"types.json","./type_components":"type_components.ts","./instructors":"instructors.ts"}],"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+mithril_1.default.route(document.getElementById("root"), "/tab/home", {
+  "/tab/:type": App,
+  "/tab/:type/:id": App
+});
+},{"construct-ui/lib/index.css":"../node_modules/construct-ui/lib/index.css","mithril":"../node_modules/mithril/mithril.js","construct-ui":"../node_modules/construct-ui/lib/esm/index.js","./type_components":"type_components.ts","./util":"util.ts"}],"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -16927,7 +17694,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63413" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65002" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -17102,5 +17869,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel/src/builtins/hmr-runtime.js","index.ts"], null)
+},{}]},{},["C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","index.ts"], null)
 //# sourceMappingURL=/src.77de5100.js.map

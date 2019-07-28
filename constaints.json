@@ -1,0 +1,63 @@
+{
+    "actions": {
+        "eq": {
+            "label": "equal",
+            "types": [
+                "time",
+                "string",
+                "int",
+                "instructor",
+                "course",
+                "lecture",
+                "room"
+            ],
+            "varsnum": 1
+        },
+        "gt": {
+            "label": "greater than",
+            "types": [
+                "time",
+                "int"
+            ],
+            "varsnum": 1
+        },
+        "lt": {
+            "label": "less than",
+            "types": [
+                "time",
+                "int"
+            ],
+            "varsnum": 1
+        },
+        "bt": {
+            "label": "between",
+            "types": [
+                "time",
+                "int"
+            ],
+            "varsnum": 2
+        }
+    },
+
+    "for": {
+        "course": {
+            "on":[
+                "time",
+                "room"
+            ]
+        },
+        "lecture": {
+            "on":[
+                "time",
+                "room"
+            ]
+        },
+        "room": {
+            "on":[
+                "time",
+                "course"
+            ]
+        }
+
+    }
+}

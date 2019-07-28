@@ -1,9 +1,18 @@
 {
   "dependencies": {
+    "@types/jquery": "^3.3.30",
+    "@types/mithril": "^1.1.17",
+    "@types/react": "^16.8.23",
+    "@types/react-dom": "^16.8.4",
     "construct-ui": "^0.2.0",
     "flatpickr": "^4.6.1",
+    "jquery-timepicker": "^1.3.3",
     "mithril": "^1.1.6",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^0.87.3"
   },
   "devDependencies": {
     "typescript": "^3.5.3"

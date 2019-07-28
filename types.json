@@ -6,13 +6,15 @@
         "bool"
     ],
     "room": {
-        "type": "string",
+        "classtype": "string",
         "capacity": "int",
         "whiteboards": "int",
-        "chairs": "int"
+        "lab": "bool",
+        "smart": "bool",
+        "media": "bool"
     },
     "course": {
-        "sections": "lecture[]"
+        "lectures": "lecture[]"
     },
     "lecture": {
         "section": "int",
@@ -20,7 +22,6 @@
         "minutes": "int"
     },
     "instructor": {
-        "start": "time",
-        "end": "time"
+        "teaches": "course*"
     }
 }

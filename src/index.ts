@@ -22,75 +22,74 @@ import {
   QueryList,
   ControlGroup
 } from "construct-ui";
-import types from "./types.json";
-import constraints from "./types.json";
 import { Properties as Properties } from './type_components';
-import {IListLabel} from './util';
-import { intructors } from './instructors';
+import { DB, AppToaster } from './util';
 
-console.log(types);
-let QList = SelectList.ofType<IListLabel>();
+let QList = SelectList.ofType<string>();
 class Configurator {
-  private list : IListLabel[];
-  private selectedItem: IListLabel;
+  private list : string[];
+  private selectedItem: string;
   private closeOnSelect = true;
   private header = false;
   private footer = false;
   private loading = false;
-  
+  private db : string;
+  private profile: Profile;
 
   public view(vnode: any) {
-    this.list = vnode.attrs.list;
-    this.selectedItem = this.list[0];
+    this.profile = vnode.attrs.profile;
 
-    return m(".stack", 
-      {
-        fluid: true,
-      },
-      [
-        m(ControlGroup, {size:"xl"}, [
-        m(QList, {
+    if(this.profile.db != this.db) {
+      this.selectedItem = null;
+      this.profile.reset();
+    }
+    this.db = this.profile.db;
+    this.list = DB.getList(this.db);
+
+    
+    if(this.list == null) {
+      this.list = [];
+      this.selectedItem = "";
+      this.loading = true;
+    } else {
+      this.loading = false;
+    }
+  
+    return m(QList, {
           closeOnSelect: this.closeOnSelect,
-          label: "Select:",
           items: this.list,
           itemRender: this.renderItem,
           itemPredicate: this.itemPredicate,
           onSelect: this.handleSelect,
           loading: this.loading,
           popoverAttrs: {
-            hasArrow: false,
+            hasArrow: true,
             position: "auto"
           },
           trigger: m(Button, {
-            fluid: false,
             size: "xl",
             iconRight: Icons.CHEVRON_DOWN,
-            sublabel: vnode.attrs.sublabel,
-            label: this.selectedItem && this.selectedItem.label.substring(0,20),
+            sublabel: this.profile.type,
+            label: this.profile.id && this.profile.id.substring(0,20),
           })
-      }),
-      m(Button, {
-        label: "Save Changes",
-        iconLeft: Icons.SAVE,
-        fluid: false,
-        size: "xl",
-        onclick: ()=>document.cookie = JSON.stringify(sitem),
       })
-    ])
-    ]
-    );
   }
 
-  private renderItem = (item: IListLabel) => m(ListItem, {
-    label: item.label,
-    selected: this.selectedItem && this.selectedItem.label === item.label,
+  private renderItem = (item: string) => m(ListItem, {
+    label: item,
+    selected: this.profile.id === item,
   })
 
-  private itemPredicate(query: string, item: any) {
-    return item.label.toLowerCase().includes(query.toLowerCase());
+  private itemPredicate(query: string, item: string) {
+    return item.toLowerCase().includes(query.toLowerCase());
   }
 
-  private handleSelect = (item: IListLabel) => this.selectedItem = item;
+  private handleSelect = (item: string) => {
+    this.selectedItem = item;
+    this.profile.id = item;
+    this.profile.load();
+    m.route.set("/tab/"+this.profile.type+"/"+this.profile.id)
+  }
 
 }
 class Home {
@@ -98,40 +97,78 @@ class Home {
     return m("h1", "Home")
   }
 }
+
+var sitemdb;
 var sitem = document.cookie && JSON.parse(document.cookie);
-if(!sitem) {
-  sitem = {};
+
+var type_map = {
+  "instructor": "instructors",
+  "course": "courses",
+  "room": "rooms"
 }
-class Instrutors {
-  view(vnode: any) {
-    return m("div", {gutter: 10},[
-      m(Configurator, {sublabel: "Instructor", list: intructors}),
-      m("h1", "Instructor Profile"), m(Properties, {type:"instructor", selectedItem: sitem}),
-    ])
-  }
+
+var last_selected_id = {
 }
-class Courses {
-  view(vnode: any) {
-    return m("div", {gutter: 10},[
-      m(Configurator, {sublabel: "Course", list: intructors}),
-      m("h1", "Course Profile"), m(Properties, {type:"course", selectedItem: sitem}),
-    ])
-  }
-}
+
 class Profile {
   active: string = "p";
   loading: boolean = false;
   type: string;
+  db: string;
+  id: string;
+  item: any;
+
   view(vnode: any) {
-    this.type = vnode.attrs.type;
+    this.type = m.route.param("type");
+    if(this.type=="home") {
+      return m("h1", "Home")
+    } 
+    
+    var tdb = type_map[this.type];
+    var id = m.route.param("id")
+    if(this.db != tdb || this.id != id) {
+      this.reset();
+    }
+    this.db = tdb;
+    this.id = id;
+    
+    if(!this.id && last_selected_id[this.type]){
+      this.id = last_selected_id[this.type];
+      m.route.set("/tab/"+this.type+"/"+this.id)
 
-    var form : any = Properties;
+    }
+    if(this.id) {
+      this.item = DB.getItem(this.db, this.id);
+      last_selected_id[this.type] = this.id;
+    }
 
-    return m("div", {gutter: 10},[
-      m(Configurator, {sublabel: this.type, list: intructors}),
-      m("h1", this.type + " Profile"), 
-      m(Properties, {type:this.type, selectedItem: sitem}),
+    
+    var props = m("div");
+    if(this.item) {
+      props = m(Properties, {type:this.type, selectedItem: this.item})
+    }
+    return m(".profile",[
+      m(".profile-top", [
+        m(Configurator, {profile: this}), 
+        m(Button, {label: "Save", onclick: ()=>this.save(), class: "profile-top-right", size: "xl"})
+      ]),
+      props
     ])
+  }
+
+  load() {
+    this.item = DB.getItem(this.db, this.id);
+  }
+
+  reset() {
+    this.id = null;
+    this.item = null;
+  }
+
+  save() {
+    if(this.item) {
+      DB.putitem(this.db, this.item);
+    }
   }
 }
 
@@ -146,10 +183,10 @@ const tabs = [
   new Tab([m(Icon, {
     name: Icons.HOME,
     style: 'margin-right: 5px'
-  }), 'ICRAS'], Home, {}),
-  new Tab('Instructors',Profile, {type:"instructor"}),
-  new Tab('Courses',Profile, {type:"course"}),
-  new Tab('Rooms', Profile, {type:"room"})
+  }), 'ICRAS'], Profile, {type: "home"}),
+  new Tab('Instructors',Profile, {type:"instructor", db: "instructors"}),
+  new Tab('Courses',Profile, {type:"course", db: "courses"}),
+  new Tab('Rooms', Profile, {type:"room", db: "rooms"})
 ];
 
 var Body = tabs[0]
@@ -163,16 +200,18 @@ class Header {
         align: "center",
         fluid: true,
         bordered: true,
-        size: "l",
+        size: "lg",
         class: "topnav-tabs"
       }, [
         tabs.map(item => m(TabItem, {
             label: item.tabobj,
             active: this.active === item.tabobj,
             loading: item.tabobj === 'Projects' && this.isLoading,
-            onclick: () => {this.active = item.tabobj; Body = item;},
+            onclick: m.route.link,
             align: "center",
-            class: "topnav-tab"
+            class: "topnav-tab",
+            href: "/tab/" + item.attrs.type + "/",
+            oncreate: m.route.link
           }))
         ])
     ]);
@@ -181,8 +220,18 @@ class Header {
 
 class App {
   view(vnode: any) {
-    return m('div', [m(Header), m(".stack.body", {}, m(Body.bodyobj, Body.attrs))]);
+    return m('div', [m(Header),  m(Body.bodyobj, Body.attrs), 
+      m(AppToaster, {
+      clearOnEscapeKey: true,
+      position: "top-end"
+    })
+  ]);
   }
 }
-m.mount(document.body, App)
+
+
+m.route(document.getElementById("root"), "/tab/home", {
+  "/tab/:type": App,
+  "/tab/:type/:id": App
+})
 

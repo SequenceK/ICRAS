@@ -1,4 +1,4 @@
-module ICRAS/server
+module ICRAS/solver
 
 go 1.12
 

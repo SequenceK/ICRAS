@@ -1,8 +1,10 @@
 {
     "compilerOptions": {
-      "module": "commonjs",
       "allowSyntheticDefaultImports": true,
-      "resolveJsonModule": true
-    },
-    "exclude": ["node_modules"]
+      "resolveJsonModule": true,
+      "moduleResolution": "node",
+      "jsxFactory": "React.createElement",
+      "jsx": "react",
+      "target": "es6"
+    }
   }
