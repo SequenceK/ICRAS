@@ -37,7 +37,7 @@ import {
 
 
 import types from "../types.json";
-import constraints from "../constaints.json";
+import constraints from "../constraints.json";
 import { Divider } from 'semantic-ui-react';
 import { DB } from './util';
 
@@ -316,19 +316,14 @@ function getComponent(fid : string, ftype : string, item : any) {
             selectedItem: item});
         } else {
           var arrtype = ftype.substr(0, ftype.length-1);
-          label = m("div", [m("h3", fid), m("hr")]);
-          input = m(PArrComponent, {fid: fid,
-            ftype: arrtype,
+          input = m(Pointer, {index: fid,
+              type: arrtype,
             selectedItem: item});
         }
       }
       else {
         return []
       }
-      return m("div", [
-        label,
-        input,
-      ]);
       break;
   }
 

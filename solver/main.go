@@ -3,6 +3,7 @@ package main
 func main() {
 	state := initState()
 	state.generateConstraints()
-	state.assignmentStage()
+	state.generateCandidates()
+	state.solve()
 	state.generateXLSX()
 }

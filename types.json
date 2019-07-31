@@ -6,7 +6,6 @@
         "bool"
     ],
     "room": {
-        "classtype": "string",
         "capacity": "int",
         "whiteboards": "int",
         "lab": "bool",
@@ -22,6 +21,10 @@
         "minutes": "int"
     },
     "instructor": {
-        "teaches": "course*"
+        "instructs": "instructs[]"
+    },
+    "instructs": {
+        "course": "course*",
+        "maxlectures":"int"
     }
 }

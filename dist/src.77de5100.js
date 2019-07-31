@@ -16270,7 +16270,6 @@ var global = arguments[3];
 module.exports = {
   "base_types": ["string", "int", "time", "bool"],
   "room": {
-    "classtype": "string",
     "capacity": "int",
     "whiteboards": "int",
     "lab": "bool",
@@ -16286,10 +16285,14 @@ module.exports = {
     "minutes": "int"
   },
   "instructor": {
-    "teaches": "course*"
+    "instructs": "instructs[]"
+  },
+  "instructs": {
+    "course": "course*",
+    "maxlectures": "int"
   }
 };
-},{}],"../constaints.json":[function(require,module,exports) {
+},{}],"../constraints.json":[function(require,module,exports) {
 module.exports = {
   "actions": {
     "eq": {
@@ -16498,7 +16501,7 @@ var construct_ui_1 = require("construct-ui");
 
 var types_json_1 = __importDefault(require("../types.json"));
 
-var constaints_json_1 = __importDefault(require("../constaints.json"));
+var constraints_json_1 = __importDefault(require("../constraints.json"));
 
 var util_1 = require("./util");
 
@@ -16912,10 +16915,9 @@ function getComponent(fid, ftype, item) {
           });
         } else {
           var arrtype = ftype.substr(0, ftype.length - 1);
-          label = mithril_1.default("div", [mithril_1.default("h3", fid), mithril_1.default("hr")]);
-          input = mithril_1.default(PArrComponent, {
-            fid: fid,
-            ftype: arrtype,
+          input = mithril_1.default(Pointer, {
+            index: fid,
+            type: arrtype,
             selectedItem: item
           });
         }
@@ -16923,7 +16925,6 @@ function getComponent(fid, ftype, item) {
         return [];
       }
 
-      return mithril_1.default("div", [label, input]);
       break;
   }
 
@@ -17001,7 +17002,7 @@ function () {
         this.selectedItem = new ConstraintData();
       }
 
-      var onoptions = constaints_json_1.default.for[this.type].on;
+      var onoptions = constraints_json_1.default.for[this.type].on;
 
       if (!this.selectedItem.selectedOn) {
         this.selectedItem.selectedOn = onoptions[0];
@@ -17035,13 +17036,13 @@ function () {
 
       this.selectedItem.type = btype;
       if (pointer) this.selectedItem.type = "_id";
-      var actions = this.createActionsMenu(constaints_json_1.default.actions, btype);
+      var actions = this.createActionsMenu(constraints_json_1.default.actions, btype);
       var onbutton = mithril_1.default(construct_ui_1.Button, {
         //basic: true,
         label: this.selectedItem.selectedOn,
         iconRight: construct_ui_1.Icons.CHEVRON_DOWN
       });
-      var buttonLabel = constaints_json_1.default.actions[this.selectedItem.selectedAction] && constaints_json_1.default.actions[this.selectedItem.selectedAction].label;
+      var buttonLabel = constraints_json_1.default.actions[this.selectedItem.selectedAction] && constraints_json_1.default.actions[this.selectedItem.selectedAction].label;
       var actionbutton = mithril_1.default(construct_ui_1.Button, {
         //basic: true,
         label: buttonLabel,
@@ -17050,7 +17051,7 @@ function () {
       var inputComponents = [];
 
       if (this.selectedItem.selectedAction && this.selectedItem.selectedOn) {
-        var actionobj = constaints_json_1.default.actions[this.selectedItem.selectedAction];
+        var actionobj = constraints_json_1.default.actions[this.selectedItem.selectedAction];
         var varsnum = actionobj.varsnum;
         this.selectedItem.varsnum = actionobj.varsnum;
 
@@ -17081,8 +17082,8 @@ function () {
   }, {
     key: "setAction",
     value: function setAction(e) {
-      for (var action in constaints_json_1.default.actions) {
-        var a = constaints_json_1.default.actions[action];
+      for (var action in constraints_json_1.default.actions) {
+        var a = constraints_json_1.default.actions[action];
 
         if (e.currentTarget.innerText == a.label) {
           this.selectedItem.selectedAction = action;
@@ -17264,7 +17265,7 @@ function () {
 
       var constraintsElem = [];
 
-      if (constaints_json_1.default.for[type]) {
+      if (constraints_json_1.default.for[type]) {
         constraintsElem = mithril_1.default("fieldset.properties", [mithril_1.default("legend.properties-legend", "Constraints"), mithril_1.default(Constraints, {
           selectedItem: this.selectedItem,
           type: type
@@ -17355,7 +17356,7 @@ function () {
 
   return Selector;
 }();
-},{"flatpickr/dist/themes/light.css":"../node_modules/flatpickr/dist/themes/light.css","flatpickr":"../node_modules/flatpickr/dist/flatpickr.js","construct-ui/lib/index.css":"../node_modules/construct-ui/lib/index.css","mithril":"../node_modules/mithril/mithril.js","construct-ui":"../node_modules/construct-ui/lib/esm/index.js","../types.json":"../types.json","../constaints.json":"../constaints.json","./util":"util.ts"}],"index.ts":[function(require,module,exports) {
+},{"flatpickr/dist/themes/light.css":"../node_modules/flatpickr/dist/themes/light.css","flatpickr":"../node_modules/flatpickr/dist/flatpickr.js","construct-ui/lib/index.css":"../node_modules/construct-ui/lib/index.css","mithril":"../node_modules/mithril/mithril.js","construct-ui":"../node_modules/construct-ui/lib/esm/index.js","../types.json":"../types.json","../constraints.json":"../constraints.json","./util":"util.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -17694,7 +17695,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65002" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63749" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
