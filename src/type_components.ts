@@ -56,6 +56,8 @@ function isBaseType(type) {
   return false;
 }
 
+export var pstate = {changed: false};
+
 class BoolInput {
   selectedItem : any;
   fid : string;
@@ -78,6 +80,7 @@ class BoolInput {
   }
 
   onchange(e:any) {
+    pstate.changed = true;
     this.selectedItem[this.fid] = !this.selectedItem[this.fid];
   } 
 }
@@ -100,7 +103,7 @@ class Timepicker {
       noCalendar: true,
       dateFormat: "H:i",
       defaultDate: "8:00",
-      onChange: (selectedDates, dateStr, instance) => {this.selectedItem[this.fid] = dateStr; m.redraw()},
+      onChange: (selectedDates, dateStr, instance) => {this.selectedItem[this.fid] = dateStr; pstate.changed = true; m.redraw()},
     });
   }
   onremove(){
@@ -135,6 +138,7 @@ class DeleteButton {
   onclick(e : Event) {
     var elem = e.target as any;
     this.selectedItem[this.fid].splice(this.index, 1);
+    pstate.changed = true;
   }
 }
 class ArrComponent {
@@ -169,6 +173,7 @@ class ArrComponent {
       this.selectedItem[this.fid] = []
     }
     this.selectedItem[this.fid].push({});
+    pstate.changed = true;
     m.redraw();
   }
   
@@ -192,6 +197,7 @@ class Pointer {
 
   onselect(item) {
     this.selectedItem[this.index] = item;
+    pstate.changed = true;
   }
 }
 
@@ -227,6 +233,7 @@ class PArrComponent {
       this.selectedItem[this.fid] = []
     }
     this.selectedItem[this.fid].push("");
+    pstate.changed = true;
     m.redraw();
   }
   
@@ -244,7 +251,7 @@ class IntInput {
       id: this.fid,
       name: this.ftype,
       value: this.selectedItem[this.fid],
-      onchange: (e:Event) => {this.selectedItem[this.fid] = parseInt((e.target as HTMLInputElement).value);},
+      onchange: (e:Event) => {this.selectedItem[this.fid] = parseInt((e.target as HTMLInputElement).value);pstate.changed = true;},
       type: "number",
     });
   }
@@ -262,7 +269,7 @@ class StringInput {
       id: this.fid,
       name: this.ftype,
       value: this.selectedItem[this.fid],
-      onchange: (e:Event) => {this.selectedItem[this.fid] = (e.target as HTMLInputElement).value;}
+      onchange: (e:Event) => {this.selectedItem[this.fid] = (e.target as HTMLInputElement).value;pstate.changed = true;}
     });
   }
 }
@@ -479,6 +486,7 @@ class Constraint {
 
   setOn(e) {
     this.selectedItem.selectedOn = e.currentTarget.innerText
+    pstate.changed = true;
   }
 
   setAction(e) {
@@ -486,6 +494,7 @@ class Constraint {
       var a = constraints.actions[action]
       if(e.currentTarget.innerText == a.label){
         this.selectedItem.selectedAction = action;
+        pstate.changed = true;
       }
     }
   }
@@ -579,6 +588,7 @@ class Constraints {
       this.selectedItem["constraints"] = []
     }
     this.selectedItem["constraints"].push({});
+    pstate.changed = true;
     m.redraw();
   }
   
@@ -681,6 +691,7 @@ class Selector {
 
   private handleSelect = (item: string) => {
     this.selectedItem = item;
+    pstate.changed = true;
     this.onselect(item);
   }
 

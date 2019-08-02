@@ -14,6 +14,10 @@ export class DBUtil {
     constructor() {
     }
 
+    update() {
+        this.lists = {};
+    }
+
     loadList(db : string) {
         var url = "/db/all/" + db;
         if(this.loading[url]) {
@@ -79,18 +83,14 @@ export class DBUtil {
         return this.items[db][id];
     }
 
-    putitem(db: string, item: any) {
+    putitem(db: string, item: any, callback : any) {
         var url = "/db/" + db +"/"+item._id;
         m.request({
             method: "PUT",
             url: url,
             data: item,
         }).then((done)=>{
-            AppToaster.show({
-                message: `Save Successful`,
-                icon: Icons.SAVE,
-                timeout: 1000,
-              });
+              callback()
         }).catch((error) => {
             console.error(error);
             this.loading[url] = false;

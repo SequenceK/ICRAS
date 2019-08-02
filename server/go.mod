@@ -9,4 +9,5 @@ require (
 	github.com/imdario/mergo v0.3.7 // indirect
 	github.com/labstack/echo/v4 v4.1.6
 	github.com/pkg/errors v0.8.1 // indirect
+	golang.org/x/net v0.0.0-20190607181551-461777fb6f67
 )

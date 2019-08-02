@@ -16277,12 +16277,16 @@ module.exports = {
     "media": "bool"
   },
   "course": {
-    "lectures": "lecture[]"
+    "lectures": "lecture[]",
+    "title": "string"
   },
   "lecture": {
     "section": "int",
     "days": "string",
-    "minutes": "int"
+    "minutes": "int",
+    "contacthours(lec/stu)": "int",
+    "contacthours(lab/rec)": "int",
+    "capacity": "int"
   },
   "instructor": {
     "instructs": "instructs[]"
@@ -16365,6 +16369,11 @@ function () {
   }
 
   _createClass(DBUtil, [{
+    key: "update",
+    value: function update() {
+      this.lists = {};
+    }
+  }, {
     key: "loadList",
     value: function loadList(db) {
       var _this = this;
@@ -16444,7 +16453,7 @@ function () {
     }
   }, {
     key: "putitem",
-    value: function putitem(db, item) {
+    value: function putitem(db, item, callback) {
       var _this3 = this;
 
       var url = "/db/" + db + "/" + item._id;
@@ -16453,11 +16462,7 @@ function () {
         url: url,
         data: item
       }).then(function (done) {
-        exports.AppToaster.show({
-          message: "Save Successful",
-          icon: construct_ui_1.Icons.SAVE,
-          timeout: 1000
-        });
+        callback();
       }).catch(function (error) {
         console.error(error);
         _this3.loading[url] = false;
@@ -16520,6 +16525,10 @@ function isBaseType(type) {
   return false;
 }
 
+exports.pstate = {
+  changed: false
+};
+
 var BoolInput =
 /*#__PURE__*/
 function () {
@@ -16552,6 +16561,7 @@ function () {
   }, {
     key: "onchange",
     value: function onchange(e) {
+      exports.pstate.changed = true;
       this.selectedItem[this.fid] = !this.selectedItem[this.fid];
     }
   }]);
@@ -16582,6 +16592,7 @@ function () {
         defaultDate: "8:00",
         onChange: function onChange(selectedDates, dateStr, instance) {
           _this2.selectedItem[_this2.fid] = dateStr;
+          exports.pstate.changed = true;
           mithril_1.default.redraw();
         }
       });
@@ -16637,6 +16648,7 @@ function () {
     value: function onclick(e) {
       var elem = e.target;
       this.selectedItem[this.fid].splice(this.index, 1);
+      exports.pstate.changed = true;
     }
   }]);
 
@@ -16694,6 +16706,7 @@ function () {
       }
 
       this.selectedItem[this.fid].push({});
+      exports.pstate.changed = true;
       mithril_1.default.redraw();
     }
   }]);
@@ -16734,6 +16747,7 @@ function () {
     key: "onselect",
     value: function onselect(item) {
       this.selectedItem[this.index] = item;
+      exports.pstate.changed = true;
     }
   }]);
 
@@ -16792,6 +16806,7 @@ function () {
       }
 
       this.selectedItem[this.fid].push("");
+      exports.pstate.changed = true;
       mithril_1.default.redraw();
     }
   }]);
@@ -16820,6 +16835,7 @@ function () {
         value: this.selectedItem[this.fid],
         onchange: function onchange(e) {
           _this7.selectedItem[_this7.fid] = parseInt(e.target.value);
+          exports.pstate.changed = true;
         },
         type: "number"
       });
@@ -16850,6 +16866,7 @@ function () {
         value: this.selectedItem[this.fid],
         onchange: function onchange(e) {
           _this8.selectedItem[_this8.fid] = e.target.value;
+          exports.pstate.changed = true;
         }
       });
     }
@@ -17078,6 +17095,7 @@ function () {
     key: "setOn",
     value: function setOn(e) {
       this.selectedItem.selectedOn = e.currentTarget.innerText;
+      exports.pstate.changed = true;
     }
   }, {
     key: "setAction",
@@ -17087,6 +17105,7 @@ function () {
 
         if (e.currentTarget.innerText == a.label) {
           this.selectedItem.selectedAction = action;
+          exports.pstate.changed = true;
         }
       }
     }
@@ -17225,6 +17244,7 @@ function () {
       }
 
       this.selectedItem["constraints"].push({});
+      exports.pstate.changed = true;
       mithril_1.default.redraw();
     }
   }]);
@@ -17302,6 +17322,7 @@ function () {
 
     this.handleSelect = function (item) {
       _this12.selectedItem = item;
+      exports.pstate.changed = true;
 
       _this12.onselect(item);
     };
@@ -17356,7 +17377,73 @@ function () {
 
   return Selector;
 }();
-},{"flatpickr/dist/themes/light.css":"../node_modules/flatpickr/dist/themes/light.css","flatpickr":"../node_modules/flatpickr/dist/flatpickr.js","construct-ui/lib/index.css":"../node_modules/construct-ui/lib/index.css","mithril":"../node_modules/mithril/mithril.js","construct-ui":"../node_modules/construct-ui/lib/esm/index.js","../types.json":"../types.json","../constraints.json":"../constraints.json","./util":"util.ts"}],"index.ts":[function(require,module,exports) {
+},{"flatpickr/dist/themes/light.css":"../node_modules/flatpickr/dist/themes/light.css","flatpickr":"../node_modules/flatpickr/dist/flatpickr.js","construct-ui/lib/index.css":"../node_modules/construct-ui/lib/index.css","mithril":"../node_modules/mithril/mithril.js","construct-ui":"../node_modules/construct-ui/lib/esm/index.js","../types.json":"../types.json","../constraints.json":"../constraints.json","./util":"util.ts"}],"timetable.ts":[function(require,module,exports) {
+"use strict";
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var mithril_1 = __importDefault(require("mithril"));
+
+var construct_ui_1 = require("construct-ui");
+
+var TimetableBody =
+/*#__PURE__*/
+function () {
+  function TimetableBody() {
+    _classCallCheck(this, TimetableBody);
+  }
+
+  _createClass(TimetableBody, [{
+    key: "view",
+    value: function view(vnode) {
+      var _this = this;
+
+      var b = mithril_1.default(construct_ui_1.Button, {
+        label: "Build Timetable",
+        size: "xl",
+        onclick: function onclick() {
+          _this.generateTT();
+        }
+      });
+      return mithril_1.default(".profile", mithril_1.default(".profile-top", [b]));
+    }
+  }, {
+    key: "generateTT",
+    value: function generateTT() {
+      var ws = new WebSocket("ws://" + location.host + "/icras/build");
+
+      ws.onmessage = function (msg) {
+        var url = window.URL.createObjectURL(msg.data);
+        var a = document.createElement("a");
+        a.style = "display: none";
+        document.body.appendChild(a);
+        a.href = url;
+        a.download = "timetable.xlsx";
+        a.click();
+        window.URL.revokeObjectURL(url);
+      };
+    }
+  }]);
+
+  return TimetableBody;
+}();
+
+exports.TimetableBody = TimetableBody;
+},{"mithril":"../node_modules/mithril/mithril.js","construct-ui":"../node_modules/construct-ui/lib/esm/index.js"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -17384,6 +17471,8 @@ var construct_ui_1 = require("construct-ui");
 var type_components_1 = require("./type_components");
 
 var util_1 = require("./util");
+
+var timetable_1 = require("./timetable");
 
 var QList = construct_ui_1.SelectList.ofType();
 
@@ -17413,7 +17502,8 @@ function () {
 
       _this.profile.load();
 
-      mithril_1.default.route.set("/tab/" + _this.profile.type + "/" + _this.profile.id);
+      type_components_1.pstate.changed = false;
+      mithril_1.default.route.set("icras/tab/" + _this.profile.type + "/" + _this.profile.id);
     };
   }
 
@@ -17508,12 +17598,39 @@ function () {
     value: function view(vnode) {
       var _this2 = this;
 
+      var style = {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 100
+      };
+      var cardStyles = {
+        margin: '40px auto'
+      };
+      var content = mithril_1.default('', {
+        style: style
+      }, [mithril_1.default(construct_ui_1.Card, {
+        style: cardStyles
+      }, [mithril_1.default('h3', 'Enter ID'), mithril_1.default(construct_ui_1.Input, {
+        value: this.newid,
+        onchange: function onchange(e) {
+          _this2.newid = e.target.value;
+          type_components_1.pstate.changed = true;
+        }
+      }), mithril_1.default("br"), mithril_1.default(construct_ui_1.Button, {
+        label: 'Create',
+        onclick: function onclick() {
+          return _this2.createNew();
+        }
+      }), mithril_1.default(construct_ui_1.Button, {
+        label: 'Close',
+        onclick: function onclick() {
+          return _this2.creationOverlay = false;
+        }
+      })])]);
       this.type = mithril_1.default.route.param("type");
-
-      if (this.type == "home") {
-        return mithril_1.default("h1", "Home");
-      }
-
       var tdb = type_map[this.type];
       var id = mithril_1.default.route.param("id");
 
@@ -17526,7 +17643,7 @@ function () {
 
       if (!this.id && last_selected_id[this.type]) {
         this.id = last_selected_id[this.type];
-        mithril_1.default.route.set("/tab/" + this.type + "/" + this.id);
+        mithril_1.default.route.set("icras/tab/" + this.type + "/" + this.id);
       }
 
       if (this.id) {
@@ -17546,13 +17663,28 @@ function () {
       return mithril_1.default(".profile", [mithril_1.default(".profile-top", [mithril_1.default(Configurator, {
         profile: this
       }), mithril_1.default(construct_ui_1.Button, {
+        label: "Create",
+        onclick: function onclick() {
+          return _this2.opencreate();
+        },
+        size: "xl"
+      }), mithril_1.default(construct_ui_1.Button, {
+        label: "Delete",
+        onclick: function onclick() {
+          return _this2.delete();
+        },
+        size: "xl"
+      }), mithril_1.default(construct_ui_1.Button, {
         label: "Save",
         onclick: function onclick() {
           return _this2.save();
         },
         class: "profile-top-right",
         size: "xl"
-      })]), props]);
+      })]), props, mithril_1.default(construct_ui_1.Overlay, {
+        isOpen: this.creationOverlay,
+        content: content
+      })]);
     }
   }, {
     key: "load",
@@ -17564,12 +17696,56 @@ function () {
     value: function reset() {
       this.id = null;
       this.item = null;
+      last_selected_id[this.type] = "";
     }
   }, {
     key: "save",
     value: function save() {
       if (this.item) {
-        util_1.DB.putitem(this.db, this.item);
+        util_1.DB.putitem(this.db, this.item, function () {
+          util_1.AppToaster.show({
+            message: "Save Successful",
+            icon: construct_ui_1.Icons.SAVE,
+            timeout: 1000
+          });
+        });
+      }
+    }
+  }, {
+    key: "opencreate",
+    value: function opencreate() {
+      this.creationOverlay = true;
+    }
+  }, {
+    key: "createNew",
+    value: function createNew() {
+      var _this3 = this;
+
+      util_1.DB.putitem(this.db, {
+        _id: this.newid
+      }, function () {
+        util_1.DB.update();
+        util_1.DB.loadList(_this3.db);
+        mithril_1.default.redraw();
+      });
+      this.creationOverlay = false;
+    }
+  }, {
+    key: "delete",
+    value: function _delete() {
+      var _this4 = this;
+
+      if (this.item) {
+        this.item["_deleted"] = true;
+        util_1.DB.putitem(this.db, this.item, function () {
+          util_1.DB.update();
+
+          _this4.reset();
+
+          mithril_1.default.route.set("icras/tab/" + _this4.type);
+          util_1.DB.loadList(_this4.db);
+          mithril_1.default.redraw();
+        });
       }
     }
   }]);
@@ -17588,17 +17764,23 @@ var Tab = function Tab(tabobj, bodyobj, attrs) {
 var tabs = [new Tab([mithril_1.default(construct_ui_1.Icon, {
   name: construct_ui_1.Icons.HOME,
   style: 'margin-right: 5px'
-}), 'ICRAS'], Profile, {
-  type: "home"
+}), 'ICRAS'], Home, {
+  type: "home",
+  href: "icras/home/"
 }), new Tab('Instructors', Profile, {
   type: "instructor",
-  db: "instructors"
+  db: "instructors",
+  href: "icras/tab/instructor/"
 }), new Tab('Courses', Profile, {
   type: "course",
-  db: "courses"
+  db: "courses",
+  href: "icras/tab/course/"
 }), new Tab('Rooms', Profile, {
   type: "room",
-  db: "rooms"
+  db: "rooms",
+  href: "icras/tab/room/"
+}), new Tab('Timetable', Profile, {
+  href: "icras/timetable/"
 })];
 var Body = tabs[0];
 
@@ -17615,7 +17797,7 @@ function () {
   _createClass(Header, [{
     key: "view",
     value: function view(vnode) {
-      var _this3 = this;
+      var _this5 = this;
 
       return mithril_1.default('.topnav', {}, [mithril_1.default(construct_ui_1.Tabs, {
         align: "center",
@@ -17626,12 +17808,12 @@ function () {
       }, [tabs.map(function (item) {
         return mithril_1.default(construct_ui_1.TabItem, {
           label: item.tabobj,
-          active: _this3.active === item.tabobj,
-          loading: item.tabobj === 'Projects' && _this3.isLoading,
+          active: _this5.active === item.tabobj,
+          loading: item.tabobj === 'Projects' && _this5.isLoading,
           onclick: mithril_1.default.route.link,
           align: "center",
           class: "topnav-tab",
-          href: "/tab/" + item.attrs.type + "/",
+          href: item.attrs.href,
           oncreate: mithril_1.default.route.link
         });
       })])]);
@@ -17653,7 +17835,27 @@ function () {
   _createClass(App, [{
     key: "view",
     value: function view(vnode) {
-      return mithril_1.default('div', [mithril_1.default(Header), mithril_1.default(Body.bodyobj, Body.attrs), mithril_1.default(util_1.AppToaster, {
+      var page = mithril_1.default.route.param("page");
+      var body = "Error";
+
+      switch (page) {
+        case "tab":
+          body = mithril_1.default(Profile);
+          break;
+
+        case "home":
+          body = mithril_1.default(Home);
+          break;
+
+        case "timetable":
+          body = mithril_1.default(timetable_1.TimetableBody);
+          break;
+
+        default:
+          body = "404";
+      }
+
+      return mithril_1.default('div', [mithril_1.default(Header), body, mithril_1.default(util_1.AppToaster, {
         clearOnEscapeKey: true,
         position: "top-end"
       })]);
@@ -17663,11 +17865,12 @@ function () {
   return App;
 }();
 
-mithril_1.default.route(document.getElementById("root"), "/tab/home", {
-  "/tab/:type": App,
-  "/tab/:type/:id": App
+mithril_1.default.route(document.getElementById("root"), "icras/home", {
+  "icras/:page": App,
+  "icras/:page/:type": App,
+  "icras/:page/:type/:id": App
 });
-},{"construct-ui/lib/index.css":"../node_modules/construct-ui/lib/index.css","mithril":"../node_modules/mithril/mithril.js","construct-ui":"../node_modules/construct-ui/lib/esm/index.js","./type_components":"type_components.ts","./util":"util.ts"}],"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"construct-ui/lib/index.css":"../node_modules/construct-ui/lib/index.css","mithril":"../node_modules/mithril/mithril.js","construct-ui":"../node_modules/construct-ui/lib/esm/index.js","./type_components":"type_components.ts","./util":"util.ts","./timetable":"timetable.ts"}],"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -17695,7 +17898,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63749" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56679" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

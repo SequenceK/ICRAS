@@ -13,12 +13,16 @@
         "media": "bool"
     },
     "course": {
-        "lectures": "lecture[]"
+        "lectures": "lecture[]",
+        "title": "string"
     },
     "lecture": {
         "section": "int",
         "days": "string",
-        "minutes": "int"
+        "minutes": "int",
+        "contacthours(lec/stu)": "int",
+        "contacthours(lab/rec)": "int",
+        "capacity": "int"
     },
     "instructor": {
         "instructs": "instructs[]"
