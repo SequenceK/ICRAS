@@ -7,6 +7,7 @@ import (
 )
 
 type state struct {
+	department        *department
 	instructors       []*instructor
 	coursesLectureMap map[string][]*lecture
 	lectures          []*lecture
@@ -14,27 +15,34 @@ type state struct {
 	timeslots         map[string]*timeslot
 }
 
-func initState() *state {
+func initState(depid string) *state {
 	state := &state{}
 
+	departmentobj, err := DBGet("departments", depid)
+	check(err)
+	state.department = &department{}
+	state.department.init(departmentobj)
+
 	//load instructors
-	instructorsList, err := DBAll("instructors")
+	instructorsList := state.department.instructors
 	check(err)
 	state.instructors = make([]*instructor, len(instructorsList))
-	for i, id := range instructorsList {
+	i := 0
+	for id := range instructorsList {
 		instructorJSON, err := DBGet("instructors", id)
 		check(err)
 
 		state.instructors[i] = &instructor{}
 		state.instructors[i].init(instructorJSON)
+		i++
 	}
 
 	//load lectures(through courses)
-	courseList, err := DBAll("courses")
+	courseList := state.department.courses
 	coursesObj := make([]map[string]interface{}, 0)
 	lectureCount := 0
 	check(err)
-	for _, id := range courseList {
+	for id := range courseList {
 		courseJSON, err := DBGet("courses", id)
 		check(err)
 
@@ -45,8 +53,8 @@ func initState() *state {
 	state.lectures = make([]*lecture, lectureCount)
 	state.coursesLectureMap = make(map[string][]*lecture, len(courseList))
 	lectureIndex := 0
-	for i, obj := range coursesObj {
-		courseName := courseList[i]
+	for _, obj := range coursesObj {
+		courseName := obj["_id"].(string)
 		course := &course{}
 		course.jsonobj = obj
 		course.name = courseName
@@ -62,15 +70,17 @@ func initState() *state {
 	}
 
 	//load rooms
-	roomList, err := DBAll("rooms")
+	roomList := state.department.rooms
 	check(err)
 	state.rooms = make([]*room, len(roomList))
-	for i, id := range roomList {
+	i = 0
+	for id := range roomList {
 		roomJSON, err := DBGet("rooms", id)
 		check(err)
 
 		state.rooms[i] = &room{}
 		state.rooms[i].init(roomJSON)
+		i++
 	}
 
 	state.timeslots = map[string]*timeslot{}
