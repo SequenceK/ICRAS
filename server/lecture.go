@@ -4,6 +4,8 @@ type course struct {
 	jsonobj     map[string]interface{}
 	name        string
 	constraints *constraints
+
+	departments map[*department]bool
 }
 
 type lecture struct {
@@ -26,6 +28,18 @@ type lecture struct {
 
 	resolved  bool
 	resolving bool
+}
+
+func (course *course) init(state *state, jsonobj map[string]interface{}) {
+	course.jsonobj = jsonobj
+	course.name = jsonobj["_id"].(string)
+	course.departments = map[*department]bool{}
+
+	for _, dep := range state.departments {
+		if dep.containsCourse(course.name) {
+			course.departments[dep] = true
+		}
+	}
 }
 
 func (lecture *lecture) init(coursejsonobj, jsonobj map[string]interface{}) {

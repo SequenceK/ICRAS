@@ -8,7 +8,7 @@ import (
 )
 
 type state struct {
-	department        *department
+	departments       []*department
 	instructors       []*instructor
 	coursesLectureMap map[string][]*lecture
 	lectures          []*lecture
@@ -21,21 +21,26 @@ func (state *state) write(msg interface{}) {
 	websocket.Message.Send(state.ws, msg)
 }
 
-func initState(depid string, ws *websocket.Conn) *state {
+func initState(ws *websocket.Conn) *state {
 	state := &state{}
 	state.ws = ws
 
-	departmentobj, err := DBGet("departments", depid)
+	departments, err := DBAll("departments")
 	check(err)
-	state.department = &department{}
-	state.department.init(departmentobj)
+	state.departments = make([]*department, len(departments))
+	for i, did := range departments {
+		departmentobj, err := DBGet("departments", did)
+		check(err)
+
+		state.departments[i] = &department{}
+		state.departments[i].init(departmentobj)
+	}
 
 	//load instructors
-	instructorsList := state.department.instructors
+	instructorsList, err := DBAll("instructors")
 	check(err)
 	state.instructors = make([]*instructor, len(instructorsList))
-	i := 0
-	for id := range instructorsList {
+	for i, id := range instructorsList {
 		instructorJSON, err := DBGet("instructors", id)
 		check(err)
 
@@ -45,43 +50,49 @@ func initState(depid string, ws *websocket.Conn) *state {
 	}
 
 	//load lectures(through courses)
-	courseList := state.department.courses
+	courseList, err := DBAll("courses")
+	check(err)
 	coursesObj := make([]map[string]interface{}, 0)
 	lectureCount := 0
-	check(err)
-	for id := range courseList {
+
+	for _, id := range courseList {
 		courseJSON, err := DBGet("courses", id)
 		check(err)
 
 		coursesObj = append(coursesObj, courseJSON)
-		lectures := courseJSON["lectures"].([]interface{})
-		lectureCount += len(lectures)
+		_, ok := courseJSON["lectures"]
+		if ok {
+			lectures := courseJSON["lectures"].([]interface{})
+			lectureCount += len(lectures)
+		}
 	}
 	state.lectures = make([]*lecture, lectureCount)
 	state.coursesLectureMap = make(map[string][]*lecture, len(courseList))
 	lectureIndex := 0
 	for _, obj := range coursesObj {
-		courseName := obj["_id"].(string)
 		course := &course{}
-		course.jsonobj = obj
-		course.name = courseName
+		course.init(state, obj)
+
+		_, ok := obj["lectures"]
+		if !ok {
+			continue
+		}
 		lectures := obj["lectures"].([]interface{})
-		state.coursesLectureMap[courseName] = make([]*lecture, len(lectures))
+		state.coursesLectureMap[course.name] = make([]*lecture, len(lectures))
 		for j, lobj := range lectures {
 			state.lectures[lectureIndex+j] = &lecture{}
 			state.lectures[lectureIndex+j].course = course
 			state.lectures[lectureIndex+j].init(obj, lobj.(map[string]interface{}))
-			state.coursesLectureMap[courseName][j] = state.lectures[lectureIndex+j]
+			state.coursesLectureMap[course.name][j] = state.lectures[lectureIndex+j]
 		}
 		lectureIndex += len(lectures)
 	}
 
 	//load rooms
-	roomList := state.department.rooms
+	roomList, err := DBAll("rooms")
 	check(err)
 	state.rooms = make([]*room, len(roomList))
-	i = 0
-	for id := range roomList {
+	for i, id := range roomList {
 		roomJSON, err := DBGet("rooms", id)
 		check(err)
 
@@ -102,8 +113,10 @@ func (state *state) generateCandidates() {
 				instructor.lectureCandidates[courseID] = []*lecture{}
 			}
 			for _, lec := range state.coursesLectureMap[courseID] {
-				lec.instructorCandidates = append(lec.instructorCandidates, instructor)
-				instructor.lectureCandidates[courseID] = append(instructor.lectureCandidates[courseID], lec)
+				if instructor.courseConstraints[courseID].check(lec) {
+					lec.instructorCandidates = append(lec.instructorCandidates, instructor)
+					instructor.lectureCandidates[courseID] = append(instructor.lectureCandidates[courseID], lec)
+				}
 			}
 
 		}
@@ -112,7 +125,14 @@ func (state *state) generateCandidates() {
 	//generate room candidates and timeslots
 	for _, lecture := range state.lectures {
 		for _, room := range state.rooms {
-			if lecture.constraints.check(room) {
+			deptcheck := true
+			for dep, ok := range lecture.course.departments {
+				if !ok {
+					continue
+				}
+				deptcheck = deptcheck && dep.containsRoom(room.jsonobj["_id"].(string))
+			}
+			if lecture.constraints.check(room) && deptcheck {
 				lecture.roomCandidates = append(lecture.roomCandidates, room)
 				room.lectureCandidates = append(room.lectureCandidates, lecture)
 			}
@@ -122,52 +142,68 @@ func (state *state) generateCandidates() {
 	}
 }
 
-func (state *state) generateXLSX() *excelize.File {
-	f := excelize.NewFile()
-	f.SetSheetName("Sheet1", "lectures")
-	index := f.GetSheetIndex("lectures")
-	// Set value of a cell.
-	f.SetCellValue("lectures", "A1", "Course")
-	f.SetCellValue("lectures", "B1", "Section")
-	f.SetCellValue("lectures", "C1", "Title")
-	f.SetCellValue("lectures", "D1", "Contact Hours(lec/stu)")
-	f.SetCellValue("lectures", "E1", "Contact Hours(lab/rec)")
-	f.SetCellValue("lectures", "F1", "Credits")
-	f.SetCellValue("lectures", "G1", "Max. Capacity")
-	f.SetCellValue("lectures", "H1", "Days")
-	f.SetCellValue("lectures", "I1", "Hours from-to")
-	f.SetCellValue("lectures", "J1", "Room")
-	f.SetCellValue("lectures", "K1", "Instructor")
-	f.SetCellValue("lectures", "L1", "Status")
-	f.SetCellValue("lectures", "M1", "Remarks")
-	f.SetCellValue("lectures", "N1", "Soft Capacity")
-	f.SetColWidth("lectures", "C", "C", 30)
+func (state *state) generateXLSX() {
+	files := map[*department]*excelize.File{}
+	for _, dep := range state.departments {
+		files[dep] = excelize.NewFile()
+		f := files[dep]
+		f.SetSheetName("Sheet1", "lectures")
+		index := f.GetSheetIndex("lectures")
+		// Set value of a cell.
+		f.SetCellValue("lectures", "A1", "Course")
+		f.SetCellValue("lectures", "B1", "Section")
+		f.SetCellValue("lectures", "C1", "Title")
+		f.SetCellValue("lectures", "D1", "Contact Hours(lec/stu)")
+		f.SetCellValue("lectures", "E1", "Contact Hours(lab/rec)")
+		f.SetCellValue("lectures", "F1", "Credits")
+		f.SetCellValue("lectures", "G1", "Max. Capacity")
+		f.SetCellValue("lectures", "H1", "Days")
+		f.SetCellValue("lectures", "I1", "Hours from-to")
+		f.SetCellValue("lectures", "J1", "Room")
+		f.SetCellValue("lectures", "K1", "Instructor")
+		f.SetCellValue("lectures", "L1", "Status")
+		f.SetCellValue("lectures", "M1", "Remarks")
+		f.SetCellValue("lectures", "N1", "Soft Capacity")
+		f.SetColWidth("lectures", "C", "C", 30)
+		f.SetActiveSheet(index)
+	}
 
 	for i, lecture := range state.lectures {
-		f.SetCellValue("lectures", fmt.Sprintf("A%d", i+2), lecture.coursejsonobj["_id"])
-		f.SetCellValue("lectures", fmt.Sprintf("B%d", i+2), lecture.jsonobj["section"])
-		f.SetCellValue("lectures", fmt.Sprintf("C%d", i+2), lecture.coursejsonobj["title"])
-		f.SetCellValue("lectures", fmt.Sprintf("D%d", i+2), lecture.jsonobj["contacthours(lec/stu)"])
-		f.SetCellValue("lectures", fmt.Sprintf("E%d", i+2), lecture.jsonobj["contacthours(lab/rec)"])
-		f.SetCellValue("lectures", fmt.Sprintf("F%d", i+2), lecture.coursejsonobj["credits"])
-		f.SetCellValue("lectures", fmt.Sprintf("N%d", i+2), lecture.jsonobj["capacity"])
-		if lecture.assignedInstructor != nil {
-			f.SetCellValue("lectures", fmt.Sprintf("K%d", i+2), lecture.assignedInstructor.jsonobj["_id"])
-		}
-		if lecture.assignedRoom != nil {
-			f.SetCellValue("lectures", fmt.Sprintf("J%d", i+2), lecture.assignedRoom.jsonobj["_id"].(string))
-			f.SetCellValue("lectures", fmt.Sprintf("G%d", i+2), lecture.assignedRoom.jsonobj["capacity"])
-		}
-		if lecture.assignedTimeslot != nil {
-			ts := lecture.assignedTimeslot
-			f.SetCellValue("lectures", fmt.Sprintf("H%d", i+2), ts.data.days)
-			start := timeToString(ts.data.time)
-			end := timeToString(ts.data.time + ts.data.length)
-			f.SetCellValue("lectures", fmt.Sprintf("I%d", i+2), fmt.Sprintf("%s-%s", start, end))
+		for dep, ok := range lecture.course.departments {
+			if !ok {
+				continue
+			}
+			f := files[dep]
+			f.SetCellValue("lectures", fmt.Sprintf("A%d", i+2), lecture.coursejsonobj["_id"])
+			f.SetCellValue("lectures", fmt.Sprintf("B%d", i+2), lecture.jsonobj["section"])
+			f.SetCellValue("lectures", fmt.Sprintf("C%d", i+2), lecture.coursejsonobj["title"])
+			f.SetCellValue("lectures", fmt.Sprintf("D%d", i+2), lecture.coursejsonobj["contacthours(lec/stu)"])
+			f.SetCellValue("lectures", fmt.Sprintf("E%d", i+2), lecture.coursejsonobj["contacthours(lab/rec)"])
+			f.SetCellValue("lectures", fmt.Sprintf("F%d", i+2), lecture.coursejsonobj["credits"])
+			f.SetCellValue("lectures", fmt.Sprintf("N%d", i+2), lecture.jsonobj["capacity"])
+			if lecture.assignedInstructor != nil {
+				f.SetCellValue("lectures", fmt.Sprintf("K%d", i+2), lecture.assignedInstructor.jsonobj["_id"])
+			}
+			if lecture.assignedRoom != nil {
+				f.SetCellValue("lectures", fmt.Sprintf("J%d", i+2), lecture.assignedRoom.jsonobj["_id"].(string))
+				f.SetCellValue("lectures", fmt.Sprintf("G%d", i+2), lecture.assignedRoom.jsonobj["capacity"])
+			}
+			if lecture.assignedTimeslot != nil {
+				ts := lecture.assignedTimeslot
+				f.SetCellValue("lectures", fmt.Sprintf("H%d", i+2), ts.data.days)
+				start := timeToString(ts.data.time)
+				end := timeToString(ts.data.time + ts.data.length)
+				f.SetCellValue("lectures", fmt.Sprintf("I%d", i+2), fmt.Sprintf("%s-%s", start, end))
+			}
 		}
 	}
-	// Set active sheet of the workbook.
-	f.SetActiveSheet(index)
-	// Save xlsx file by the given path.
-	return f
+
+	for _, dep := range state.departments {
+		json := map[string]interface{}{}
+		json["_id"] = dep.jsonobj["_id"]
+		buffer, _ := files[dep].WriteToBuffer()
+		json["blob"] = buffer.Bytes()
+
+		DBPut("timetables", json["_id"].(string), json)
+	}
 }

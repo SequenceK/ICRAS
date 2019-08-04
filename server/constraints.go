@@ -278,6 +278,17 @@ func (constraints *constraints) checkTimeslot(timeslot *timeslot) bool {
 	return final
 }
 
+func (constraints *constraints) init(jsonobj map[string]interface{}) {
+	constraintsjson, ok := jsonobj["constraints"].([]interface{})
+
+	if ok {
+		for _, cobj := range constraintsjson {
+			jsonobj := cobj.(map[string]interface{})
+			constraints.add(jsonobj)
+		}
+	}
+}
+
 func (state *state) generateConstraints() {
 	for _, lecture := range state.lectures {
 		constraintsjson, ok := lecture.jsonobj["constraints"].([]interface{})

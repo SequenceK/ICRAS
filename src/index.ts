@@ -1,5 +1,5 @@
 import 'construct-ui/lib/index.css'
-import m from 'mithril';
+import m, { Vnode } from 'mithril';
 import {
   Button,
   Icons,
@@ -15,6 +15,8 @@ import {
 import { Properties as Properties, pstate } from './type_components';
 import { DB, AppToaster, OverlayWindow, Dept, getCookie, eraseCookie } from './util';
 import { TimetableBody } from './timetable';
+import "jsoneditor/dist/jsoneditor.min.css";
+import * as JSE from 'jsoneditor/dist/jsoneditor.min.js';
 import readme from './readme.md';
 
 let QList = SelectList.ofType<string>();
@@ -112,8 +114,12 @@ class Profile {
   item: any;
   creationOverlay : boolean;
   newid : string;
+  addoverlay: boolean;
 
   view(vnode: any) {
+    if(!Dept.isLoggedIn || !Dept.types ||  !Dept.constraints) {
+      return "";
+    }
     const style = {
       position: 'absolute',
       top: 0,
@@ -174,6 +180,8 @@ class Profile {
     return m(".profile",[
       m(".profile-top", [
         m(Configurator, {profile: this}),
+        m(Button, {label: "Add", onclick: ()=>this.openadd(), size: "xl"}),
+        m(Button, {label: "Remove", onclick: ()=>this.remove(), size: "xl"}),
         m(Button, {label: "Create", onclick: ()=>this.opencreate(), size: "xl"}),
         m(Button, {label: "Delete", onclick: ()=>this.delete(), size: "xl"}),
         m(Button, {label: "Save", onclick: ()=>this.save(), class: "profile-top-right", size: "xl"})
@@ -183,6 +191,13 @@ class Profile {
         isOpen: this.creationOverlay,
         content
       }),
+      m(OverlayWindow, {isOpen: this.addoverlay, content: [
+        m("h3", "Add"),
+        m(Selector, {type: this.type, db: this.db, onselect: (id)=>{
+          this.add(id)
+        }}),
+        m(Button, {label:"cancel", onclick:()=>{this.addoverlay = false;}})
+      ]})
     ])
   }
 
@@ -209,13 +224,35 @@ class Profile {
     }
   }
 
+  openadd() {
+    this.addoverlay = true;
+  }
   opencreate() {
     this.creationOverlay = true;
   }
 
+
+  remove() {
+    if(this.item) {
+      Dept.remove(this.db, this.id, ()=>{
+        this.reset()
+        m.route.set("icras/tab/"+this.type)
+        m.redraw();
+      })
+    }
+  }
+  add(id) {
+    Dept.create(this.db, id, ()=>{
+      this.addoverlay = false;
+      m.route.set("icras/tab/"+this.type+"/"+id)
+      m.redraw();
+    })
+     
+  }
   createNew() {
     Dept.create(this.db, this.newid, ()=>{
       this.creationOverlay = false;
+      m.route.set("icras/tab/"+this.type+"/"+this.newid)
       m.redraw();
     })
      
@@ -223,8 +260,7 @@ class Profile {
   
   delete() {
     if(this.item){
-      this.item["_deleted"] = true;
-      Dept.delete(this.db, this.id, ()=>{
+      Dept.delete(this.db, this.item, ()=>{
         this.reset()
         m.route.set("icras/tab/"+this.type)
         m.redraw();
@@ -250,6 +286,7 @@ const tabs = [
   new Tab('Courses',Profile, {type:"course", db: "courses", href: "icras/tab/course/"}),
   new Tab('Rooms', Profile, {type:"room", db: "rooms", href: "icras/tab/room/"}),
   new Tab('Timetable', Profile, {href: "icras/timetable/"}),
+  new Tab('Configure', Profile, {href: "icras/configure/"}),
   new Tab('Logout', Profile, {href: "icras/logout"})
 ];
 
@@ -426,6 +463,41 @@ class SaveDialog {
   }
 }
 
+
+
+class ConfigureParams {
+  typesEditor : any;
+
+  oncreate(vnode:any) {
+    if(!Dept.types) {
+      return ""
+    }
+    this.typesEditor = new JSE.default(vnode.dom, {mode: 'text'})
+    this.typesEditor.set(Dept.types)
+  }
+  onupdate(vnode) {
+    if(!this.typesEditor && Dept.types) {
+      this.typesEditor = new JSE.default(vnode.dom, {mode: 'text'})
+      this.typesEditor.set(Dept.types)
+    }
+  }
+  view(vnode : any) {
+    if(!Dept.types) {
+      return ""
+    }
+    return m(".profile",[
+      m(".profile-top", [
+        m(Button, {label:"Save", size:"xl", onclick: ()=>this.save()})
+      ])
+    ])
+  }
+
+  save() {
+    Dept.types = this.typesEditor.get()
+    DB.putitem("icras", Dept.types);
+  }
+}
+
 class App {
   
   view(vnode: any) {
@@ -442,6 +514,9 @@ class App {
       case "timetable":
         body = m(TimetableBody)
         break
+      case "configure":
+        body = m(ConfigureParams)
+        break
       case "logout":
         eraseCookie("department")
         Dept.isLoggedIn = false;
@@ -455,7 +530,7 @@ class App {
       clearOnEscapeKey: true,
       position: "top-end"
     }),
-    m(OverlayWindow, {isOpen: !Dept.isLoggedIn, content:m(Login)}),
+    m(OverlayWindow, {isOpen: !Dept.isLoggedIn && page != "home", content:m(Login)}),
     //m(SaveDialog)
   ]);
   }

@@ -106,7 +106,9 @@ func (state *state) resolveLecture(lecture *lecture) bool {
 		lecture.resolved = true
 		return true
 	}
-	if titr == 0 || ritr == 0 || iitr == 0 {
+	if titr > 0 && ritr == 0 {
+		state.write(fmt.Sprintf("<font color=\"red\">No sutiable room for lecture %v_%v</font><br>", lecture.coursejsonobj["_id"], lecture.jsonobj["section"]))
+	} else if titr == 0 || ritr == 0 || iitr == 0 {
 		state.write(fmt.Sprintf("<font color=\"red\">No sutiable timeslot for lecture %v_%v</font><br>", lecture.coursejsonobj["_id"], lecture.jsonobj["section"]))
 	}
 	lecture.resetInstructors()

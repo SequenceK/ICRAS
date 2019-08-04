@@ -6,6 +6,7 @@
                 "time",
                 "string",
                 "int",
+                "bool",
                 "instructor",
                 "course",
                 "lecture",
@@ -40,6 +41,17 @@
     },
 
     "for": {
+        "instructor": {
+            "on":[
+                "time"
+            ]
+        },
+        "instructs": {
+            "on":[
+                "time",
+                "lecture"
+            ]
+        },
         "course": {
             "on":[
                 "time",

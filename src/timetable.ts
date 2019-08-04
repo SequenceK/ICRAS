@@ -5,7 +5,7 @@ import { saveAs } from 'file-saver';
 
 
 export class TimetableBody {
-  log: any[] = [];
+  log: string = "";
 
   view(vnode: any) {
 
@@ -24,37 +24,37 @@ export class TimetableBody {
       ".profile",
       [
         m(".profile-top", [b, d]),
-        m(".console-like", this.log.map((str)=>{
-            return m.trust(str)
-        }))
+        m(".console-like", m.trust(this.log))
       ]
     )
   }
 
   build() {
-    this.log = [];
+    this.log = "";
     var ws = new WebSocket("ws://" + location.host + "/icras/build")
     ws.onopen = () => {
       ws.send(Dept.obj["_id"])
     }
 
     ws.onmessage = (msg) => {
-      if (typeof msg.data == "object") {
-        saveAs(msg.data, "timetable.xlsx")
-      }
-      else {
-        this.log.push(msg.data);
+        this.log += msg.data;
         m.redraw();
-      }
     }
   }
 
   download() {
     m.request({
-      url: "icras/download/"+Dept.obj["_id"],
+      url: "db/timetables/"+Dept.obj["_id"],
       method: "GET"
     }).then((data)=>{
-      
+      var byteCharacters = atob(data["blob"]);
+      var byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      var byteArray = new Uint8Array(byteNumbers);
+      var myblob = new Blob([byteArray]);
+      saveAs(myblob, "timetable.xlsx")
     }).catch((error)=>{
       console.error(error);
     })

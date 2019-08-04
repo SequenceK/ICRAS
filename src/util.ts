@@ -1,6 +1,5 @@
 import m from 'mithril';
 import { Toaster, Icons, Overlay, Card } from 'construct-ui';
-import { string } from 'prop-types';
 
 export interface IListLabel {
     _id : string;
@@ -133,6 +132,8 @@ export class DBUtil {
 class Department {
     isLoggedIn = false;
     obj : any = {};
+    types : any;
+    constraints: any;
 
     instructors = []
     courses = []
@@ -153,8 +154,21 @@ class Department {
             this.courses = this.obj["db"]["courses"]
             this.rooms = this.obj["db"]["rooms"]
             setCookie("department", depID, 1);
-            if(callback)
-                callback();
+
+            if(!this.types) {
+                DB.getItem("icras", "types", (types)=>{
+                    this.types = types;
+                    if(!this.constraints) {
+                        DB.getItem("icras", "constraints", (constraints)=>{
+                            this.constraints = constraints;
+                            if(callback)
+                                callback();
+                        })
+                    }
+                })
+            }
+
+            
         })
     }
 
@@ -172,15 +186,16 @@ class Department {
         objdb.push(id);
 
         DB.putitem("departments", this.obj, ()=>{
-            DB.putitem(db, {_id: id}, ()=>{
+            var obj = {_id: id}
+            obj["_"+this.obj["_id"]] = true;
+            DB.putitem(db, obj, ()=>{
                 if(callback)
-                callback();
+                    callback();
             })
         })
         
     }
-
-    delete(db:string, id:string, callback = null) {
+    remove(db:string, id:string, callback = null) {
         var objdb = this.obj["db"][db] as string[]
         for(var i = 0; i < objdb.length; i++){
             if(id==objdb[i]) {
@@ -192,6 +207,23 @@ class Department {
         DB.putitem("departments", this.obj, ()=>{
                 if(callback)
                  callback();
+        })
+    }
+    delete(db:string, item:any, callback = null) {
+        item["_deleted"] = true;
+        var objdb = this.obj["db"][db] as string[]
+        for(var i = 0; i < objdb.length; i++){
+            if(item["_id"]==objdb[i]) {
+                objdb.splice(i, 1)
+                i--;
+            }
+        }
+        
+        DB.putitem("departments", this.obj, ()=>{
+            DB.putitem(db, item, ()=>{
+                if(callback)
+                callback();
+            })      
         })
     }
 }

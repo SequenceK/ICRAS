@@ -11,9 +11,12 @@
         "lab": "bool",
         "smart": "bool",
         "media": "bool"
+        
     },
     "course": {
         "title": "string",
+        "contacthours(lec/stu)": "int",
+        "contacthours(lab/rec)": "int",
         "credits": "int",
         "lectures": "lecture[]"
     },
@@ -21,8 +24,6 @@
         "section": "int",
         "days": "string",
         "minutes": "int",
-        "contacthours(lec/stu)": "int",
-        "contacthours(lab/rec)": "int",
         "capacity": "int"
     },
     "instructor": {

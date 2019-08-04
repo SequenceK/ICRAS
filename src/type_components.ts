@@ -32,14 +32,11 @@ import {
   PopoverMenu,
   MenuItem,
   Menu,
-  Checkbox
+  Checkbox,
+  QueryList
 } from "construct-ui";
 
-
-import types from "../types.json";
-import constraints from "../constraints.json";
-import { Divider } from 'semantic-ui-react';
-import { DB } from './util';
+import { DB, Dept } from './util';
 
 var type_map = {
   "instructor": "instructors",
@@ -48,8 +45,8 @@ var type_map = {
 }
 
 function isBaseType(type) {
-  for(var i in types["base_types"]) {
-    var btype = types.base_types[i]
+  for(var i in Dept.types["base_types"]) {
+    var btype = Dept.types.base_types[i]
     if(btype == type)
       return true;
   }
@@ -410,7 +407,7 @@ class Constraint {
     if(!this.selectedItem) {
       this.selectedItem = new ConstraintData();
     }
-    var onoptions = constraints.for[this.type].on;
+    var onoptions = Dept.constraints.for[this.type].on;
     if(!this.selectedItem.selectedOn) {
       this.selectedItem.selectedOn = onoptions[0];
     }
@@ -437,7 +434,7 @@ class Constraint {
           pointer = true;
         }
         else {
-          btype = types[parent][base];
+          btype = Dept.types[parent][base];
         }
       }
     }
@@ -445,7 +442,7 @@ class Constraint {
     this.selectedItem.type = btype;
     if(pointer)
       this.selectedItem.type = "_id";
-    var actions = this.createActionsMenu(constraints.actions, btype);
+    var actions = this.createActionsMenu(Dept.constraints.actions, btype);
     
 
     var onbutton = m(Button, {
@@ -454,7 +451,7 @@ class Constraint {
       iconRight: Icons.CHEVRON_DOWN
     })
 
-    var buttonLabel = constraints.actions[this.selectedItem.selectedAction] && constraints.actions[this.selectedItem.selectedAction].label
+    var buttonLabel = Dept.constraints.actions[this.selectedItem.selectedAction] && Dept.constraints.actions[this.selectedItem.selectedAction].label
     var actionbutton = m(Button, {
       //basic: true,
       label: buttonLabel,
@@ -463,7 +460,7 @@ class Constraint {
 
     var inputComponents = [];
     if(this.selectedItem.selectedAction && this.selectedItem.selectedOn) {
-      var actionobj = constraints.actions[this.selectedItem.selectedAction];
+      var actionobj = Dept.constraints.actions[this.selectedItem.selectedAction];
       var varsnum = actionobj.varsnum;
       this.selectedItem.varsnum = actionobj.varsnum;
       for(var i = 0; i < varsnum; i++) {
@@ -478,7 +475,7 @@ class Constraint {
         trigger: onbutton,
         content: onMenu,
         style: "constraint-button",
-        position: "auto",
+        position: "top",
         closeOnContentClick: true
       }),
       m(PopoverMenu , {
@@ -496,10 +493,14 @@ class Constraint {
     this.selectedItem.selectedOn = e.currentTarget.innerText
     pstate.changed = true;
   }
+  setOnstr(item) {
+    this.selectedItem.selectedOn = item
+    pstate.changed = true;
+  }
 
   setAction(e) {
-    for(var action in constraints.actions) {
-      var a = constraints.actions[action]
+    for(var action in Dept.constraints.actions) {
+      var a = Dept.constraints.actions[action]
       if(e.currentTarget.innerText == a.label){
         this.selectedItem.selectedAction = action;
         pstate.changed = true;
@@ -508,6 +509,7 @@ class Constraint {
   }
 
   createOnMenu(onoptions) {
+    let QList = QueryList.ofType<string>();
     var menu = []
     for(var i in onoptions) {
       var type = onoptions[i];
@@ -516,24 +518,22 @@ class Constraint {
           label: "time",
           onclick: (e)=>this.setOn(e)
         }))
-      } else if(types[type]) {
-        var submenu = []
-        submenu.push(m(MenuItem, {
-          label: type+"._id",
-          onclick: (e)=>this.setOn(e)
-        }))
-        for(var p in types[type]) {
-          if(isBaseType(types[type][p])) {
-            submenu.push(m(MenuItem, {
-              label: type+"."+p,
-              onclick: (e)=>this.setOn(e)
-            }))
+      } else if(Dept.types[type]) {
+        //type composition
+
+        var submenu : string[] = []
+        submenu.push(type+"._id",)
+        for(var p in Dept.types[type]) {
+          if(isBaseType(Dept.types[type][p])) {
+            submenu.push(type+"."+p)
           }
         }
 
         menu.push(m(MenuItem, {
           label: type,
-          submenu: submenu
+          submenu: m(QList, {filterable: false, items:submenu, itemRender:(item)=>m(ListItem, {label: item}), onSelect: (item)=>{
+            this.setOnstr(item);
+          }})
         }))
       }
     }
@@ -620,12 +620,12 @@ export class Properties {
     this.selectedItem = vnode.attrs.selectedItem;
     this.selectedItem.type = type;
     this.propForm = [];
-    if(types[type]) {
-      this.generateView(types[type]);
+    if(Dept.types[type]) {
+      this.generateView(Dept.types[type]);
     }
 
     var constraintsElem : any = []
-    if(constraints.for[type]) {
+    if(Dept.constraints.for[type]) {
       constraintsElem = m("fieldset.properties", [m("legend.properties-legend", "Constraints"), m(Constraints, {selectedItem: this.selectedItem, type: type})])
     }
     return m(".profile-form", {}, [

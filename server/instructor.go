@@ -6,8 +6,10 @@ type instructor struct {
 	teaches               []string
 	assignedLectures      map[*lecture]bool
 	lectureCandidates     map[string][]*lecture
+	courseConstraints     map[string]*constraints
 	lectureAssigmentLimit map[string]int
 	lectureAssigmentCount map[string]int
+	constraints           *constraints
 }
 
 func (instructor *instructor) init(jsonobj map[string]interface{}) {
@@ -18,11 +20,17 @@ func (instructor *instructor) init(jsonobj map[string]interface{}) {
 	instructor.lectureCandidates = map[string][]*lecture{}
 	instructor.lectureAssigmentLimit = map[string]int{}
 	instructor.lectureAssigmentCount = map[string]int{}
+	instructor.constraints = &constraints{}
+	instructor.constraints.init(jsonobj)
+
 	instructor.teaches = make([]string, len(teachesList))
 	for i, id := range teachesList {
 		obj := id.(map[string]interface{})
 		course := obj["course"].(string)
 		max := int(obj["maxlectures"].(float64))
+
+		instructor.courseConstraints[course] = &constraints{}
+		instructor.courseConstraints[course].init(obj)
 
 		instructor.teaches[i] = course
 		instructor.lectureAssigmentLimit[course] = max
@@ -74,6 +82,13 @@ func (instructor *instructor) validLecture(lecture *lecture) bool {
 				timeconflict = true
 				break
 			}
+		}
+	}
+
+	if !timeconflict {
+		timeconflict = timeconflict || !instructor.constraints.checkTimeslot(lecture.assignedTimeslot)
+		for _, cns := range instructor.courseConstraints {
+			timeconflict = timeconflict || !cns.checkTimeslot(lecture.assignedTimeslot)
 		}
 	}
 	if instructor.lectureAssigmentCount[lecture.course.name] == instructor.lectureAssigmentLimit[lecture.course.name] {
