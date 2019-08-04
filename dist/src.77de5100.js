@@ -1569,6 +1569,7 @@ var Classes = {
   MENU: 'cui-menu',
   MENU_ITEM: 'cui-menu-item',
   MENU_DIVIDER: 'cui-menu-divider',
+  MENU_HEADING: 'cui-menu-heading',
   OVERLAY: 'cui-overlay',
   OVERLAY_CONTENT: 'cui-overlay-content',
   OVERLAY_BACKDROP: 'cui-overlay-backdrop',
@@ -1595,7 +1596,9 @@ var Classes = {
   SELECT_ARROW: 'cui-select-arrow',
   SELECT_LIST: 'cui-select-list',
   SPINNER: 'cui-spinner',
+  SPINNER_CONTENT: 'cui-spinner-content',
   SPINNER_ICON: 'cui-spinner-icon',
+  SPINNER_MESSAGE: 'cui-spinner-message',
   SPINNER_FILL: 'cui-spinner-fill',
   SPINNER_ACTIVE: 'cui-spinner-active',
   SPINNER_BG: 'cui-spinner-bg',
@@ -3648,12 +3651,14 @@ function () {
         className = attrs.class,
         fill = attrs.fill,
         intent = attrs.intent,
+        message = attrs.message,
         size = attrs.size,
-        otherAttrs = tslib_1.__rest(attrs, ["active", "background", "class", "fill", "intent", "size"]);
+        otherAttrs = tslib_1.__rest(attrs, ["active", "background", "class", "fill", "intent", "message", "size"]);
 
+    var content = [(0, _mithril.default)("." + _shared.Classes.SPINNER_CONTENT, [(0, _mithril.default)("." + _shared.Classes.SPINNER_ICON), message && (0, _mithril.default)("." + _shared.Classes.SPINNER_MESSAGE, message)])];
     return (0, _mithril.default)('', tslib_1.__assign({}, otherAttrs, {
       class: (0, _classnames.default)(_shared.Classes.SPINNER, active && _shared.Classes.SPINNER_ACTIVE, background && _shared.Classes.SPINNER_BG, fill && _shared.Classes.SPINNER_FILL, intent && "cui-" + attrs.intent, size && "cui-" + attrs.size, className)
-    }));
+    }), content);
   };
 
   return Spinner;
@@ -10237,12 +10242,16 @@ function (_super) {
         controlGroupAttrs = _a.controlGroupAttrs,
         contentLeft = _a.contentLeft,
         contentRight = _a.contentRight,
+        defaultActiveIndex = _a.defaultActiveIndex,
+        defaultQuery = _a.defaultQuery,
         emptyContent = _a.emptyContent,
         eventCallbacks = _a.eventCallbacks,
         filterable = _a.filterable,
         initialContent = _a.initialContent,
         inputAttrs = _a.inputAttrs,
         itemPredicate = _a.itemPredicate,
+        itemListPredicate = _a.itemListPredicate,
+        itemListRender = _a.itemListRender,
         itemRender = _a.itemRender,
         items = _a.items,
         listAttrs = _a.listAttrs,
@@ -10250,7 +10259,7 @@ function (_super) {
         onSelect = _a.onSelect,
         query = _a.query,
         onQueryChange = _a.onQueryChange,
-        htmlAttrs = tslib_1.__rest(_a, ["activeIndex", "cacheItems", "checkmark", "class", "controlGroupAttrs", "contentLeft", "contentRight", "emptyContent", "eventCallbacks", "filterable", "initialContent", "inputAttrs", "itemPredicate", "itemRender", "items", "listAttrs", "onActiveItemChange", "onSelect", "query", "onQueryChange"]);
+        htmlAttrs = tslib_1.__rest(_a, ["activeIndex", "cacheItems", "checkmark", "class", "controlGroupAttrs", "contentLeft", "contentRight", "defaultActiveIndex", "defaultQuery", "emptyContent", "eventCallbacks", "filterable", "initialContent", "inputAttrs", "itemPredicate", "itemListPredicate", "itemListRender", "itemRender", "items", "listAttrs", "onActiveItemChange", "onSelect", "query", "onQueryChange"]);
 
     var classes = (0, _classnames.default)(_shared.Classes.QUERY_LIST, checkmark && _shared.Classes.QUERY_LIST_CHECKMARK, className);
     (0, _shared.safeCall)(eventCallbacks, {
@@ -10530,8 +10539,7 @@ function (_super) {
   SelectList.prototype.view = function () {
     var _a = this.attrs,
         className = _a.class,
-        _b = _a.popoverAttrs,
-        popoverAttrs = _b === void 0 ? {} : _b,
+        popoverAttrs = _a.popoverAttrs,
         header = _a.header,
         footer = _a.footer,
         trigger = _a.trigger,
@@ -10611,12 +10619,18 @@ function (_super) {
     _this.activeIndex = 0;
     _this.isOpen = false;
 
-    _this.renderItem = function (item) {
+    _this.renderItem = function (item, index) {
       var label = typeof item === 'object' ? item.label : item;
       var value = typeof item === 'object' ? item.value : item;
       var attrs = typeof item === 'object' ? item : {};
+      var isSelected = _this.selectedValue === value;
+
+      if (_this.attrs.itemRender) {
+        return _this.attrs.itemRender(item, isSelected, index);
+      }
+
       return (0, _mithril.default)(_list.ListItem, tslib_1.__assign({}, attrs, {
-        selected: _this.selectedValue === value,
+        selected: isSelected,
         label: label
       }));
     };
@@ -11539,12 +11553,17 @@ function (_super) {
     _this.handleOnOpened = function (content) {
       var _a = _this.attrs,
           type = _a.type,
+          hightlightOnOpen = _a.hightlightOnOpen,
           onOpened = _a.onOpened;
       var inputEl = content.querySelector(type);
       _this.value = _this.attrs.value || '';
-      setTimeout(function () {
-        return inputEl.select();
-      }, HIGHLIGHT_TIMEOUT);
+
+      if (hightlightOnOpen) {
+        setTimeout(function () {
+          return inputEl.select();
+        }, HIGHLIGHT_TIMEOUT);
+      }
+
       (0, _shared.safeCall)(onOpened);
     };
 
@@ -12036,7 +12055,48 @@ function () {
 }();
 
 exports.MenuItem = MenuItem;
-},{"tslib":"../node_modules/tslib/tslib.es6.js","mithril":"../node_modules/mithril/mithril.js","classnames":"../node_modules/classnames/index.js","../../_shared":"../node_modules/construct-ui/lib/esm/_shared/index.js","../button":"../node_modules/construct-ui/lib/esm/components/button/index.js","../popover-menu":"../node_modules/construct-ui/lib/esm/components/popover-menu/index.js","../icon":"../node_modules/construct-ui/lib/esm/components/icon/index.js"}],"../node_modules/construct-ui/lib/esm/components/menu/index.js":[function(require,module,exports) {
+},{"tslib":"../node_modules/tslib/tslib.es6.js","mithril":"../node_modules/mithril/mithril.js","classnames":"../node_modules/classnames/index.js","../../_shared":"../node_modules/construct-ui/lib/esm/_shared/index.js","../button":"../node_modules/construct-ui/lib/esm/components/button/index.js","../popover-menu":"../node_modules/construct-ui/lib/esm/components/popover-menu/index.js","../icon":"../node_modules/construct-ui/lib/esm/components/icon/index.js"}],"../node_modules/construct-ui/lib/esm/components/menu/MenuHeading.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MenuHeading = void 0;
+
+var tslib_1 = _interopRequireWildcard(require("tslib"));
+
+var _mithril = _interopRequireDefault(require("mithril"));
+
+var _classnames = _interopRequireDefault(require("classnames"));
+
+var _shared = require("../../_shared");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+var MenuHeading =
+/** @class */
+function () {
+  function MenuHeading() {}
+
+  MenuHeading.prototype.view = function (_a) {
+    var attrs = _a.attrs,
+        children = _a.children;
+
+    var className = attrs.class,
+        htmlAttrs = tslib_1.__rest(attrs, ["class"]);
+
+    return (0, _mithril.default)('', tslib_1.__assign({
+      class: (0, _classnames.default)(_shared.Classes.MENU_HEADING, className)
+    }, htmlAttrs), children);
+  };
+
+  return MenuHeading;
+}();
+
+exports.MenuHeading = MenuHeading;
+},{"tslib":"../node_modules/tslib/tslib.es6.js","mithril":"../node_modules/mithril/mithril.js","classnames":"../node_modules/classnames/index.js","../../_shared":"../node_modules/construct-ui/lib/esm/_shared/index.js"}],"../node_modules/construct-ui/lib/esm/components/menu/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -12078,7 +12138,19 @@ Object.keys(_MenuItem).forEach(function (key) {
     }
   });
 });
-},{"./Menu":"../node_modules/construct-ui/lib/esm/components/menu/Menu.js","./MenuDivider":"../node_modules/construct-ui/lib/esm/components/menu/MenuDivider.js","./MenuItem":"../node_modules/construct-ui/lib/esm/components/menu/MenuItem.js"}],"../node_modules/construct-ui/lib/esm/components/radio/Radio.js":[function(require,module,exports) {
+
+var _MenuHeading = require("./MenuHeading");
+
+Object.keys(_MenuHeading).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function () {
+      return _MenuHeading[key];
+    }
+  });
+});
+},{"./Menu":"../node_modules/construct-ui/lib/esm/components/menu/Menu.js","./MenuDivider":"../node_modules/construct-ui/lib/esm/components/menu/MenuDivider.js","./MenuItem":"../node_modules/construct-ui/lib/esm/components/menu/MenuItem.js","./MenuHeading":"../node_modules/construct-ui/lib/esm/components/menu/MenuHeading.js"}],"../node_modules/construct-ui/lib/esm/components/radio/Radio.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -13723,7 +13795,7 @@ module.hot.accept(reloadCSS);
 },{"_css_loader":"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../node_modules/flatpickr/dist/flatpickr.js":[function(require,module,exports) {
 var define;
 var global = arguments[3];
-/* flatpickr v4.6.1, @license MIT */
+/* flatpickr v4.6.2, @license MIT */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() : typeof define === 'function' && define.amd ? define(factory) : (global = global || self, global.flatpickr = factory());
 })(this, function () {
@@ -13796,6 +13868,7 @@ var global = arguments[3];
     locale: "default",
     minuteIncrement: 5,
     mode: "single",
+    monthSelectorType: "dropdown",
     nextArrow: "<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 17 17'><g></g><path d='M13.207 8.472l-7.854 7.854-0.707-0.707 7.146-7.146-7.146-7.148 0.707-0.707 7.854 7.854z' /></svg>",
     noCalendar: false,
     now: new Date(),
@@ -13857,6 +13930,8 @@ var global = arguments[3];
     toggleTitle: "Click to toggle",
     amPM: ["AM", "PM"],
     yearAriaLabel: "Year",
+    hourAriaLabel: "Hour",
+    minuteAriaLabel: "Minute",
     time_24hr: false
   };
 
@@ -14904,7 +14979,7 @@ var global = arguments[3];
     }
 
     function buildMonthSwitch() {
-      if (self.config.showMonths > 1) return;
+      if (self.config.showMonths > 1 || self.config.monthSelectorType !== "dropdown") return;
 
       var shouldBuildMonth = function (month) {
         if (self.config.minDate !== undefined && self.currentYear === self.config.minDate.getFullYear() && month < self.config.minDate.getMonth()) {
@@ -14921,7 +14996,7 @@ var global = arguments[3];
         if (!shouldBuildMonth(i)) continue;
         var month = createElement("option", "flatpickr-monthDropdown-month");
         month.value = new Date(self.currentYear, i).getMonth().toString();
-        month.textContent = monthToStr(i, false, self.l10n);
+        month.textContent = monthToStr(i, self.config.shorthandCurrentMonth, self.l10n);
         month.tabIndex = -1;
 
         if (self.currentMonth === i) {
@@ -14937,7 +15012,7 @@ var global = arguments[3];
       var monthNavFragment = window.document.createDocumentFragment();
       var monthElement;
 
-      if (self.config.showMonths > 1) {
+      if (self.config.showMonths > 1 || self.config.monthSelectorType === "static") {
         monthElement = createElement("span", "cur-month");
       } else {
         self.monthsDropdownContainer = createElement("select", "flatpickr-monthDropdown-months");
@@ -15039,9 +15114,13 @@ var global = arguments[3];
       self.timeContainer = createElement("div", "flatpickr-time");
       self.timeContainer.tabIndex = -1;
       var separator = createElement("span", "flatpickr-time-separator", ":");
-      var hourInput = createNumberInput("flatpickr-hour");
+      var hourInput = createNumberInput("flatpickr-hour", {
+        "aria-label": self.l10n.hourAriaLabel
+      });
       self.hourElement = hourInput.getElementsByTagName("input")[0];
-      var minuteInput = createNumberInput("flatpickr-minute");
+      var minuteInput = createNumberInput("flatpickr-minute", {
+        "aria-label": self.l10n.minuteAriaLabel
+      });
       self.minuteElement = minuteInput.getElementsByTagName("input")[0];
       self.hourElement.tabIndex = self.minuteElement.tabIndex = -1;
       self.hourElement.value = pad(self.latestSelectedDateObj ? self.latestSelectedDateObj.getHours() : self.config.time_24hr ? self.config.defaultHour : military2ampm(self.config.defaultHour));
@@ -16075,7 +16154,7 @@ var global = arguments[3];
         var d = new Date(self.currentYear, self.currentMonth, 1);
         d.setMonth(self.currentMonth + i);
 
-        if (self.config.showMonths > 1) {
+        if (self.config.showMonths > 1 || self.config.monthSelectorType === "static") {
           self.monthElements[i].textContent = monthToStr(d.getMonth(), self.config.shorthandCurrentMonth, self.l10n) + " ";
         } else {
           self.monthsDropdownContainer.value = d.getMonth().toString();
@@ -16277,8 +16356,9 @@ module.exports = {
     "media": "bool"
   },
   "course": {
-    "lectures": "lecture[]",
-    "title": "string"
+    "title": "string",
+    "credits": "int",
+    "lectures": "lecture[]"
   },
   "lecture": {
     "section": "int",
@@ -16355,6 +16435,44 @@ var mithril_1 = __importDefault(require("mithril"));
 
 var construct_ui_1 = require("construct-ui");
 
+function setCookie(name, value, days) {
+  var expires = "";
+
+  if (days) {
+    var date = new Date();
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+    expires = "; expires=" + date.toUTCString();
+  }
+
+  document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+exports.setCookie = setCookie;
+
+function getCookie(name) {
+  var nameEQ = name + "=";
+  var ca = document.cookie.split(';');
+
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1, c.length);
+    }
+
+    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+  }
+
+  return null;
+}
+
+exports.getCookie = getCookie;
+
+function eraseCookie(name) {
+  document.cookie = name + '=; Max-Age=-99999999;';
+}
+
+exports.eraseCookie = eraseCookie;
 exports.AppToaster = new construct_ui_1.Toaster();
 
 var DBUtil =
@@ -16378,6 +16496,7 @@ function () {
     value: function loadList(db) {
       var _this = this;
 
+      var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       var url = "/db/all/" + db;
 
       if (this.loading[url]) {
@@ -16390,6 +16509,7 @@ function () {
       }).then(function (result) {
         _this.lists[db] = result;
         _this.loading[url] = false;
+        if (callback) callback(_this.lists[db]);
         mithril_1.default.redraw();
       }).catch(function (error) {
         console.error(error);
@@ -16400,17 +16520,22 @@ function () {
   }, {
     key: "getList",
     value: function getList(db) {
-      if (!this.lists[db]) {
-        this.loadList(db);
-      }
+      var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-      return this.lists[db];
+      if (!this.lists[db]) {
+        this.loadList(db, callback);
+      } else if (callback) {
+        callback(this.lists[db]);
+      } else {
+        return this.lists[db];
+      }
     }
   }, {
     key: "loadItem",
     value: function loadItem(db, id) {
       var _this2 = this;
 
+      var callback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
       var url = "/db/" + db + "/" + id;
 
       if (this.loading[url]) {
@@ -16427,6 +16552,7 @@ function () {
 
         _this2.items[db][id] = result;
         _this2.loading[url] = false;
+        if (callback) callback(_this2.items[db][id]);
         mithril_1.default.redraw();
       }).catch(function (error) {
         console.error(error);
@@ -16437,6 +16563,8 @@ function () {
   }, {
     key: "getItem",
     value: function getItem(db, id) {
+      var callback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
       if (id == null) {
         return null;
       }
@@ -16446,26 +16574,22 @@ function () {
       }
 
       if (!this.items[db][id]) {
-        this.loadItem(db, id);
-      }
-
-      return this.items[db][id];
+        this.loadItem(db, id, callback);
+      } else if (callback) callback(this.items[db][id]);else return this.items[db][id];
     }
   }, {
     key: "putitem",
-    value: function putitem(db, item, callback) {
-      var _this3 = this;
-
+    value: function putitem(db, item) {
+      var callback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
       var url = "/db/" + db + "/" + item._id;
       mithril_1.default.request({
         method: "PUT",
         url: url,
         data: item
-      }).then(function (done) {
-        callback();
+      }).then(function (obj) {
+        if (callback) callback();
       }).catch(function (error) {
         console.error(error);
-        _this3.loading[url] = false;
       });
     }
   }]);
@@ -16474,7 +16598,127 @@ function () {
 }();
 
 exports.DBUtil = DBUtil;
+
+var Department =
+/*#__PURE__*/
+function () {
+  function Department() {
+    _classCallCheck(this, Department);
+
+    this.isLoggedIn = false;
+    this.obj = {};
+    this.instructors = [];
+    this.courses = [];
+    this.rooms = [];
+  }
+
+  _createClass(Department, [{
+    key: "login",
+    value: function login(depID) {
+      var _this3 = this;
+
+      var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      exports.DB.getItem("departments", depID, function (dep) {
+        _this3.obj = dep;
+        _this3.isLoggedIn = true;
+        if (!_this3.obj["db"]) _this3.obj["db"] = {};
+        if (!_this3.obj["db"]["instructors"]) _this3.obj["db"]["instructors"] = [];
+        if (!_this3.obj["db"]["courses"]) _this3.obj["db"]["courses"] = [];
+        if (!_this3.obj["db"]["rooms"]) _this3.obj["db"]["rooms"] = [];
+        _this3.instructors = _this3.obj["db"]["instructors"];
+        _this3.courses = _this3.obj["db"]["courses"];
+        _this3.rooms = _this3.obj["db"]["rooms"];
+        setCookie("department", depID, 1);
+        if (callback) callback();
+      });
+    }
+  }, {
+    key: "getlist",
+    value: function getlist(db) {
+      if (!this.obj["db"]) this.obj["db"] = {};
+      if (!this.obj["db"][db]) this.obj["db"][db] = [];
+      return this.obj["db"][db];
+    }
+  }, {
+    key: "create",
+    value: function create(db, id) {
+      var callback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+      var objdb = this.obj["db"][db];
+      var found = objdb.find(function (value, index, obj) {
+        return id == value;
+      });
+      if (found) return;
+      objdb.push(id);
+      exports.DB.putitem("departments", this.obj, function () {
+        exports.DB.putitem(db, {
+          _id: id
+        }, function () {
+          if (callback) callback();
+        });
+      });
+    }
+  }, {
+    key: "delete",
+    value: function _delete(db, id) {
+      var callback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+      var objdb = this.obj["db"][db];
+
+      for (var i = 0; i < objdb.length; i++) {
+        if (id == objdb[i]) {
+          objdb.splice(i, 1);
+          i--;
+        }
+      }
+
+      exports.DB.putitem("departments", this.obj, function () {
+        if (callback) callback();
+      });
+    }
+  }]);
+
+  return Department;
+}();
+
 exports.DB = new DBUtil();
+exports.Dept = new Department();
+
+var OverlayWindow =
+/*#__PURE__*/
+function () {
+  function OverlayWindow() {
+    _classCallCheck(this, OverlayWindow);
+  }
+
+  _createClass(OverlayWindow, [{
+    key: "view",
+    value: function view(vnode) {
+      var style = {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 100
+      };
+      var cardStyles = {
+        margin: '40px auto'
+      };
+      var content = mithril_1.default('', {
+        style: style
+      }, [mithril_1.default(construct_ui_1.Card, {
+        style: cardStyles
+      }, [vnode.attrs.content])]);
+      return mithril_1.default(construct_ui_1.Overlay, {
+        isOpen: vnode.attrs.isOpen,
+        content: content
+      });
+    }
+  }]);
+
+  return OverlayWindow;
+}();
+
+exports.OverlayWindow = OverlayWindow;
 },{"mithril":"../node_modules/mithril/mithril.js","construct-ui":"../node_modules/construct-ui/lib/esm/index.js"}],"type_components.ts":[function(require,module,exports) {
 "use strict";
 
@@ -16829,10 +17073,16 @@ function () {
       this.selectedItem = vnode.attrs.selectedItem;
       this.fid = vnode.attrs.fid;
       this.ftype = vnode.attrs.ftype;
+      var value = null;
+
+      if (this.selectedItem[this.fid]) {
+        value = this.selectedItem[this.fid];
+      }
+
       return mithril_1.default(construct_ui_1.Input, {
         id: this.fid,
         name: this.ftype,
-        value: this.selectedItem[this.fid],
+        value: value,
         onchange: function onchange(e) {
           _this7.selectedItem[_this7.fid] = parseInt(e.target.value);
           exports.pstate.changed = true;
@@ -16860,10 +17110,16 @@ function () {
       this.selectedItem = vnode.attrs.selectedItem;
       this.fid = vnode.attrs.fid;
       this.ftype = vnode.attrs.ftype;
+      var value = null;
+
+      if (this.selectedItem[this.fid]) {
+        value = this.selectedItem[this.fid];
+      }
+
       return mithril_1.default(construct_ui_1.Input, {
         id: this.fid,
         name: this.ftype,
-        value: this.selectedItem[this.fid],
+        value: value,
         onchange: function onchange(e) {
           _this8.selectedItem[_this8.fid] = e.target.value;
           exports.pstate.changed = true;
@@ -17335,11 +17591,7 @@ function () {
       this.db = type_map[this.type];
       this.onselect = vnode.attrs.onselect;
       this.initialvalue = vnode.attrs.initialvalue;
-
-      if (this.initialvalue != null && !this.selectedItem) {
-        this.selectedItem = this.initialvalue;
-      }
-
+      this.selectedItem = this.initialvalue;
       this.list = util_1.DB.getList(this.db);
 
       if (this.list == null) {
@@ -17377,8 +17629,16 @@ function () {
 
   return Selector;
 }();
-},{"flatpickr/dist/themes/light.css":"../node_modules/flatpickr/dist/themes/light.css","flatpickr":"../node_modules/flatpickr/dist/flatpickr.js","construct-ui/lib/index.css":"../node_modules/construct-ui/lib/index.css","mithril":"../node_modules/mithril/mithril.js","construct-ui":"../node_modules/construct-ui/lib/esm/index.js","../types.json":"../types.json","../constraints.json":"../constraints.json","./util":"util.ts"}],"timetable.ts":[function(require,module,exports) {
+},{"flatpickr/dist/themes/light.css":"../node_modules/flatpickr/dist/themes/light.css","flatpickr":"../node_modules/flatpickr/dist/flatpickr.js","construct-ui/lib/index.css":"../node_modules/construct-ui/lib/index.css","mithril":"../node_modules/mithril/mithril.js","construct-ui":"../node_modules/construct-ui/lib/esm/index.js","../types.json":"../types.json","../constraints.json":"../constraints.json","./util":"util.ts"}],"../node_modules/file-saver/dist/FileSaver.min.js":[function(require,module,exports) {
+var define;
+var global = arguments[3];
+(function(a,b){if("function"==typeof define&&define.amd)define([],b);else if("undefined"!=typeof exports)b();else{b(),a.FileSaver={exports:{}}.exports}})(this,function(){"use strict";function b(a,b){return"undefined"==typeof b?b={autoBom:!1}:"object"!=typeof b&&(console.warn("Deprecated: Expected third argument to be a object"),b={autoBom:!b}),b.autoBom&&/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(a.type)?new Blob(["\uFEFF",a],{type:a.type}):a}function c(b,c,d){var e=new XMLHttpRequest;e.open("GET",b),e.responseType="blob",e.onload=function(){a(e.response,c,d)},e.onerror=function(){console.error("could not download file")},e.send()}function d(a){var b=new XMLHttpRequest;b.open("HEAD",a,!1);try{b.send()}catch(a){}return 200<=b.status&&299>=b.status}function e(a){try{a.dispatchEvent(new MouseEvent("click"))}catch(c){var b=document.createEvent("MouseEvents");b.initMouseEvent("click",!0,!0,window,0,0,0,80,20,!1,!1,!1,!1,0,null),a.dispatchEvent(b)}}var f="object"==typeof window&&window.window===window?window:"object"==typeof self&&self.self===self?self:"object"==typeof global&&global.global===global?global:void 0,a=f.saveAs||("object"!=typeof window||window!==f?function(){}:"download"in HTMLAnchorElement.prototype?function(b,g,h){var i=f.URL||f.webkitURL,j=document.createElement("a");g=g||b.name||"download",j.download=g,j.rel="noopener","string"==typeof b?(j.href=b,j.origin===location.origin?e(j):d(j.href)?c(b,g,h):e(j,j.target="_blank")):(j.href=i.createObjectURL(b),setTimeout(function(){i.revokeObjectURL(j.href)},4E4),setTimeout(function(){e(j)},0))}:"msSaveOrOpenBlob"in navigator?function(f,g,h){if(g=g||f.name||"download","string"!=typeof f)navigator.msSaveOrOpenBlob(b(f,h),g);else if(d(f))c(f,g,h);else{var i=document.createElement("a");i.href=f,i.target="_blank",setTimeout(function(){e(i)})}}:function(a,b,d,e){if(e=e||open("","_blank"),e&&(e.document.title=e.document.body.innerText="downloading..."),"string"==typeof a)return c(a,b,d);var g="application/octet-stream"===a.type,h=/constructor/i.test(f.HTMLElement)||f.safari,i=/CriOS\/[\d]+/.test(navigator.userAgent);if((i||g&&h)&&"object"==typeof FileReader){var j=new FileReader;j.onloadend=function(){var a=j.result;a=i?a:a.replace(/^data:[^;]*;/,"data:attachment/file;"),e?e.location.href=a:location=a,e=null},j.readAsDataURL(a)}else{var k=f.URL||f.webkitURL,l=k.createObjectURL(a);e?e.location=l:location.href=l,e=null,setTimeout(function(){k.revokeObjectURL(l)},4E4)}});f.saveAs=a.saveAs=a,"undefined"!=typeof module&&(module.exports=a)});
+
+
+},{}],"timetable.ts":[function(require,module,exports) {
 "use strict";
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -17396,15 +17656,21 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var construct_ui_1 = require("construct-ui");
+
 var mithril_1 = __importDefault(require("mithril"));
 
-var construct_ui_1 = require("construct-ui");
+var util_1 = require("./util");
+
+var file_saver_1 = require("file-saver");
 
 var TimetableBody =
 /*#__PURE__*/
 function () {
   function TimetableBody() {
     _classCallCheck(this, TimetableBody);
+
+    this.log = [];
   }
 
   _createClass(TimetableBody, [{
@@ -17413,29 +17679,54 @@ function () {
       var _this = this;
 
       var b = mithril_1.default(construct_ui_1.Button, {
-        label: "Build Timetable",
+        label: "Build",
         size: "xl",
         onclick: function onclick() {
-          _this.generateTT();
+          _this.build();
         }
       });
-      return mithril_1.default(".profile", mithril_1.default(".profile-top", [b]));
+      var d = mithril_1.default(construct_ui_1.Button, {
+        label: "Download XLSX File",
+        size: "xl",
+        onclick: function onclick() {
+          _this.download();
+        }
+      });
+      return mithril_1.default(".profile", [mithril_1.default(".profile-top", [b, d]), mithril_1.default(".console-like", this.log.map(function (str) {
+        return mithril_1.default.trust(str);
+      }))]);
     }
   }, {
-    key: "generateTT",
-    value: function generateTT() {
+    key: "build",
+    value: function build() {
+      var _this2 = this;
+
+      this.log = [];
       var ws = new WebSocket("ws://" + location.host + "/icras/build");
 
-      ws.onmessage = function (msg) {
-        var url = window.URL.createObjectURL(msg.data);
-        var a = document.createElement("a");
-        a.style = "display: none";
-        document.body.appendChild(a);
-        a.href = url;
-        a.download = "timetable.xlsx";
-        a.click();
-        window.URL.revokeObjectURL(url);
+      ws.onopen = function () {
+        ws.send(util_1.Dept.obj["_id"]);
       };
+
+      ws.onmessage = function (msg) {
+        if (_typeof(msg.data) == "object") {
+          file_saver_1.saveAs(msg.data, "timetable.xlsx");
+        } else {
+          _this2.log.push(msg.data);
+
+          mithril_1.default.redraw();
+        }
+      };
+    }
+  }, {
+    key: "download",
+    value: function download() {
+      mithril_1.default.request({
+        url: "icras/download/" + util_1.Dept.obj["_id"],
+        method: "GET"
+      }).then(function (data) {}).catch(function (error) {
+        console.error(error);
+      });
     }
   }]);
 
@@ -17443,7 +17734,9 @@ function () {
 }();
 
 exports.TimetableBody = TimetableBody;
-},{"mithril":"../node_modules/mithril/mithril.js","construct-ui":"../node_modules/construct-ui/lib/esm/index.js"}],"index.ts":[function(require,module,exports) {
+},{"construct-ui":"../node_modules/construct-ui/lib/esm/index.js","mithril":"../node_modules/mithril/mithril.js","./util":"util.ts","file-saver":"../node_modules/file-saver/dist/FileSaver.min.js"}],"readme.md":[function(require,module,exports) {
+module.exports = "<h1 id=\"introduction\">Introduction</h1>\n<p><strong>ICRAS</strong> is a tool that automatically schedules Instructors, Courses, and Rooms.<br>Using the set constraints and parameters, the system will assign instructors and rooms to lectures with a timeslot that does not conflict with all of them.<br>The parameters for each type can be set in the <code>types.json</code> file, thus insuring easy configurability based on each department&#39;s demand.</p>\n"
+},{}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -17474,6 +17767,8 @@ var util_1 = require("./util");
 
 var timetable_1 = require("./timetable");
 
+var readme_md_1 = __importDefault(require("./readme.md"));
+
 var QList = construct_ui_1.SelectList.ofType();
 
 var Configurator =
@@ -17502,8 +17797,8 @@ function () {
 
       _this.profile.load();
 
-      type_components_1.pstate.changed = false;
       mithril_1.default.route.set("icras/tab/" + _this.profile.type + "/" + _this.profile.id);
+      mithril_1.default.redraw();
     };
   }
 
@@ -17518,7 +17813,7 @@ function () {
       }
 
       this.db = this.profile.db;
-      this.list = util_1.DB.getList(this.db);
+      this.list = util_1.Dept.getlist(this.db);
 
       if (this.list == null) {
         this.list = [];
@@ -17567,15 +17862,13 @@ function () {
   _createClass(Home, [{
     key: "view",
     value: function view(vnode) {
-      return mithril_1.default("h1", "Home");
+      return mithril_1.default(".home", [mithril_1.default.trust(readme_md_1.default)]);
     }
   }]);
 
   return Home;
 }();
 
-var sitemdb;
-var sitem = document.cookie && JSON.parse(document.cookie);
 var type_map = {
   "instructor": "instructors",
   "course": "courses",
@@ -17708,6 +18001,7 @@ function () {
             icon: construct_ui_1.Icons.SAVE,
             timeout: 1000
           });
+          type_components_1.pstate.changed = false;
         });
       }
     }
@@ -17721,14 +18015,10 @@ function () {
     value: function createNew() {
       var _this3 = this;
 
-      util_1.DB.putitem(this.db, {
-        _id: this.newid
-      }, function () {
-        util_1.DB.update();
-        util_1.DB.loadList(_this3.db);
+      util_1.Dept.create(this.db, this.newid, function () {
+        _this3.creationOverlay = false;
         mithril_1.default.redraw();
       });
-      this.creationOverlay = false;
     }
   }, {
     key: "delete",
@@ -17737,13 +18027,10 @@ function () {
 
       if (this.item) {
         this.item["_deleted"] = true;
-        util_1.DB.putitem(this.db, this.item, function () {
-          util_1.DB.update();
-
+        util_1.Dept.delete(this.db, this.id, function () {
           _this4.reset();
 
           mithril_1.default.route.set("icras/tab/" + _this4.type);
-          util_1.DB.loadList(_this4.db);
           mithril_1.default.redraw();
         });
       }
@@ -17781,6 +18068,8 @@ var tabs = [new Tab([mithril_1.default(construct_ui_1.Icon, {
   href: "icras/tab/room/"
 }), new Tab('Timetable', Profile, {
   href: "icras/timetable/"
+}), new Tab('Logout', Profile, {
+  href: "icras/logout"
 })];
 var Body = tabs[0];
 
@@ -17825,6 +18114,212 @@ function () {
 
 ;
 
+var Selector =
+/*#__PURE__*/
+function () {
+  function Selector() {
+    var _this6 = this;
+
+    _classCallCheck(this, Selector);
+
+    this.closeOnSelect = true;
+    this.loading = false;
+
+    this.renderItem = function (item) {
+      return mithril_1.default(construct_ui_1.ListItem, {
+        label: item,
+        selected: _this6.selectedItem === item
+      });
+    };
+
+    this.handleSelect = function (item) {
+      _this6.selectedItem = item;
+
+      _this6.onselect(item);
+    };
+  }
+
+  _createClass(Selector, [{
+    key: "view",
+    value: function view(vnode) {
+      var _this7 = this;
+
+      this.type = vnode.attrs.type;
+      this.db = vnode.attrs.db;
+      this.onselect = vnode.attrs.onselect;
+
+      if (this.initialvalue != null && !this.selectedItem) {
+        this.selectedItem = this.initialvalue;
+      }
+
+      util_1.DB.getList(this.db, function (list) {
+        _this7.list = list;
+      });
+
+      if (this.list == null) {
+        this.list = [];
+        this.selectedItem = "";
+        this.loading = true;
+      } else {
+        this.loading = false;
+      }
+
+      return mithril_1.default(QList, {
+        closeOnSelect: this.closeOnSelect,
+        items: this.list,
+        itemRender: this.renderItem,
+        itemPredicate: this.itemPredicate,
+        onSelect: this.handleSelect,
+        loading: this.loading,
+        popoverAttrs: {
+          hasArrow: true,
+          position: "auto"
+        },
+        trigger: mithril_1.default(construct_ui_1.Button, {
+          iconRight: construct_ui_1.Icons.CHEVRON_DOWN,
+          sublabel: this.type,
+          label: this.selectedItem && this.selectedItem.substring(0, 20)
+        })
+      });
+    }
+  }, {
+    key: "itemPredicate",
+    value: function itemPredicate(query, item) {
+      return item.toLowerCase().includes(query.toLowerCase());
+    }
+  }]);
+
+  return Selector;
+}();
+
+var Login =
+/*#__PURE__*/
+function () {
+  function Login() {
+    _classCallCheck(this, Login);
+  }
+
+  _createClass(Login, [{
+    key: "view",
+    value: function view(vnode) {
+      var _this8 = this;
+
+      var dep = util_1.getCookie("department");
+
+      if (dep) {
+        util_1.Dept.login(dep);
+      }
+
+      return [mithril_1.default("h4", "Select Department"), mithril_1.default(Selector, {
+        type: "Department",
+        db: "departments",
+        onselect: function onselect(item) {
+          _this8.onselect(item);
+        }
+      }), mithril_1.default(construct_ui_1.Button, {
+        label: "login",
+        onclick: function onclick() {
+          return _this8.login();
+        }
+      })];
+    }
+  }, {
+    key: "onselect",
+    value: function onselect(item) {
+      this.selectedDep = item;
+    }
+  }, {
+    key: "login",
+    value: function login() {
+      var _this9 = this;
+
+      util_1.Dept.login(this.selectedDep, function () {
+        _this9.onlogin();
+      });
+    }
+  }, {
+    key: "onlogin",
+    value: function onlogin() {}
+  }]);
+
+  return Login;
+}();
+
+var SaveDialog =
+/*#__PURE__*/
+function () {
+  function SaveDialog() {
+    _classCallCheck(this, SaveDialog);
+
+    this.saveDialog = false;
+  }
+
+  _createClass(SaveDialog, [{
+    key: "view",
+    value: function view(vnode) {
+      var _this10 = this;
+
+      var page = mithril_1.default.route.param("page");
+      var type = mithril_1.default.route.param("type");
+      var id = mithril_1.default.route.param("id");
+      console.log("ASDFASDF");
+
+      if (type_components_1.pstate.changed) {
+        if (page != this.page || type != this.type || id != this.id) {
+          this.saveDialog = true;
+        }
+      } else {
+        this.page = page;
+        this.type = type;
+        this.id = id;
+      }
+
+      return [mithril_1.default(util_1.OverlayWindow, {
+        isOpen: this.saveDialog,
+        content: [mithril_1.default("h4", "Save Changes?"), mithril_1.default(construct_ui_1.Button, {
+          label: "Save",
+          onclick: function onclick() {
+            return _this10.save();
+          }
+        }), mithril_1.default(construct_ui_1.Button, {
+          label: "Discard",
+          onclick: function onclick() {
+            return _this10.discard();
+          }
+        })]
+      })];
+    }
+  }, {
+    key: "save",
+    value: function save() {
+      var _this11 = this;
+
+      util_1.DB.putitem(type_map[this.type], util_1.DB.getItem(type_map[this.type], this.id), function () {
+        _this11.saveDialog = false;
+        type_components_1.pstate.changed = false;
+      });
+    }
+  }, {
+    key: "discard",
+    value: function discard() {
+      var _this12 = this;
+
+      util_1.DB.loadItem(type_map[this.type], this.id, function () {
+        _this12.saveDialog = false;
+        type_components_1.pstate.changed = false;
+      });
+    }
+  }, {
+    key: "cancel",
+    value: function cancel() {
+      this.saveDialog = false;
+      mithril_1.default.route.set("icras/" + this.page + "/" + this.type + "/" + this.id);
+    }
+  }]);
+
+  return SaveDialog;
+}();
+
 var App =
 /*#__PURE__*/
 function () {
@@ -17851,6 +18346,12 @@ function () {
           body = mithril_1.default(timetable_1.TimetableBody);
           break;
 
+        case "logout":
+          util_1.eraseCookie("department");
+          util_1.Dept.isLoggedIn = false;
+          mithril_1.default.route.set("icras/home");
+          break;
+
         default:
           body = "404";
       }
@@ -17858,6 +18359,9 @@ function () {
       return mithril_1.default('div', [mithril_1.default(Header), body, mithril_1.default(util_1.AppToaster, {
         clearOnEscapeKey: true,
         position: "top-end"
+      }), mithril_1.default(util_1.OverlayWindow, {
+        isOpen: !util_1.Dept.isLoggedIn,
+        content: mithril_1.default(Login)
       })]);
     }
   }]);
@@ -17870,7 +18374,7 @@ mithril_1.default.route(document.getElementById("root"), "icras/home", {
   "icras/:page/:type": App,
   "icras/:page/:type/:id": App
 });
-},{"construct-ui/lib/index.css":"../node_modules/construct-ui/lib/index.css","mithril":"../node_modules/mithril/mithril.js","construct-ui":"../node_modules/construct-ui/lib/esm/index.js","./type_components":"type_components.ts","./util":"util.ts","./timetable":"timetable.ts"}],"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"construct-ui/lib/index.css":"../node_modules/construct-ui/lib/index.css","mithril":"../node_modules/mithril/mithril.js","construct-ui":"../node_modules/construct-ui/lib/esm/index.js","./type_components":"type_components.ts","./util":"util.ts","./timetable":"timetable.ts","./readme.md":"readme.md"}],"C:/Users/Omar/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -17898,7 +18402,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56679" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50333" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

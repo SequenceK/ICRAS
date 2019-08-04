@@ -141,7 +141,9 @@ func DBPut(dbparam string, idparam string, data map[string]interface{}) error {
 	}
 
 	for k, v := range data {
-		doc[k] = v
+		if k != "_rev" && k != "_id" {
+			doc[k] = v
+		}
 	}
 
 	rev, _ := db.Put(context.TODO(), idparam, doc)
@@ -192,7 +194,9 @@ func apidbPut(c echo.Context) error {
 	json.Unmarshal(body, &data)
 
 	for k, v := range data {
-		doc[k] = v
+		if k != "_rev" && k != "_id" {
+			doc[k] = v
+		}
 	}
 
 	rev, _ := db.Put(context.TODO(), idparam, doc)

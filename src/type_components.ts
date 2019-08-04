@@ -247,10 +247,14 @@ class IntInput {
     this.selectedItem = vnode.attrs.selectedItem;
     this.fid = vnode.attrs.fid;
     this.ftype = vnode.attrs.ftype;
+    var value = null;
+    if(this.selectedItem[this.fid]){
+      value = this.selectedItem[this.fid];
+    }
     return m(Input, {
       id: this.fid,
       name: this.ftype,
-      value: this.selectedItem[this.fid],
+      value: value,
       onchange: (e:Event) => {this.selectedItem[this.fid] = parseInt((e.target as HTMLInputElement).value);pstate.changed = true;},
       type: "number",
     });
@@ -265,10 +269,14 @@ class StringInput {
     this.selectedItem = vnode.attrs.selectedItem;
     this.fid = vnode.attrs.fid;
     this.ftype = vnode.attrs.ftype;
+    var value = null;
+    if(this.selectedItem[this.fid]){
+      value = this.selectedItem[this.fid];
+    }
     return m(Input, {
       id: this.fid,
       name: this.ftype,
-      value: this.selectedItem[this.fid],
+      value: value,
       onchange: (e:Event) => {this.selectedItem[this.fid] = (e.target as HTMLInputElement).value;pstate.changed = true;}
     });
   }
@@ -646,9 +654,7 @@ class Selector {
     this.onselect = vnode.attrs.onselect;
     this.initialvalue = vnode.attrs.initialvalue;
 
-    if(this.initialvalue != null && !this.selectedItem) {
-      this.selectedItem = this.initialvalue;
-    }
+    this.selectedItem = this.initialvalue;
 
     this.list = DB.getList(this.db);
 

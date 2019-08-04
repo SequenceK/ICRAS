@@ -1,7 +1,7 @@
 package main
 
 func main() {
-	state := initState()
+	state := initState("Engineering")
 	state.generateConstraints()
 	state.generateCandidates()
 	state.solve()

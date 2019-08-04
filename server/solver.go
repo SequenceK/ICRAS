@@ -33,8 +33,11 @@ func (state *state) err(err error) {
 func (state *state) solve() {
 	for _, lecture := range state.lectures {
 		if !lecture.resolved {
+			state.write(fmt.Sprintf("resolving lecture %s_%v<br>", lecture.course.name, lecture.jsonobj["section"]))
 			status := state.resolveLecture(lecture)
-			fmt.Printf("status %t\n", status)
+			if !status {
+				state.write(fmt.Sprintf("<font color=\"red\">failed to fully resolve state</font><br>"))
+			}
 		}
 	}
 }
@@ -44,16 +47,19 @@ func (state *state) resolveLecture(lecture *lecture) bool {
 		return true
 	}
 	lecture.resolving = true
-	fmt.Printf("resolving lecture %s_%v\n", lecture.course.name, lecture.jsonobj["section"])
+
 	var iresolveStatus bool
 	var rresolveStatus bool
 	var tresolveStatus bool
+	titr := 0
+	ritr := 0
+	iitr := 0
 	for lecture.setTimeslot(state) {
-		//fmt.Printf("timeslot %v set\n", lecture.assignedTimeslot.data.time)
+		titr++
 		for lecture.setRoom(state) {
-			//fmt.Printf("room %v set\n", lecture.assignedRoom.jsonobj["_id"])
+			ritr++
 			for lecture.setInstructor(state) {
-				//fmt.Printf("instrutor %v set\n", lecture.assignedInstructor.name)
+				iitr++
 				iresolveStatus = state.resolveLecturesOf(lecture.assignedInstructor)
 				if !iresolveStatus {
 					continue
@@ -100,7 +106,9 @@ func (state *state) resolveLecture(lecture *lecture) bool {
 		lecture.resolved = true
 		return true
 	}
-
+	if titr == 0 || ritr == 0 || iitr == 0 {
+		state.write(fmt.Sprintf("<font color=\"red\">No sutiable timeslot for lecture %v_%v</font><br>", lecture.coursejsonobj["_id"], lecture.jsonobj["section"]))
+	}
 	lecture.resetInstructors()
 	lecture.resetRooms()
 	lecture.resetTimeslots()

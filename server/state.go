@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
+	"golang.org/x/net/websocket"
 )
 
 type state struct {
@@ -13,10 +14,16 @@ type state struct {
 	lectures          []*lecture
 	rooms             []*room
 	timeslots         map[string]*timeslot
+	ws                *websocket.Conn
 }
 
-func initState(depid string) *state {
+func (state *state) write(msg interface{}) {
+	websocket.Message.Send(state.ws, msg)
+}
+
+func initState(depid string, ws *websocket.Conn) *state {
 	state := &state{}
+	state.ws = ws
 
 	departmentobj, err := DBGet("departments", depid)
 	check(err)

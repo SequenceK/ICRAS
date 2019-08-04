@@ -13,8 +13,9 @@
         "media": "bool"
     },
     "course": {
-        "lectures": "lecture[]",
-        "title": "string"
+        "title": "string",
+        "credits": "int",
+        "lectures": "lecture[]"
     },
     "lecture": {
         "section": "int",

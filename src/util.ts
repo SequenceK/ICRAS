@@ -1,10 +1,34 @@
 import m from 'mithril';
-import { Toaster, Icons } from 'construct-ui';
+import { Toaster, Icons, Overlay, Card } from 'construct-ui';
+import { string } from 'prop-types';
 
 export interface IListLabel {
     _id : string;
 }
 
+
+export function setCookie(name,value,days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+export function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+export function eraseCookie(name) {   
+    document.cookie = name+'=; Max-Age=-99999999;';  
+}
 
 export const AppToaster = new Toaster();
 export class DBUtil {
@@ -18,7 +42,7 @@ export class DBUtil {
         this.lists = {};
     }
 
-    loadList(db : string) {
+    loadList(db : string, callback : any = null) {
         var url = "/db/all/" + db;
         if(this.loading[url]) {
             return;
@@ -30,6 +54,8 @@ export class DBUtil {
         }).then((result)=> {
             this.lists[db] = result;
             this.loading[url] = false;
+            if(callback)
+                callback(this.lists[db])
             m.redraw();
         }).catch((error) => {
             console.error(error);
@@ -39,14 +65,17 @@ export class DBUtil {
         this.loading[url] = true;
     }
 
-    getList(db : string) {
+    getList(db : string, callback : any = null) {
         if(!this.lists[db]) {
-            this.loadList(db);
+            this.loadList(db, callback);
+        } else if(callback) {
+            callback(this.lists[db]);
+        } else {
+            return this.lists[db];
         }
-        return this.lists[db];
     }
 
-    loadItem(db: string, id: string) {
+    loadItem(db: string, id: string, callback: any = null) {
         var url = "/db/" + db +"/"+id;
         if(this.loading[url]) {
             return;
@@ -61,6 +90,8 @@ export class DBUtil {
             }
             this.items[db][id] = result;
             this.loading[url] = false;
+            if(callback)
+                callback(this.items[db][id])
             m.redraw();
         }).catch((error) => {
             console.error(error);
@@ -70,7 +101,7 @@ export class DBUtil {
         this.loading[url] = true;
     }
 
-    getItem(db: string, id: string) {
+    getItem(db: string, id: string, callback : any = null) {
         if(id == null) {
             return null;
         }
@@ -78,24 +109,122 @@ export class DBUtil {
             this.items[db] = {};
         }
         if(!this.items[db][id]) {
-            this.loadItem(db, id);
+            this.loadItem(db, id, callback);
         }
-        return this.items[db][id];
+        else if(callback) callback(this.items[db][id])
+        else return this.items[db][id]
     }
 
-    putitem(db: string, item: any, callback : any) {
+    putitem(db: string, item: any, callback : any = null) {
         var url = "/db/" + db +"/"+item._id;
         m.request({
             method: "PUT",
             url: url,
             data: item,
-        }).then((done)=>{
+        }).then((obj)=>{
+            if(callback)
               callback()
         }).catch((error) => {
             console.error(error);
-            this.loading[url] = false;
         })
     }
 }
 
-export var DB = new DBUtil()
+class Department {
+    isLoggedIn = false;
+    obj : any = {};
+
+    instructors = []
+    courses = []
+    rooms = []
+
+    constructor(){
+    }
+
+    login(depID, callback=null) {
+        DB.getItem("departments", depID, (dep)=>{
+            this.obj = dep;
+            this.isLoggedIn = true;
+            if(!this.obj["db"]) this.obj["db"] = {}
+            if(!this.obj["db"]["instructors"]) this.obj["db"]["instructors"] = []
+            if(!this.obj["db"]["courses"]) this.obj["db"]["courses"] = []
+            if(!this.obj["db"]["rooms"]) this.obj["db"]["rooms"] = []
+            this.instructors = this.obj["db"]["instructors"]
+            this.courses = this.obj["db"]["courses"]
+            this.rooms = this.obj["db"]["rooms"]
+            setCookie("department", depID, 1);
+            if(callback)
+                callback();
+        })
+    }
+
+    getlist(db:string) {
+        if(!this.obj["db"]) this.obj["db"] = {}
+        if(!this.obj["db"][db]) this.obj["db"][db] = []
+        return this.obj["db"][db];
+    }
+
+    create(db:string, id:string, callback=null) {
+        var objdb = this.obj["db"][db] as string[]
+        var found = objdb.find((value, index, obj)=>{return id==value})
+        if(found) return;
+
+        objdb.push(id);
+
+        DB.putitem("departments", this.obj, ()=>{
+            DB.putitem(db, {_id: id}, ()=>{
+                if(callback)
+                callback();
+            })
+        })
+        
+    }
+
+    delete(db:string, id:string, callback = null) {
+        var objdb = this.obj["db"][db] as string[]
+        for(var i = 0; i < objdb.length; i++){
+            if(id==objdb[i]) {
+                objdb.splice(i, 1)
+                i--;
+            }
+        }
+        
+        DB.putitem("departments", this.obj, ()=>{
+                if(callback)
+                 callback();
+        })
+    }
+}
+
+export var DB = new DBUtil();
+export var Dept = new Department();
+
+
+
+export class OverlayWindow {
+    view(vnode : any) {
+        const style = {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 100
+          };
+        
+          const cardStyles = {
+            margin: '40px auto'
+          };
+        
+          const content = m('', { style }, [
+            m(Card, { style: cardStyles }, [
+              vnode.attrs.content
+            ])
+          ]);
+
+        return m(Overlay, {
+            isOpen: vnode.attrs.isOpen,
+            content: content
+        })
+    }
+}
