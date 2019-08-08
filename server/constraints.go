@@ -106,7 +106,7 @@ func satisfyTime(action constraintAction, constraint *constraint, checkvalue int
 	case lt:
 		return checkvalue.(mtime) < constraint.vars[0].(mtime)
 	case bt:
-		return checkvalue.(mtime) > constraint.vars[0].(mtime) &&
+		return checkvalue.(mtime) >= constraint.vars[0].(mtime) &&
 			checkvalue.(mtime) < constraint.vars[1].(mtime)
 	}
 
@@ -121,8 +121,8 @@ func satisfyString(action constraintAction, constraint *constraint, checkvalue i
 	case lt:
 		return checkvalue.(string) < constraint.vars[0].(string)
 	case bt:
-		return checkvalue.(string) > constraint.vars[0].(string) &&
-			checkvalue.(string) < constraint.vars[1].(string)
+		return checkvalue.(string) >= constraint.vars[0].(string) &&
+			checkvalue.(string) <= constraint.vars[1].(string)
 	}
 
 	return false
@@ -136,8 +136,8 @@ func satisfyInt(action constraintAction, constraint *constraint, checkvalue inte
 	case lt:
 		return checkvalue.(int) < constraint.vars[0].(int)
 	case bt:
-		return checkvalue.(int) > constraint.vars[0].(int) &&
-			checkvalue.(int) < constraint.vars[1].(int)
+		return checkvalue.(int) >= constraint.vars[0].(int) &&
+			checkvalue.(int) <= constraint.vars[1].(int)
 	}
 
 	return false
@@ -167,6 +167,7 @@ func createConstraint(jsonobj map[string]interface{}) *constraint {
 
 	constraint.varsnum = int(jsonobj["varsnum"].(float64))
 	isparent, baseType, on, parentType := getConstraintType(jsonobj)
+	action := jsonobj["selectedAction"].(string)
 
 	switch baseType {
 	case "time":
@@ -226,13 +227,29 @@ func createConstraint(jsonobj map[string]interface{}) *constraint {
 		constraint.vars = append(constraint.vars, constraint.getvar(fmt.Sprintf("var%d", i), jsonobj))
 	}
 
+	switch action {
+	default:
+	case "eq":
+		constraint.action = eq
+		break
+	case "lt":
+		constraint.action = lt
+		break
+	case "gt":
+		constraint.action = gt
+		break
+	case "bt":
+		constraint.action = bt
+		break
+	}
+
 	return constraint
 }
 
 func (constraints *constraints) add(jsonobj map[string]interface{}) {
 	constraint := createConstraint(jsonobj)
 	if constraint.onfull == "time" {
-		constraints.timeconstraints = append(constraints.constraints, constraint)
+		constraints.timeconstraints = append(constraints.timeconstraints, constraint)
 	} else {
 		constraints.constraints = append(constraints.constraints, constraint)
 	}
@@ -263,6 +280,8 @@ func (constraints *constraints) checkTimeslot(timeslot *timeslot) bool {
 	checkmap := make(map[string]map[constraintAction]bool)
 	for _, constraint := range constraints.timeconstraints {
 		result := constraint.checkTimeslot(timeslot)
+		//gstate.write(fmt.Sprintf("on %s with time:%d constraint v0: %v v1: %v result: %t<br>", constraint.onfull, timeslot.data.time, constraint.vars[0], constraint.vars[1], result))
+
 		if _, ok := checkmap[constraint.onfull]; !ok {
 			checkmap[constraint.onfull] = map[constraintAction]bool{}
 		}

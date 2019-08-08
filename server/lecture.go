@@ -88,21 +88,24 @@ func (lecture *lecture) setRoom(state *state) bool {
 
 func (lecture *lecture) setInstructor(state *state) bool {
 	if lecture.assignedInstructor != nil {
-		lecture.unassignInstructor()
+		lecture.unassignInstructor(state)
 	}
 	for _, instructor := range lecture.instructorCandidates {
-		if !lecture.vistedInstructors[instructor] && instructor.validLecture(lecture) {
-			lecture.assignInstructor(instructor)
+		if !lecture.vistedInstructors[instructor] && instructor.validLecture(lecture, state) {
+			lecture.assignInstructor(instructor, state)
 			lecture.vistedInstructors[instructor] = true
 			return true
 		}
+		// } else {
+		// 	state.write(fmt.Sprintf("instructor %v is invalid", instructor.jsonobj["_id"]))
+		// }
 	}
 	return false
 }
 
-func (lecture *lecture) assignInstructor(instructor *instructor) {
+func (lecture *lecture) assignInstructor(instructor *instructor, state *state) {
 	lecture.assignedInstructor = instructor
-	instructor.assignLecture(lecture)
+	instructor.assignLecture(lecture, state)
 }
 
 func (lecture *lecture) assignRoom(room *room) {
@@ -115,8 +118,8 @@ func (lecture *lecture) assignTimeslot(timeslot *timeslot) {
 	timeslot.assignLecture(lecture)
 }
 
-func (lecture *lecture) unassignInstructor() {
-	lecture.assignedInstructor.unassignLecture(lecture)
+func (lecture *lecture) unassignInstructor(state *state) {
+	lecture.assignedInstructor.unassignLecture(lecture, state)
 	lecture.assignedInstructor = nil
 }
 
@@ -138,9 +141,9 @@ func (lecture *lecture) resetRooms() {
 	lecture.vistedRooms = map[*room]bool{}
 }
 
-func (lecture *lecture) resetInstructors() {
+func (lecture *lecture) resetInstructors(state *state) {
 	if lecture.assignedInstructor != nil {
-		lecture.unassignInstructor()
+		lecture.unassignInstructor(state)
 	}
 	lecture.vistedInstructors = map[*instructor]bool{}
 }

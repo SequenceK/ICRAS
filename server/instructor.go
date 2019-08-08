@@ -10,9 +10,11 @@ type instructor struct {
 	lectureAssigmentLimit map[string]int
 	lectureAssigmentCount map[string]int
 	constraints           *constraints
+	courseRank            map[string]uint
+	rank                  uint
 }
 
-func (instructor *instructor) init(jsonobj map[string]interface{}) {
+func (instructor *instructor) init(jsonobj map[string]interface{}, state *state) {
 	instructor.jsonobj = jsonobj
 	instructor.name = jsonobj["_id"].(string)
 	teachesList := jsonobj["instructs"].([]interface{})
@@ -20,6 +22,8 @@ func (instructor *instructor) init(jsonobj map[string]interface{}) {
 	instructor.lectureCandidates = map[string][]*lecture{}
 	instructor.lectureAssigmentLimit = map[string]int{}
 	instructor.lectureAssigmentCount = map[string]int{}
+	instructor.courseConstraints = map[string]*constraints{}
+	instructor.courseRank = map[string]uint{}
 	instructor.constraints = &constraints{}
 	instructor.constraints.init(jsonobj)
 
@@ -28,7 +32,7 @@ func (instructor *instructor) init(jsonobj map[string]interface{}) {
 		obj := id.(map[string]interface{})
 		course := obj["course"].(string)
 		max := int(obj["maxlectures"].(float64))
-
+		state.courseMaxInstructors[course] += uint(max)
 		instructor.courseConstraints[course] = &constraints{}
 		instructor.courseConstraints[course].init(obj)
 
@@ -41,25 +45,26 @@ func (instructor *instructor) getJSONOBJ() map[string]interface{} {
 	return instructor.jsonobj
 }
 
-func (instructor *instructor) assignLecture(lecture *lecture) {
+func (instructor *instructor) assignLecture(lecture *lecture, state *state) {
 	instructor.assignedLectures[lecture] = true
 	instructor.lectureAssigmentCount[lecture.course.name]++
+	state.courseAssignedInstructors[lecture.course.name]++
 }
 
-func (instructor *instructor) unassignLecture(lecture *lecture) {
+func (instructor *instructor) unassignLecture(lecture *lecture, state *state) {
 	instructor.assignedLectures[lecture] = false
 	instructor.lectureAssigmentCount[lecture.course.name]--
+	state.courseAssignedInstructors[lecture.course.name]--
 }
 
 func (instructor *instructor) resolveLectures(state *state) bool {
-	for k, v := range instructor.lectureCandidates {
-		if instructor.lectureAssigmentCount[k] < instructor.lectureAssigmentLimit[k] || instructor.lectureAssigmentLimit[k] == 0 {
-			for _, lecture := range v {
-				if lecture.assignedInstructor != instructor || !(lecture.resolving || lecture.resolved) {
-					success := state.resolveLecture(lecture)
-					if !success {
-						return false
-					}
+	for _, v := range instructor.lectureCandidates {
+		for _, lecture := range v {
+			if lecture.assignedInstructor != instructor && !(lecture.resolving || lecture.resolved) {
+				//state.write(fmt.Sprintf("<font color=\"orange\">lecture %v_%v resolving %v</font><br>", lecture.course.name, lecture.jsonobj["section"], lecture.resolving))
+				success := state.resolveLecture(lecture)
+				if !success {
+					return false
 				}
 			}
 		}
@@ -68,7 +73,7 @@ func (instructor *instructor) resolveLectures(state *state) bool {
 	return true
 }
 
-func (instructor *instructor) validLecture(lecture *lecture) bool {
+func (instructor *instructor) validLecture(lecture *lecture, state *state) bool {
 	timeconflict := false
 	maxlimit := false
 	for lec, assigned := range instructor.assignedLectures {
@@ -94,6 +99,19 @@ func (instructor *instructor) validLecture(lecture *lecture) bool {
 	if instructor.lectureAssigmentCount[lecture.course.name] == instructor.lectureAssigmentLimit[lecture.course.name] {
 		maxlimit = true
 	}
-
 	return !timeconflict && !maxlimit
+}
+
+func (instructor *instructor) generateRank(state *state) {
+	for _, timeslot := range state.timeslots {
+		if instructor.constraints.checkTimeslot(timeslot) {
+			instructor.rank++
+		}
+		for course, cons := range instructor.courseConstraints {
+			if cons.checkTimeslot(timeslot) {
+				instructor.courseRank[course]++
+			}
+		}
+	}
+
 }

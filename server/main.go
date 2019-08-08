@@ -23,13 +23,7 @@ func main() {
 	e.Logger.Fatal(e.Start(":62028"))
 }
 
-func wsrecover(ws *websocket.Conn) {
-
-	if r := recover(); r != nil {
-		websocket.Message.Send(ws, "error<br>")
-		websocket.Message.Send(ws, r)
-	}
-}
+//var gstate *state
 
 func apibuild(c echo.Context) error {
 	websocket.Handler(func(ws *websocket.Conn) {
@@ -37,7 +31,8 @@ func apibuild(c echo.Context) error {
 		defer func() {
 
 			if r := recover(); r != nil {
-				websocket.Message.Send(ws, fmt.Sprintf("<font color=\"red\">error: %v</font><br>", r))
+				websocket.Message.Send(ws, fmt.Sprintf("<font color=\"red\">error: %+v</font><br>", r))
+				panic(r)
 			}
 		}()
 
@@ -50,10 +45,13 @@ func apibuild(c echo.Context) error {
 
 		websocket.Message.Send(ws, "Initializing<br>")
 		state := initState(ws)
+		//gstate = state
 		websocket.Message.Send(ws, "Generating Constraints<br>")
 		state.generateConstraints()
 		websocket.Message.Send(ws, "Generating Candidates<br>")
 		state.generateCandidates()
+		websocket.Message.Send(ws, "Ranking Candidates<br>")
+		state.rankCandidates()
 		websocket.Message.Send(ws, "Solving System<br>")
 		state.solve()
 		websocket.Message.Send(ws, "Creating XLSX file<br>")

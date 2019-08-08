@@ -2,19 +2,22 @@ package main
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	"golang.org/x/net/websocket"
 )
 
 type state struct {
-	departments       []*department
-	instructors       []*instructor
-	coursesLectureMap map[string][]*lecture
-	lectures          []*lecture
-	rooms             []*room
-	timeslots         map[string]*timeslot
-	ws                *websocket.Conn
+	departments               []*department
+	instructors               []*instructor
+	coursesLectureMap         map[string][]*lecture
+	courseMaxInstructors      map[string]uint
+	courseAssignedInstructors map[string]uint
+	lectures                  []*lecture
+	rooms                     []*room
+	timeslots                 map[string]*timeslot
+	ws                        *websocket.Conn
 }
 
 func (state *state) write(msg interface{}) {
@@ -24,6 +27,8 @@ func (state *state) write(msg interface{}) {
 func initState(ws *websocket.Conn) *state {
 	state := &state{}
 	state.ws = ws
+	state.courseMaxInstructors = map[string]uint{}
+	state.courseAssignedInstructors = map[string]uint{}
 
 	departments, err := DBAll("departments")
 	check(err)
@@ -45,21 +50,21 @@ func initState(ws *websocket.Conn) *state {
 		check(err)
 
 		state.instructors[i] = &instructor{}
-		state.instructors[i].init(instructorJSON)
+		state.instructors[i].init(instructorJSON, state)
 		i++
 	}
 
 	//load lectures(through courses)
 	courseList, err := DBAll("courses")
 	check(err)
-	coursesObj := make([]map[string]interface{}, 0)
+	coursesObj := make([]map[string]interface{}, len(courseList))
 	lectureCount := 0
 
-	for _, id := range courseList {
+	for i, id := range courseList {
 		courseJSON, err := DBGet("courses", id)
 		check(err)
 
-		coursesObj = append(coursesObj, courseJSON)
+		coursesObj[i] = courseJSON
 		_, ok := courseJSON["lectures"]
 		if ok {
 			lectures := courseJSON["lectures"].([]interface{})
@@ -139,6 +144,20 @@ func (state *state) generateCandidates() {
 		}
 
 		lecture.generateTimeslots(state)
+	}
+}
+
+func (state *state) rankCandidates() {
+	for _, ins := range state.instructors {
+		ins.generateRank(state)
+	}
+
+	for _, lec := range state.lectures {
+		sort.SliceStable(lec.instructorCandidates, func(i int, j int) bool {
+			irank := lec.instructorCandidates[i].rank + lec.instructorCandidates[i].courseRank[lec.course.name]
+			jrank := lec.instructorCandidates[j].rank + lec.instructorCandidates[j].courseRank[lec.course.name]
+			return irank < jrank
+		})
 	}
 }
 
