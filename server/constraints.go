@@ -53,6 +53,9 @@ type constraint struct {
 	satisfyAction func(constraintAction, *constraint, interface{}) bool
 
 	action constraintAction
+
+	checkingfor string
+	checkingon  string
 }
 
 type constraints struct {
@@ -78,26 +81,48 @@ func toTime(value string) mtime {
 }
 
 func getTime(id string, jsonobj map[string]interface{}) interface{} {
+	if jsonobj[id] == nil {
+		return 0
+	}
 	value := jsonobj[id].(string)
 	return toTime(value)
 }
 
 func getString(id string, jsonobj map[string]interface{}) interface{} {
+	if jsonobj[id] == nil {
+		return ""
+	}
 	value := jsonobj[id].(string)
 	return value
 }
 
 func getInt(id string, jsonobj map[string]interface{}) interface{} {
+	if jsonobj[id] == nil {
+		return 0
+	}
 	value := jsonobj[id].(float64)
 	return int(value)
 }
 
 func getBool(id string, jsonobj map[string]interface{}) interface{} {
+	if jsonobj[id] == nil {
+		return false
+	}
 	value := jsonobj[id].(bool)
 	return value
 }
 
 func satisfyTime(action constraintAction, constraint *constraint, checkvalue interface{}) bool {
+	if checkvalue == nil {
+		checkvalue = 0
+	}
+	if constraint.vars[0] == nil {
+		constraint.vars[0] = 0
+	}
+	if constraint.varsnum > 1 && constraint.vars[1] == nil {
+		constraint.vars[1] = 0
+	}
+
 	switch action {
 	case eq:
 		return checkvalue.(mtime) == constraint.vars[0].(mtime)
@@ -113,6 +138,15 @@ func satisfyTime(action constraintAction, constraint *constraint, checkvalue int
 	return false
 }
 func satisfyString(action constraintAction, constraint *constraint, checkvalue interface{}) bool {
+	if checkvalue == nil {
+		checkvalue = ""
+	}
+	if constraint.vars[0] == nil {
+		constraint.vars[0] = ""
+	}
+	if constraint.varsnum > 1 && constraint.vars[1] == nil {
+		constraint.vars[1] = ""
+	}
 	switch action {
 	case eq:
 		return checkvalue.(string) == constraint.vars[0].(string)
@@ -128,6 +162,16 @@ func satisfyString(action constraintAction, constraint *constraint, checkvalue i
 	return false
 }
 func satisfyInt(action constraintAction, constraint *constraint, checkvalue interface{}) bool {
+	if checkvalue == nil {
+		checkvalue = 0
+	}
+	if constraint.vars[0] == nil {
+		constraint.vars[0] = 0
+	}
+	if constraint.varsnum > 1 && constraint.vars[1] == nil {
+		constraint.vars[1] = 0
+	}
+
 	switch action {
 	case eq:
 		return checkvalue.(int) == constraint.vars[0].(int)
@@ -143,6 +187,16 @@ func satisfyInt(action constraintAction, constraint *constraint, checkvalue inte
 	return false
 }
 func satisfyBool(action constraintAction, constraint *constraint, checkvalue interface{}) bool {
+	if checkvalue == nil {
+		checkvalue = false
+	}
+	if constraint.vars[0] == nil {
+		constraint.vars[0] = false
+	}
+	if constraint.varsnum > 1 && constraint.vars[1] == nil {
+		constraint.vars[1] = false
+	}
+
 	switch action {
 	case eq:
 		return checkvalue.(bool) == constraint.vars[0].(bool)

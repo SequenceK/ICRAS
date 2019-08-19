@@ -74,32 +74,33 @@ func (instructor *instructor) resolveLectures(state *state) bool {
 }
 
 func (instructor *instructor) validLecture(lecture *lecture, state *state) bool {
-	timeconflict := false
-	maxlimit := false
+
 	for lec, assigned := range instructor.assignedLectures {
 		if lec == lecture || !assigned {
 			continue
 		}
 
 		if lec.assignedTimeslot != nil {
-			overlap := lecture.assignedTimeslot.overlaps(lec.assignedTimeslot)
-			if overlap {
-				timeconflict = true
-				break
+			if lecture.assignedTimeslot.overlaps(lec.assignedTimeslot) {
+				return false
 			}
 		}
 	}
 
-	if !timeconflict {
-		timeconflict = timeconflict || !instructor.constraints.checkTimeslot(lecture.assignedTimeslot)
-		for _, cns := range instructor.courseConstraints {
-			timeconflict = timeconflict || !cns.checkTimeslot(lecture.assignedTimeslot)
+	if !instructor.constraints.checkTimeslot(lecture.assignedTimeslot) {
+		return false
+	}
+
+	for _, cns := range instructor.courseConstraints {
+		if !cns.checkTimeslot(lecture.assignedTimeslot) {
+			return false
 		}
 	}
+
 	if instructor.lectureAssigmentCount[lecture.course.name] == instructor.lectureAssigmentLimit[lecture.course.name] {
-		maxlimit = true
+		return false
 	}
-	return !timeconflict && !maxlimit
+	return true
 }
 
 func (instructor *instructor) generateRank(state *state) {

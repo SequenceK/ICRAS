@@ -56,8 +56,14 @@ func (l *lecture) generateTimeslots(state *state) {
 		case 'r':
 			days.r = true
 			break
+		case 's':
+			days.s = true
+			break
+		case 'f':
+			days.f = true
+			break
 		default:
-			panic(fmt.Errorf("Unsupported days letter %s", c))
+			panic(fmt.Errorf("Unsupported days letter %U", c))
 		}
 	}
 	stime := toTime("08:00")

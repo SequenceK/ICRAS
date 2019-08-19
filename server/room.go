@@ -38,7 +38,6 @@ func (room *room) resolveLectures(state *state) bool {
 }
 
 func (room *room) validLecture(lecture *lecture) bool {
-	timeconflict := false
 	for lec, assigned := range room.assignedLectures {
 
 		if lec == lecture || !assigned {
@@ -46,12 +45,10 @@ func (room *room) validLecture(lecture *lecture) bool {
 		}
 
 		if lec.assignedTimeslot != nil {
-			overlap := lecture.assignedTimeslot.overlaps(lec.assignedTimeslot)
-			if overlap {
-				timeconflict = true
-				break
+			if lecture.assignedTimeslot.overlaps(lec.assignedTimeslot) {
+				return false
 			}
 		}
 	}
-	return !timeconflict
+	return true
 }
