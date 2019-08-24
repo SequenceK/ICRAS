@@ -252,6 +252,7 @@ class IntInput {
       id: this.fid,
       name: this.ftype,
       value: value,
+      fluid: true,
       onchange: (e:Event) => {this.selectedItem[this.fid] = parseInt((e.target as HTMLInputElement).value);pstate.changed = true;},
       type: "number",
     });
@@ -274,6 +275,7 @@ class StringInput {
       id: this.fid,
       name: this.ftype,
       value: value,
+      fluid: true,
       onchange: (e:Event) => {this.selectedItem[this.fid] = (e.target as HTMLInputElement).value;pstate.changed = true;}
     });
   }
@@ -610,8 +612,18 @@ export class Properties {
   selectedItem : any = {};
 
   generateView(type) {
+    var longforms = {}
+
     for(var f in type) {
-      this.propForm.push(getComponent(f, type[f], this.selectedItem));
+      var len = (type[f] as string).length
+      if ((type[f][len-1] == "]") || (type[f][len-1] == "*")){
+        longforms[f] = type[f]
+      } else {
+        this.propForm.push(getComponent(f, type[f], this.selectedItem));
+      }
+    }
+    for(var f in longforms) {
+      this.propForm.push(getComponent(f, longforms[f], this.selectedItem));
     }
   }
 
@@ -628,7 +640,7 @@ export class Properties {
     if(Dept.constraints.for[type]) {
       constraintsElem = m("fieldset.properties", [m("legend.properties-legend", "Constraints"), m(Constraints, {selectedItem: this.selectedItem, type: type})])
     }
-    return m(".profile-form", {}, [
+    return m("form.profile-form", {}, [
       m("br"),
       m("fieldset.properties", [m("legend.properties-legend", "Properties"), this.propForm]),
       m("br"),

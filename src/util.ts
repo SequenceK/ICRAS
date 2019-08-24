@@ -127,6 +127,22 @@ export class DBUtil {
             console.error(error);
         })
     }
+
+    saveCached(callback: any = null) {
+        var count = 0;
+        for(var i in this.items) {
+            var its = this.items[i]
+            for(var j in its) {
+                count++;
+                this.putitem(i, its[j], ()=>{
+                    count--;
+                    if(count == 0 && callback) {
+                        callback();
+                    }
+                })
+            }
+        }
+    }
 }
 
 class Department {

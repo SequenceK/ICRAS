@@ -212,8 +212,7 @@ class Profile {
   }
 
   save() {
-    if(this.item) {
-      DB.putitem(this.db, this.item, ()=>{
+      DB.saveCached(()=>{
         AppToaster.show({
           message: `Save Successful`,
           icon: Icons.SAVE,
@@ -221,7 +220,7 @@ class Profile {
         });
         pstate.changed = false;
       });
-    }
+    
   }
 
   openadd() {
@@ -472,12 +471,12 @@ class ConfigureParams {
     if(!Dept.types) {
       return ""
     }
-    this.typesEditor = new JSE.default(vnode.dom, {mode: 'text'})
+    this.typesEditor = new JSE.default(vnode.dom, {mode: 'code', enableSort: false, sortObjectKeys: false})
     this.typesEditor.set(Dept.types)
   }
   onupdate(vnode) {
     if(!this.typesEditor && Dept.types) {
-      this.typesEditor = new JSE.default(vnode.dom, {mode: 'text'})
+      this.typesEditor = new JSE.default(vnode.dom, {mode: 'code', enableSort: false, sortObjectKeys: false})
       this.typesEditor.set(Dept.types)
     }
   }
@@ -528,7 +527,7 @@ class App {
     return m('div', [m(Header), body, 
       m(AppToaster, {
       clearOnEscapeKey: true,
-      position: "top-end"
+      position: "top"
     }),
     m(OverlayWindow, {isOpen: !Dept.isLoggedIn && page != "home", content:m(Login)}),
     //m(SaveDialog)

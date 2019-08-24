@@ -16525,6 +16525,27 @@ function () {
         console.error(error);
       });
     }
+  }, {
+    key: "saveCached",
+    value: function saveCached() {
+      var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      var count = 0;
+
+      for (var i in this.items) {
+        var its = this.items[i];
+
+        for (var j in its) {
+          count++;
+          this.putitem(i, its[j], function () {
+            count--;
+
+            if (count == 0 && callback) {
+              callback();
+            }
+          });
+        }
+      }
+    }
   }]);
 
   return DBUtil;
@@ -17048,6 +17069,7 @@ function () {
         id: this.fid,
         name: this.ftype,
         value: value,
+        fluid: true,
         onchange: function onchange(e) {
           _this7.selectedItem[_this7.fid] = parseInt(e.target.value);
           exports.pstate.changed = true;
@@ -17085,6 +17107,7 @@ function () {
         id: this.fid,
         name: this.ftype,
         value: value,
+        fluid: true,
         onchange: function onchange(e) {
           _this8.selectedItem[_this8.fid] = e.target.value;
           exports.pstate.changed = true;
@@ -17497,8 +17520,20 @@ function () {
   _createClass(Properties, [{
     key: "generateView",
     value: function generateView(type) {
+      var longforms = {};
+
       for (var f in type) {
-        this.propForm.push(getComponent(f, type[f], this.selectedItem));
+        var len = type[f].length;
+
+        if (type[f][len - 1] == "]" || type[f][len - 1] == "*") {
+          longforms[f] = type[f];
+        } else {
+          this.propForm.push(getComponent(f, type[f], this.selectedItem));
+        }
+      }
+
+      for (var f in longforms) {
+        this.propForm.push(getComponent(f, longforms[f], this.selectedItem));
       }
     }
   }, {
@@ -17522,7 +17557,7 @@ function () {
         })]);
       }
 
-      return mithril_1.default(".profile-form", {}, [mithril_1.default("br"), mithril_1.default("fieldset.properties", [mithril_1.default("legend.properties-legend", "Properties"), this.propForm]), mithril_1.default("br"), constraintsElem]);
+      return mithril_1.default("form.profile-form", {}, [mithril_1.default("br"), mithril_1.default("fieldset.properties", [mithril_1.default("legend.properties-legend", "Properties"), this.propForm]), mithril_1.default("br"), constraintsElem]);
     }
   }]);
 
@@ -18067,16 +18102,14 @@ function () {
   }, {
     key: "save",
     value: function save() {
-      if (this.item) {
-        util_1.DB.putitem(this.db, this.item, function () {
-          util_1.AppToaster.show({
-            message: "Save Successful",
-            icon: construct_ui_1.Icons.SAVE,
-            timeout: 1000
-          });
-          type_components_1.pstate.changed = false;
+      util_1.DB.saveCached(function () {
+        util_1.AppToaster.show({
+          message: "Save Successful",
+          icon: construct_ui_1.Icons.SAVE,
+          timeout: 1000
         });
-      }
+        type_components_1.pstate.changed = false;
+      });
     }
   }, {
     key: "openadd",
@@ -18440,7 +18473,9 @@ function () {
       }
 
       this.typesEditor = new JSE.default(vnode.dom, {
-        mode: 'text'
+        mode: 'code',
+        enableSort: false,
+        sortObjectKeys: false
       });
       this.typesEditor.set(util_1.Dept.types);
     }
@@ -18449,7 +18484,9 @@ function () {
     value: function onupdate(vnode) {
       if (!this.typesEditor && util_1.Dept.types) {
         this.typesEditor = new JSE.default(vnode.dom, {
-          mode: 'text'
+          mode: 'code',
+          enableSort: false,
+          sortObjectKeys: false
         });
         this.typesEditor.set(util_1.Dept.types);
       }
@@ -18524,7 +18561,7 @@ function () {
 
       return mithril_1.default('div', [mithril_1.default(Header), body, mithril_1.default(util_1.AppToaster, {
         clearOnEscapeKey: true,
-        position: "top-end"
+        position: "top"
       }), mithril_1.default(util_1.OverlayWindow, {
         isOpen: !util_1.Dept.isLoggedIn && page != "home",
         content: mithril_1.default(Login)
@@ -18568,7 +18605,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65283" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54335" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
