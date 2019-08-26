@@ -52,6 +52,8 @@ func apibuild(c echo.Context) error {
 		state.generateCandidates()
 		websocket.Message.Send(ws, "Ranking Candidates<br>")
 		state.rankCandidates()
+		websocket.Message.Send(ws, "Checking Logic<br>")
+		state.checkLogic()
 		websocket.Message.Send(ws, "Solving System<br>")
 		state.solve()
 		websocket.Message.Send(ws, "Creating XLSX file<br>")

@@ -44,12 +44,25 @@ func (state *state) solve() {
 
 func (state *state) resolveLecture(lecture *lecture) bool {
 	if state.courseMaxInstructors[lecture.course.name] == state.courseAssignedInstructors[lecture.course.name] {
-		state.write(fmt.Sprintf("<font color=\"red\"> Not enough instructors assinged to Course %s</font><br>", lecture.course.name))
+		//state.write(fmt.Sprintf("<font color=\"red\"> Not enough instructors assinged to Course %s</font><br>", lecture.course.name))
 		lecture.resolved = true
 		return true
 	}
 
 	lecture.resolving = true
+
+	assigned := 0
+	for _, ins := range lecture.instructorCandidates {
+		if ins.lectureAssigmentCount[lecture.course.name] == ins.lectureAssigmentLimit[lecture.course.name] {
+			assigned++
+		}
+	}
+
+	// if assigned == len(lecture.instructorCandidates) {
+	// 	state.write(fmt.Sprintf("<font color=\"red\"> No available instructor candidates for  %s_%v</font><br>", lecture.course.name, lecture.jsonobj["section"]))
+	// 	lecture.resolved = true
+	// 	return true
+	// }
 
 	var iresolveStatus bool
 	var rresolveStatus bool
@@ -79,9 +92,10 @@ func (state *state) resolveLecture(lecture *lecture) bool {
 				continue
 			}
 
-			rresolveStatus = state.resolveLecturesOf(lecture.assignedInstructor)
+			rresolveStatus = state.resolveLecturesOf(lecture.assignedRoom)
 			if !rresolveStatus {
 				lecture.resetInstructors(state)
+				iresolveStatus = false
 				continue
 			}
 
@@ -96,10 +110,12 @@ func (state *state) resolveLecture(lecture *lecture) bool {
 			continue
 		}
 
-		tresolveStatus = state.resolveLecturesOf(lecture.assignedInstructor)
+		tresolveStatus = state.resolveLecturesOf(lecture.assignedTimeslot)
 		if !tresolveStatus {
 			lecture.resetInstructors(state)
 			lecture.resetRooms()
+			iresolveStatus = false
+			tresolveStatus = false
 			continue
 		}
 

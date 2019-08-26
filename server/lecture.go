@@ -16,7 +16,7 @@ type lecture struct {
 
 	assignedInstructor   *instructor
 	instructorCandidates []*instructor
-	vistedInstructors    map[*instructor]bool
+	vistedInstructors    map[string]bool
 
 	assignedRoom   *room
 	roomCandidates []*room
@@ -46,7 +46,7 @@ func (lecture *lecture) init(coursejsonobj, jsonobj map[string]interface{}) {
 	lecture.jsonobj = jsonobj
 	lecture.coursejsonobj = coursejsonobj
 	lecture.vistedTimeslots = map[*timeslot]bool{}
-	lecture.vistedInstructors = map[*instructor]bool{}
+	lecture.vistedInstructors = map[string]bool{}
 	lecture.vistedRooms = map[*room]bool{}
 }
 
@@ -91,9 +91,10 @@ func (lecture *lecture) setInstructor(state *state) bool {
 		lecture.unassignInstructor(state)
 	}
 	for _, instructor := range lecture.instructorCandidates {
-		if !lecture.vistedInstructors[instructor] && instructor.validLecture(lecture, state) {
+		if !lecture.vistedInstructors[instructor.name] && instructor.validLecture(lecture, state) {
+			lecture.vistedInstructors[instructor.name] = true
 			lecture.assignInstructor(instructor, state)
-			lecture.vistedInstructors[instructor] = true
+
 			return true
 		}
 		// } else {
@@ -145,7 +146,7 @@ func (lecture *lecture) resetInstructors(state *state) {
 	if lecture.assignedInstructor != nil {
 		lecture.unassignInstructor(state)
 	}
-	lecture.vistedInstructors = map[*instructor]bool{}
+	lecture.vistedInstructors = map[string]bool{}
 }
 
 func (lecture *lecture) resetTimeslots() {

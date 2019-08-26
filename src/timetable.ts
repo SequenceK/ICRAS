@@ -5,7 +5,8 @@ import { saveAs } from 'file-saver';
 
 
 export class TimetableBody {
-  log: string = "";
+  log: string[] = [];
+  logcount: number = 0;
 
   view(vnode: any) {
 
@@ -24,20 +25,25 @@ export class TimetableBody {
       ".profile",
       [
         m(".profile-top", [b, d]),
-        m(".console-like", m.trust(this.log))
+        m(".console-like", m.trust(this.log.join("")))
       ]
     )
   }
 
   build() {
-    this.log = "";
+    this.log = [];
+    this.logcount = 0;
     var ws = new WebSocket("ws://" + location.host + "/icras/build")
     ws.onopen = () => {
       ws.send(Dept.obj["_id"])
     }
 
     ws.onmessage = (msg) => {
-        this.log += msg.data;
+        if(this.logcount > 100) {
+          this.logcount = 0;
+        }
+        this.log[this.logcount] = msg.data;
+        this.logcount++;
         m.redraw();
     }
   }

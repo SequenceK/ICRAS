@@ -161,6 +161,28 @@ func (state *state) rankCandidates() {
 	}
 }
 
+func (state *state) checkLogic() {
+	for _, ins := range state.instructors {
+		cslots := 0
+		for c, limit := range ins.lectureAssigmentLimit {
+			cslots += limit
+			//state.write(fmt.Sprintf("instructor %s course %s limit %d rank %d crank %d <br>", ins.name, c, limit, ins.rank, ins.courseRank[c]))
+			if (int(ins.courseRank[c]) < limit) || (int(ins.rank) < limit) {
+				state.write(fmt.Sprintf("<font color=\"red\">logic error: not enough timeslots for instructor %s</font><br>", ins.name))
+				if int(ins.rank) < limit {
+					state.courseMaxInstructors[c] -= uint(limit - int(ins.rank))
+					ins.lectureAssigmentLimit[c] = int(ins.rank)
+				} else {
+					state.courseMaxInstructors[c] -= uint(limit - int(ins.courseRank[c]))
+					ins.lectureAssigmentLimit[c] = int(ins.courseRank[c])
+				}
+			}
+
+		}
+
+	}
+}
+
 func (state *state) generateXLSX() {
 	files := map[*department]*excelize.File{}
 	for _, dep := range state.departments {

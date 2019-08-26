@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 type instructor struct {
 	jsonobj               map[string]interface{}
 	name                  string
@@ -104,13 +106,26 @@ func (instructor *instructor) validLecture(lecture *lecture, state *state) bool 
 }
 
 func (instructor *instructor) generateRank(state *state) {
-	for _, timeslot := range state.timeslots {
-		if instructor.constraints.checkTimeslot(timeslot) {
-			instructor.rank++
-		}
-		for course, cons := range instructor.courseConstraints {
-			if cons.checkTimeslot(timeslot) {
-				instructor.courseRank[course]++
+	for course, lecs := range instructor.lectureCandidates {
+		visted := map[string]bool{}
+		for _, lec := range lecs {
+			for _, ts := range lec.timeslots {
+				if !visted[ts.datahash] {
+					visted[ts.datahash] = true
+					cons, ok := instructor.courseConstraints[course]
+
+					if ok {
+						if cons.checkTimeslot(ts) {
+							instructor.courseRank[course]++
+						}
+					}
+					if instructor.constraints.checkTimeslot(ts) {
+						if instructor.name[0] == 'G' {
+							state.write(fmt.Sprintf("instructor %s timeslot %s<br>", instructor.name, ts.datahash))
+						}
+						instructor.rank++
+					}
+				}
 			}
 		}
 	}

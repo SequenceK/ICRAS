@@ -17677,7 +17677,8 @@ function () {
   function TimetableBody() {
     _classCallCheck(this, TimetableBody);
 
-    this.log = "";
+    this.log = [];
+    this.logcount = 0;
   }
 
   _createClass(TimetableBody, [{
@@ -17699,14 +17700,15 @@ function () {
           _this.download();
         }
       });
-      return mithril_1.default(".profile", [mithril_1.default(".profile-top", [b, d]), mithril_1.default(".console-like", mithril_1.default.trust(this.log))]);
+      return mithril_1.default(".profile", [mithril_1.default(".profile-top", [b, d]), mithril_1.default(".console-like", mithril_1.default.trust(this.log.join("")))]);
     }
   }, {
     key: "build",
     value: function build() {
       var _this2 = this;
 
-      this.log = "";
+      this.log = [];
+      this.logcount = 0;
       var ws = new WebSocket("ws://" + location.host + "/icras/build");
 
       ws.onopen = function () {
@@ -17714,7 +17716,12 @@ function () {
       };
 
       ws.onmessage = function (msg) {
-        _this2.log += msg.data;
+        if (_this2.logcount > 100) {
+          _this2.logcount = 0;
+        }
+
+        _this2.log[_this2.logcount] = msg.data;
+        _this2.logcount++;
         mithril_1.default.redraw();
       };
     }
@@ -18605,7 +18612,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54335" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64386" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
