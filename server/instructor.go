@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 type instructor struct {
 	jsonobj               map[string]interface{}
 	name                  string
@@ -120,9 +118,6 @@ func (instructor *instructor) generateRank(state *state) {
 						}
 					}
 					if instructor.constraints.checkTimeslot(ts) {
-						if instructor.name[0] == 'G' {
-							state.write(fmt.Sprintf("instructor %s timeslot %s<br>", instructor.name, ts.datahash))
-						}
 						instructor.rank++
 					}
 				}
