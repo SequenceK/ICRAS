@@ -1,5 +1,4 @@
 import m from 'mithril';
-import { Toaster, Icons, Overlay, Card } from 'construct-ui';
 
 export interface IListLabel {
     _id : string;
@@ -29,7 +28,6 @@ export function eraseCookie(name) {
     document.cookie = name+'=; Max-Age=-99999999;';  
 }
 
-export const AppToaster = new Toaster();
 export class DBUtil {
     lists : any = {};
     items : any = {};
@@ -246,33 +244,3 @@ class Department {
 
 export var DB = new DBUtil();
 export var Dept = new Department();
-
-
-
-export class OverlayWindow {
-    view(vnode : any) {
-        const style = {
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 100
-          };
-        
-          const cardStyles = {
-            margin: '40px auto'
-          };
-        
-          const content = m('', { style }, [
-            m(Card, { style: cardStyles }, [
-              vnode.attrs.content
-            ])
-          ]);
-
-        return m(Overlay, {
-            isOpen: vnode.attrs.isOpen,
-            content: content
-        })
-    }
-}

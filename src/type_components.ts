@@ -1,6 +1,5 @@
 import 'flatpickr/dist/themes/light.css'
 import Flatpickr from "flatpickr";
-import 'construct-ui/lib/index.css'
 import m from 'mithril';
 import {
   Button,
@@ -259,27 +258,6 @@ class IntInput {
   }
 }
 
-class StringInput {
-  selectedItem : any;
-  fid : string;
-  ftype : string;
-  view(vnode: any) {
-    this.selectedItem = vnode.attrs.selectedItem;
-    this.fid = vnode.attrs.fid;
-    this.ftype = vnode.attrs.ftype;
-    var value = null;
-    if(this.selectedItem[this.fid]){
-      value = this.selectedItem[this.fid];
-    }
-    return m(Input, {
-      id: this.fid,
-      name: this.ftype,
-      value: value,
-      fluid: true,
-      onchange: (e:Event) => {this.selectedItem[this.fid] = (e.target as HTMLInputElement).value;pstate.changed = true;}
-    });
-  }
-}
 
 function getComponent(fid : string, ftype : string, item : any) {
     const span = {
@@ -604,50 +582,7 @@ class Constraints {
   
 }
 
-export class Properties {
-  propForm: any[] = [];
-  active : string | any[] = "p";
-  loading: boolean = false;
-  formBody: any;
-  selectedItem : any = {};
 
-  generateView(type) {
-    var longforms = {}
-
-    for(var f in type) {
-      var len = (type[f] as string).length
-      if ((type[f][len-1] == "]") || (type[f][len-1] == "*")){
-        longforms[f] = type[f]
-      } else {
-        this.propForm.push(getComponent(f, type[f], this.selectedItem));
-      }
-    }
-    for(var f in longforms) {
-      this.propForm.push(getComponent(f, longforms[f], this.selectedItem));
-    }
-  }
-
-  view(vnode: any) {
-    var type = vnode.attrs.type;
-    this.selectedItem = vnode.attrs.selectedItem;
-    this.selectedItem.type = type;
-    this.propForm = [];
-    if(Dept.types[type]) {
-      this.generateView(Dept.types[type]);
-    }
-
-    var constraintsElem : any = []
-    if(Dept.constraints.for[type]) {
-      constraintsElem = m("fieldset.properties", [m("legend.properties-legend", "Constraints"), m(Constraints, {selectedItem: this.selectedItem, type: type})])
-    }
-    return m("form.profile-form", {}, [
-      m("br"),
-      m("fieldset.properties", [m("legend.properties-legend", "Properties"), this.propForm]),
-      m("br"),
-      constraintsElem
-    ]);
-  }
-}
 
 let QList = SelectList.ofType<string>();
 class Selector {

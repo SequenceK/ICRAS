@@ -1,95 +1,80 @@
-import 'construct-ui/lib/index.css'
 import m, { Vnode } from 'mithril';
-import {
-  Button,
-  Icons,
-  SelectList,
-  ListItem,
-  Icon,
-  Tabs,
-  TabItem,
-  Overlay,
-  Input,
-  Card,
-} from "construct-ui";
-import { Properties as Properties, pstate } from './type_components';
-import { DB, AppToaster, OverlayWindow, Dept, getCookie, eraseCookie } from './util';
-import { TimetableBody } from './timetable';
+import { DB, Dept, getCookie, eraseCookie } from './util';
+import { BuildTabBody } from './buildtab';
 import "jsoneditor/dist/jsoneditor.min.css";
 import * as JSE from 'jsoneditor/dist/jsoneditor.min.js';
 import readme from './readme.md';
 
-let QList = SelectList.ofType<string>();
-class Configurator {
-  private list : string[];
-  private selectedItem: string;
-  private closeOnSelect = true;
-  private header = false;
-  private footer = false;
-  private loading = false;
-  private db : string;
-  private profile: Profile;
+// class Configurator {
+//   private list : string[];
+//   private selectedItem: string;
+//   private closeOnSelect = true;
+//   private header = false;
+//   private footer = false;
+//   private loading = false;
+//   private db : string;
+//   private profile: Profile;
 
-  public view(vnode: any) {
-    this.profile = vnode.attrs.profile;
+//   public view(vnode: any) {
+//     this.profile = vnode.attrs.profile;
 
-    if(this.profile.db != this.db) {
-      this.selectedItem = null;
-      this.profile.reset();
-    }
-    this.db = this.profile.db;
-    this.list = Dept.getlist(this.db);
+//     if(this.profile.db != this.db) {
+//       this.selectedItem = null;
+//       this.profile.reset();
+//     }
+//     this.db = this.profile.db;
+//     this.list = Dept.getlist(this.db);
 
     
-    if(this.list == null) {
-      this.list = [];
-      this.selectedItem = "";
-      this.loading = true;
-    } else {
-      this.loading = false;
-    }
+//     if(this.list == null) {
+//       this.list = [];
+//       this.selectedItem = "";
+//       this.loading = true;
+//     } else {
+//       this.loading = false;
+//     }
   
-    return m(QList, {
-          closeOnSelect: this.closeOnSelect,
-          items: this.list,
-          itemRender: this.renderItem,
-          itemPredicate: this.itemPredicate,
-          onSelect: this.handleSelect,
-          loading: this.loading,
-          popoverAttrs: {
-            hasArrow: true,
-            position: "auto"
-          },
-          trigger: m(Button, {
-            size: "xl",
-            iconRight: Icons.CHEVRON_DOWN,
-            sublabel: this.profile.type,
-            label: this.profile.id && this.profile.id.substring(0,20),
-          })
-      })
-  }
+//     return m(QList, {
+//           closeOnSelect: this.closeOnSelect,
+//           items: this.list,
+//           itemRender: this.renderItem,
+//           itemPredicate: this.itemPredicate,
+//           onSelect: this.handleSelect,
+//           loading: this.loading,
+//           popoverAttrs: {
+//             hasArrow: true,
+//             position: "auto"
+//           },
+//           trigger: m(Button, {
+//             size: "xl",
+//             iconRight: Icons.CHEVRON_DOWN,
+//             sublabel: this.profile.type,
+//             label: this.profile.id && this.profile.id.substring(0,20),
+//           })
+//       })
+//   }
 
-  private renderItem = (item: string) => m(ListItem, {
-    label: item,
-    selected: this.profile.id === item,
-  })
+//   private renderItem = (item: string) => m(ListItem, {
+//     label: item,
+//     selected: this.profile.id === item,
+//   })
 
-  private itemPredicate(query: string, item: string) {
-    return item.toLowerCase().includes(query.toLowerCase());
-  }
+//   private itemPredicate(query: string, item: string) {
+//     return item.toLowerCase().includes(query.toLowerCase());
+//   }
 
-  private handleSelect = (item: string) => {
-    this.selectedItem = item;
-    this.profile.id = item;
-    this.profile.load();
-    m.route.set("icras/tab/"+this.profile.type+"/"+this.profile.id)
-    m.redraw();
-  }
+//   private handleSelect = (item: string) => {
+//     this.selectedItem = item;
+//     this.profile.id = item;
+//     this.profile.load();
+//     m.route.set("icras/tab/"+this.profile.type+"/"+this.profile.id)
+//     m.redraw();
+//   }
 
-}
+// }
 class Home {
   view(vnode: any) {
-    return m(".home", [
+    return m("p.text-justify", [
       m.trust(readme)
     ])
   }
@@ -133,24 +118,6 @@ class Profile {
       margin: '40px auto'
     };
 
-    const content = m('', { style }, [
-      m(Card, { style: cardStyles }, [
-        m('h3', 'Enter ID'),
-        m(Input, {
-          value: this.newid,
-          onchange: (e:Event) => {this.newid = (e.target as HTMLInputElement).value;pstate.changed = true;}
-        }),
-        m("br"),
-        m(Button, {
-          label: 'Create',
-          onclick: () => this.createNew()
-        }),
-        m(Button, {
-          label: 'Close',
-          onclick: () => this.creationOverlay = false
-        })
-      ])
-    ]);
 
     this.type = m.route.param("type");
     
@@ -172,32 +139,16 @@ class Profile {
       last_selected_id[this.type] = this.id;
     }
 
-    
-    var props = m("div");
-    if(this.item) {
-      props = m(Properties, {type:this.type, selectedItem: this.item})
-    }
+  
     return m(".profile",[
       m(".profile-top", [
-        m(Configurator, {profile: this}),
-        m(Button, {label: "Add", onclick: ()=>this.openadd(), size: "xl"}),
-        m(Button, {label: "Remove", onclick: ()=>this.remove(), size: "xl"}),
-        m(Button, {label: "Create", onclick: ()=>this.opencreate(), size: "xl"}),
-        m(Button, {label: "Delete", onclick: ()=>this.delete(), size: "xl"}),
-        m(Button, {label: "Save", onclick: ()=>this.save(), class: "profile-top-right", size: "xl"})
+        m("button", {profile: this}),
+        m("button", {label: "Add", onclick: ()=>this.openadd(), size: "xl"}),
+        m("button", {label: "Remove", onclick: ()=>this.remove(), size: "xl"}),
+        m("button", {label: "Create", onclick: ()=>this.opencreate(), size: "xl"}),
+        m("button", {label: "Delete", onclick: ()=>this.delete(), size: "xl"}),
+        m("button", {label: "Save", onclick: ()=>this.save(), class: "profile-top-right", size: "xl"})
       ]),
-      props,
-      m(Overlay, {
-        isOpen: this.creationOverlay,
-        content
-      }),
-      m(OverlayWindow, {isOpen: this.addoverlay, content: [
-        m("h3", "Add"),
-        m(Selector, {type: this.type, db: this.db, onselect: (id)=>{
-          this.add(id)
-        }}),
-        m(Button, {label:"cancel", onclick:()=>{this.addoverlay = false;}})
-      ]})
     ])
   }
 
@@ -213,12 +164,7 @@ class Profile {
 
   save() {
       DB.saveCached(()=>{
-        AppToaster.show({
-          message: `Save Successful`,
-          icon: Icons.SAVE,
-          timeout: 1000,
-        });
-        pstate.changed = false;
+        //pstate.changed = false;
       });
     
   }
@@ -277,190 +223,36 @@ class Tab {
 }
 
 const tabs = [
-  new Tab([m(Icon, {
-    name: Icons.HOME,
-    style: 'margin-right: 5px'
-  }), 'ICRAS'], Home, {type: "home", href: "icras/home/"}),
+  new Tab('ICRAS', Home, {type: "home", href: "icras/home/"}),
   new Tab('Instructors',Profile, {type:"instructor", db: "instructors", href: "icras/tab/instructor/"}),
   new Tab('Courses',Profile, {type:"course", db: "courses", href: "icras/tab/course/"}),
   new Tab('Rooms', Profile, {type:"room", db: "rooms", href: "icras/tab/room/"}),
-  new Tab('Timetable', Profile, {href: "icras/timetable/"}),
+  new Tab('Build', Profile, {href: "icras/build/"}),
   new Tab('Configure', Profile, {href: "icras/configure/"}),
   new Tab('Logout', Profile, {href: "icras/logout"})
 ];
 
 var Body = tabs[0]
 class Header {
-  private active: string | any[] = 'Projects';
+  private active: string | any[] = 'ICRAS';
   private isLoading: boolean = false;
 
   view(vnode: any) {
-    return m('.topnav', {}, [
-      m(Tabs, {
-        align: "center",
-        fluid: true,
-        bordered: true,
-        size: "lg",
-        class: "topnav-tabs"
-      }, [
-        tabs.map(item => m(TabItem, {
+    this.active = m.route.param("page");
+    return m('nav.UnderlineNav', m('.UnderlineNav-body',
+        tabs.map(item => m("a", {
             label: item.tabobj,
             active: this.active === item.tabobj,
             loading: item.tabobj === 'Projects' && this.isLoading,
             onclick: m.route.link,
             align: "center",
-            class: "topnav-tab",
+            class: this.active === item.tabobj? "UnderlineNav-item selected" : "UnderlineNav-item",
             href: item.attrs.href,
             oncreate: m.route.link
-          }))
-        ])
-    ]);
+          }, item.tabobj)))
+    );
   }
 };
-
-class Selector {
-  private list : string[];
-  private selectedItem: string;
-  private closeOnSelect = true;
-  private loading = false;
-  private db : string;
-  private type : string;
-  private onselect: any;
-  private initialvalue : any;
-
-  public view(vnode: any) {
-    this.type = vnode.attrs.type;
-    this.db = vnode.attrs.db;
-    this.onselect = vnode.attrs.onselect;
-
-    if(this.initialvalue != null && !this.selectedItem) {
-      this.selectedItem = this.initialvalue;
-    }
-
-    DB.getList(this.db, (list)=>{
-      this.list = list;
-    });
-
-    
-    if(this.list == null) {
-      this.list = [];
-      this.selectedItem = "";
-      this.loading = true;
-    } else {
-      this.loading = false;
-    }
-  
-    return m(QList, {
-          closeOnSelect: this.closeOnSelect,
-          items: this.list,
-          itemRender: this.renderItem,
-          itemPredicate: this.itemPredicate,
-          onSelect: this.handleSelect,
-          loading: this.loading,
-          popoverAttrs: {
-            hasArrow: true,
-            position: "auto"
-          },
-          trigger: m(Button, {
-            iconRight: Icons.CHEVRON_DOWN,
-            sublabel: this.type,
-            label: this.selectedItem && this.selectedItem.substring(0,20),
-          })
-      })
-  }
-
-  private renderItem = (item: string) => m(ListItem, {
-    label: item,
-    selected: this.selectedItem === item,
-  })
-
-  private itemPredicate(query: string, item: string) {
-    return item.toLowerCase().includes(query.toLowerCase());
-  }
-
-  private handleSelect = (item: string) => {
-    this.selectedItem = item;
-    this.onselect(item);
-  }
-
-}
-
-class Login {
-  selectedDep : string;
-  view(vnode: any) {
-    var dep = getCookie("department")
-    if(dep) {
-      Dept.login(dep)
-    }
-    return [
-      m("h4", "Select Department"),
-      m(Selector, {type:"Department", db: "departments", onselect: (item)=>{this.onselect(item)}}),
-      m(Button, {label: "login", onclick: ()=>this.login()})
-    ]
-  }
-
-  onselect(item) {
-    this.selectedDep = item;
-  }
-
-  login() {
-    Dept.login(this.selectedDep, ()=>{
-      this.onlogin();
-    })
-  }
-
-  onlogin() {
-
-  }
-}
-
-class SaveDialog {
-  page:string;
-  type:string;
-  id:string;
-  saveDialog:boolean = false;
-  view(vnode: any) {
-    var page = m.route.param("page");
-    var type = m.route.param("type");
-    var id = m.route.param("id");
-    console.log("ASDFASDF")
-    if(pstate.changed) {
-      if(page != this.page || type != this.type || id != this.id) {
-        this.saveDialog = true;
-      }
-    } else {
-      this.page = page
-      this.type = type
-      this.id = id
-    }
-    return [
-      m(OverlayWindow, {isOpen: this.saveDialog, content:[
-      m("h4", "Save Changes?"),
-      m(Button, {label: "Save", onclick: ()=>this.save()}),
-      m(Button, {label: "Discard", onclick: ()=>this.discard()}),
-    ]})
-  ]
-  }
-
-  save() {
-    DB.putitem(type_map[this.type], DB.getItem(type_map[this.type], this.id), ()=>{
-        this.saveDialog = false;
-        pstate.changed = false;
-    })
-  }
-
-  discard() {
-    DB.loadItem(type_map[this.type], this.id, ()=>{
-      this.saveDialog = false;
-      pstate.changed = false;
-    })
-  }
-
-  cancel() {
-    this.saveDialog = false;
-    m.route.set("icras/"+this.page+"/"+this.type+"/"+this.id)
-  }
-}
 
 
 
@@ -486,7 +278,7 @@ class ConfigureParams {
     }
     return m(".profile",[
       m(".profile-top", [
-        m(Button, {label:"Save", size:"xl", onclick: ()=>this.save()})
+        m("button", {label:"Save", size:"xl", onclick: ()=>this.save()})
       ])
     ])
   }
@@ -510,8 +302,8 @@ class App {
       case "home":
         body = m(Home)
         break
-      case "timetable":
-        body = m(TimetableBody)
+      case "build":
+        body = m(BuildTabBody)
         break
       case "configure":
         body = m(ConfigureParams)
@@ -524,12 +316,7 @@ class App {
       default:
         body = "404"
     }
-    return m('div', [m(Header), body, 
-      m(AppToaster, {
-      clearOnEscapeKey: true,
-      position: "top"
-    }),
-    m(OverlayWindow, {isOpen: !Dept.isLoggedIn && page != "home", content:m(Login)}),
+    return m("div", [m(Header), m('.container', body) 
     //m(SaveDialog)
   ]);
   }

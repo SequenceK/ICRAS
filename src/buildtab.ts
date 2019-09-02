@@ -1,25 +1,23 @@
-import { Button } from "construct-ui";
+
 import m, { Vnode } from 'mithril';
 import { Dept } from './util';
 import { saveAs } from 'file-saver';
 
 
-export class TimetableBody {
+export class BuildTabBody {
   log: string[] = [];
   logcount: number = 0;
 
   view(vnode: any) {
 
-    var b = m(Button, {
-      label: "Build",
+    var b = m("button.btn", {
       size: "xl",
       onclick: () => { this.build() }
-    })
-    var d = m(Button, {
-      label: "Download XLSX File",
+    }, "Build")
+    var d = m("button.btn", {
       size: "xl",
       onclick: () => { this.download() }
-    })
+    }, "Download XLSX File")
 
     return m(
       ".profile",
