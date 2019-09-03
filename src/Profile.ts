@@ -28,14 +28,12 @@ export class Profile {
             return "";
         }
           this.type = m.route.param("type");
-          
           var tdb = type_map[this.type];
           var id = m.route.param("id")
-          if(this.db != tdb && this.id != id) {
+
+          if(this.db != tdb || this.id != id) {
             this.id = id;
             this.db = tdb;
-            this.item = null;
-            last_selected_id[this.type] = id;
             this.load();
           }
           this.db = tdb;
@@ -49,14 +47,18 @@ export class Profile {
           if(this.id) {
             last_selected_id[this.type] = this.id;
           }
-          return m("div", [
-              m('.btn-group',{role:"group"},[
-                  m(FDeptPointer, {ptype:this.getDB(), pid:this.id, value:this.id, vupdate:this.onselect}),
-                  m("button", { onclick: ()=>this.openadd(), class:'btn btn-secondary'}, "Add"),
-                    m("button", { onclick: ()=>this.remove(), class:'btn btn-secondary'}, "Remove"),
-                    m("button", { onclick: ()=>this.opencreate(), class:'btn btn-secondary'}, "Create"),
-                    m("button", { onclick: ()=>this.delete(), class:'btn btn-secondary'}, "Delete"),
-                    m("button", { onclick: ()=>this.save(), class: "btn btn-primary"}, "Save")
+          if(!this.item) {
+            this.load();
+          }
+
+          return m(".profile", [
+              m('.profile-top',{role:"group"},[
+                  m(FDeptPointer, {ptype:this.getDB(), pid:this.id, value:this.id, vupdate:this.onselect, class:"btn btn-outline-secondary"}),
+                  m("button", { onclick: ()=>this.openadd(), class:'btn btn-secondary btn-sm'}, "Add"),
+                    m("button", { onclick: ()=>this.remove(), class:'btn btn-secondary btn-sm'}, "Remove"),
+                    m("button", { onclick: ()=>this.opencreate(), class:'btn btn-secondary btn-sm'}, "Create"),
+                    m("button", { onclick: ()=>this.delete(), class:'btn btn-secondary btn-sm'}, "Delete"),
+                    m("button", { onclick: ()=>this.save(), class: "btn btn-primary btn-large"}, "Save")
               ]),
               m(PForm,{type:this.type, object:this.item})
           ])
@@ -65,21 +67,15 @@ export class Profile {
     }
     onselect = (v)=>{
         if(v) {
-            this.id=v;
-            m.route.set("icras/tab/"+this.type+"/"+this.id);
-            this.load();
+            m.route.set("icras/tab/"+this.type+"/"+v);
+            this.item = DB.getItem(this.db, v);
         }
     }
     load() {
-        DB.getItem(this.db, this.id, (obj)=>{
-          this.item = obj;
-          m.redraw();
-        });
-      }
+      this.item = DB.getItem(this.db, this.id);
+    }
     
       reset() {
-        
-        m.redraw();
       }
     
       save() {

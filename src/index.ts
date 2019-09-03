@@ -1,8 +1,8 @@
 import 'construct-ui/lib/index.css'
+import './scss/custom.scss'
 import m, { Vnode } from 'mithril';
 import { DB, Dept, getCookie, eraseCookie, OverlayWindow } from './util';
 import { BuildTabBody } from './buildtab';
-import * as JSE from 'jsoneditor/dist/jsoneditor.min.js';
 import readme from './readme.md';
 import { LoginForm } from './LoginForm';
 import { Profile } from "./Profile";
@@ -20,26 +20,13 @@ class Home {
 class ConfigureParams {
   typesEditor : any;
 
-  oncreate(vnode:any) {
-    if(!Dept.types) {
-      return ""
-    }
-    this.typesEditor = new JSE.default(vnode.dom, {mode: 'code', enableSort: false, sortObjectKeys: false})
-    this.typesEditor.set(Dept.types)
-  }
-  onupdate(vnode) {
-    if(!this.typesEditor && Dept.types) {
-      this.typesEditor = new JSE.default(vnode.dom, {mode: 'code', enableSort: false, sortObjectKeys: false})
-      this.typesEditor.set(Dept.types)
-    }
-  }
   view(vnode : any) {
     if(!Dept.types) {
       return ""
     }
     return m(".profile",[
       m(".profile-top", [
-        m("button", {label:"Save", size:"xl", onclick: ()=>this.save()})
+        m("button", {onclick: ()=>this.save()}, "Save")
       ])
     ])
   }
@@ -79,7 +66,7 @@ class App {
     }
   
     return m("div", [m(Header), m('.container-fluid', body), 
-    m(OverlayWindow, {isOpen: !Dept.isLoggedIn && page != "home", content:m(LoginForm), title:m("h4","Login")}),
+    m(OverlayWindow, {isOpen: !Dept.isLoggedIn, content:m(LoginForm), title:m("h4","Login")}),
   ]);
   }
 

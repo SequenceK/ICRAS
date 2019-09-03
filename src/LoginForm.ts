@@ -11,10 +11,12 @@ export class LoginForm {
         if(dep) {
         Dept.login(dep)
         }
-        return m("div", [
+        return m("form", [
+            m(".form-group", [
                 m(FormLabel, "Select Department:"),
-                m(FDBPointer, {ptype:"departments", vupdate:(v)=>this.selectedDept=v, value: this.selectedDept, pid: this.selectedDept}),
-                m(Button, {type:"submit", onclick:()=>{this.login()}, label:"Login"}),
+                m(FDBPointer, {ptype:"departments", class: "btn btn-outline-secondary btn-sm btn-block", vupdate:(v)=>this.selectedDept=v, value: this.selectedDept, pid: this.selectedDept,})
+            ]),
+            m(Button, {type:"submit", onclick:()=>{this.login()}, label:"Login"}),
         ]);
     }
 

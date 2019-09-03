@@ -1,5 +1,5 @@
 import m from 'mithril';
-import { Card, Overlay } from 'construct-ui';
+import { Card, Overlay, Dialog } from 'construct-ui';
 
 export interface IListLabel {
     _id : string;
@@ -186,8 +186,6 @@ class Department {
                     }
                 })
             }
-
-            
         })
     }
 
@@ -252,29 +250,30 @@ export var Dept = new Department();
 
 export class OverlayWindow {
     view(vnode : any) {
-        const style = {
-            position: 'absolute',
-            "margin-left": 'auto',
-            "margin-right": 'auto',
-            left: 0,
-            right: 0,
-            zIndex: 100
-          };
+        // const style = {
+        //     position: 'absolute',
+        //     "margin-left": 'auto',
+        //     "margin-right": 'auto',
+        //     left: 0,
+        //     right: 0,
+        //     zIndex: 100
+        //   };
         
           const cardStyles = {
             margin: '40px auto'
           };
         
-          const content = m('', { style }, [
+          const content = m('', {  }, [
             m('.card.mx-auto', {}, 
-                m(".card-title", vnode.attrs.title),
+                m(".card-header", vnode.attrs.title),
                 m(".card-body", vnode.attrs.content)
             )
           ]);
 
-        return m(Overlay, {
+        return m(Dialog, {
             isOpen: vnode.attrs.isOpen,
-            content: content
+            content: content,
+
         })
     }
 }

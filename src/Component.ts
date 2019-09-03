@@ -7,22 +7,64 @@ export class FString {
     attrs : IAttrs;
     view(vnode : Vnode<IAttrs>) {
         this.attrs = vnode.attrs;
-        return m(Input, {
-            value: vnode.attrs.value,
-            onchange: this.onchange
+        return m("input", {
+            id: this.attrs.pid,
+            class: this.attrs.class,
+            value: this.attrs.value,
+            oncreate: this.inputcreated
         });
     }
-
+    inputcreated = (vnode)=>{
+        vnode.dom.addEventListener('input', this.onchange);
+        vnode.dom.addEventListener('propertychange', this.onchange);
+    }
     onchange = (e) => {
-        this.attrs.vupdate(e.target.value);
+        this.attrs.vupdate(e.srcElement.value);
     }
 }
 
 export class FInt {
+    attrs : IAttrs;
     view(vnode : Vnode<IAttrs>) {
-        return m("input", vnode.attrs);
+        this.attrs = vnode.attrs;
+        return m("input", {
+            type: "number",
+            id: this.attrs.pid,
+            class: this.attrs.class,
+            value: this.attrs.value,
+            oncreate: this.inputcreated
+        });
+    }
+    inputcreated = (vnode)=>{
+        vnode.dom.addEventListener('input', this.onchange);
+        vnode.dom.addEventListener('propertychange', this.onchange);
+    }
+    onchange = (e) => {
+        this.attrs.vupdate(e.srcElement.value);
     }
 }
+
+export class FBool {
+    attrs : IAttrs;
+    view(vnode : Vnode<IAttrs>) {
+        this.attrs = vnode.attrs;
+        return m("input", {
+            type: "checkbox",
+            id: this.attrs.pid,
+            class: this.attrs.class,
+            value: this.attrs.value,
+            oncreate: this.inputcreated
+        });
+    }
+    inputcreated = (vnode)=>{
+        vnode.dom.addEventListener('input', this.onchange);
+        vnode.dom.addEventListener('propertychange', this.onchange);
+    }
+    onchange = (e) => {
+        this.attrs.vupdate(e.srcElement.value);
+    }
+}
+
 
 const SList = SelectList.ofType<string>();
 export class FDBPointer {
@@ -34,17 +76,7 @@ export class FDBPointer {
     view(vnode : Vnode<IAttrs>) {
         this.attrs = vnode.attrs;
         if(this.attrs.ptype != this.listdb) {
-            DB.getList(this.attrs.ptype, (list)=>{
-                if(!list) {
-                    this.list = [];
-                } else {
-this.list = list;
-                this.listdb = this.attrs.ptype;
-                this.handleSelect(this.list[0])
-                m.redraw();
-                }
-                
-            })
+            this.list = DB.getList(this.attrs.ptype)   
         }
 
         this.loading = this.list == null;
@@ -60,14 +92,9 @@ this.list = list;
             popoverAttrs: {
                 hasArrow: false
               },
-            trigger: m(Button, {
-                class: "btn",
-                align: 'left',
-                sublabel: this.listdb,
-                compact: true,
-                iconRight: Icons.CHEVRON_DOWN,
-                label: this.attrs.value,
-              })
+            trigger: m("button", {
+                class: this.attrs.class,
+              }, this.attrs.value?this.attrs.value:"Select...")
 
             }, 
         )
@@ -114,7 +141,7 @@ export class FDeptPointer {
                 hasArrow: false
               },
             trigger: m("button", {
-                class: "btn btn-primary",
+                class: this.attrs.class,
               }, this.attrs.value)
 
             }, 
@@ -139,7 +166,7 @@ export class FDeptPointer {
 
 class UnsupportedType {
     view(vnode:any) {
-        return "Unsupported Component Type.";
+        return m(".form-control","Unsupported Component Type.");
     }
 }
 
@@ -152,7 +179,7 @@ export function getComponent(type) {
             return FString;
         break;
         case "bool":
-            //return FBool;
+            return FBool;
         break;
         case "time":
             //return FTime;
@@ -165,6 +192,9 @@ export function getComponent(type) {
                 } else {
                     //return FPointer;
                 }
+            }
+            else if(Dept.types[type]) {
+                //return Form with composite type
             }
         break;
     }

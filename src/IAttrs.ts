@@ -3,4 +3,5 @@ export interface IAttrs {
     ptype: string;
     vupdate: Function;
     value: any;
+    class?: string;
 }
