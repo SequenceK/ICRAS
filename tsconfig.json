@@ -3,7 +3,7 @@
       "allowSyntheticDefaultImports": true,
       "resolveJsonModule": true,
       "moduleResolution": "node",
-      "jsxFactory": "React.createElement",
+      "jsxFactory": "m",
       "jsx": "react",
       "target": "es6"
     }

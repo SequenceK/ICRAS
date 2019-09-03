@@ -1,4 +1,5 @@
 import m from 'mithril';
+import { Card, Overlay } from 'construct-ui';
 
 export interface IListLabel {
     _id : string;
@@ -72,7 +73,7 @@ export class DBUtil {
         }
     }
 
-    loadItem(db: string, id: string, callback: any = null) {
+    loadItem(db: string, id: string, callback: any = null, onfail: any = null) {
         var url = "/db/" + db +"/"+id;
         if(this.loading[url]) {
             return;
@@ -92,6 +93,9 @@ export class DBUtil {
             m.redraw();
         }).catch((error) => {
             console.error(error);
+            if(onfail) {
+                onfail(error);
+            }
             this.loading[url] = false;
         })
 
@@ -175,6 +179,7 @@ class Department {
                     if(!this.constraints) {
                         DB.getItem("icras", "constraints", (constraints)=>{
                             this.constraints = constraints;
+                            this.isLoggedIn = true;
                             if(callback)
                                 callback();
                         })
@@ -244,3 +249,32 @@ class Department {
 
 export var DB = new DBUtil();
 export var Dept = new Department();
+
+export class OverlayWindow {
+    view(vnode : any) {
+        const style = {
+            position: 'absolute',
+            "margin-left": 'auto',
+            "margin-right": 'auto',
+            left: 0,
+            right: 0,
+            zIndex: 100
+          };
+        
+          const cardStyles = {
+            margin: '40px auto'
+          };
+        
+          const content = m('', { style }, [
+            m('.card.mx-auto', {}, 
+                m(".card-title", vnode.attrs.title),
+                m(".card-body", vnode.attrs.content)
+            )
+          ]);
+
+        return m(Overlay, {
+            isOpen: vnode.attrs.isOpen,
+            content: content
+        })
+    }
+}

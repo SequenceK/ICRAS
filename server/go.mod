@@ -4,6 +4,7 @@ go 1.12
 
 require (
 	github.com/360EntSecGroup-Skylar/excelize/v2 v2.0.1
+	github.com/alexflint/go-arg v1.1.0
 	github.com/flimzy/kivik v1.8.1
 	github.com/go-kivik/couchdb v1.8.1
 	github.com/imdario/mergo v0.3.7 // indirect

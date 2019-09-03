@@ -7,15 +7,20 @@ interface IFormAttrs {
     object: any;
 }
 
-export class Form {
+export class PForm {
     object: any;
     view(vnode: Vnode<IFormAttrs>) {
-        return m("form.form-css", {}, [
-            m("fieldset.fieldset-css", [m("legend.properties-legend", "Properties"), this.generateComponents(vnode)])
-        ]);
+        this.object = vnode.attrs.object;
+
+        var properties = this.generateComponents(vnode);
+
+        return m(".properties", properties)
     }
 
     generateComponents(vnode: Vnode<IFormAttrs>) {
+        if(!this.object) {
+            return [];
+        }
         var type = Dept.types[vnode.attrs.type];
         var longforms = {}
         var components : m.Vnode<any, any>[] = []
@@ -29,7 +34,7 @@ export class Form {
                         pid: id,
                         ptype: type[id],
                         vupdate: (value:any)=>{this.object[id] = value;},
-                        vinitial: this.object[id]
+                        value: this.object[id]
                     })
                 );
             }
@@ -40,7 +45,7 @@ export class Form {
                     pid: id,
                     ptype: type[id],
                     vupdate: (value:any)=>{this.object[id] = value;},
-                    vinitial: this.object[id]
+                    value: this.object[id]
                 })
             );
         }

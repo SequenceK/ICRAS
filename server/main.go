@@ -3,12 +3,17 @@ package main
 import (
 	"fmt"
 
+	"github.com/alexflint/go-arg"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"golang.org/x/net/websocket"
 )
 
 func main() {
+	var args struct {
+		Port uint `arg:"required"`
+	}
+	arg.MustParse(&args)
 	e := echo.New()
 
 	e.Use(middleware.Logger())
@@ -20,7 +25,7 @@ func main() {
 	InitDBService(e)
 	e.GET("/icras/build", apibuild)
 
-	e.Logger.Fatal(e.Start(":62028"))
+	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", args.Port)))
 }
 
 //var gstate *state
