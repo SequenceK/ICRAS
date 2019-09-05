@@ -10,7 +10,7 @@ import { Header } from './Header';
 
 class Home {
   view(vnode: any) {
-    return m("p.text-justify", [
+    return m(".container.content", [
       m.trust(readme)
     ])
   }

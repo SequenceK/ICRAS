@@ -15114,7 +15114,7 @@ function () {
   _createClass(Home, [{
     key: "view",
     value: function view(vnode) {
-      return mithril_1.default("p.text-justify", [mithril_1.default.trust(readme_md_1.default)]);
+      return mithril_1.default(".container.content", [mithril_1.default.trust(readme_md_1.default)]);
     }
   }]);
 
@@ -15238,7 +15238,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56796" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51303" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
