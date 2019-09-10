@@ -7,3 +7,8 @@ $zindex-modal-backdrop:    100 !default;
 $zindex-modal:             100 !default;
 $zindex-popover:           100 !default;
 $zindex-tooltip:           100 !default;
+
+html, body {
+    min-height: 100%;
+    background-color: rgb(245, 245, 245);
+}

@@ -10,11 +10,11 @@ export class BuildTabBody {
 
   view(vnode: any) {
 
-    var b = m("button.btn", {
+    var b = m("button.btn.btn-primary", {
       size: "xl",
       onclick: () => { this.build() }
     }, "Build")
-    var d = m("button.btn", {
+    var d = m("button.btn.btn-secondary", {
       size: "xl",
       onclick: () => { this.download() }
     }, "Download XLSX File")

@@ -53,7 +53,7 @@ export class Profile {
 
           return m(".profile", [
               m('.profile-top',{role:"group"},[
-                  m(FDeptPointer, {ptype:this.getDB(), pid:this.id, value:this.id, vupdate:this.onselect, class:"btn btn-outline-secondary"}),
+                  m(FDeptPointer, {ptype:this.getDB(), pid:this.id, value:this.id, vupdate:this.onselect, class:"btn btn-outline-secondary bg-white"}),
                   m("button", { onclick: ()=>this.openadd(), class:'btn btn-secondary btn-sm'}, "Add"),
                     m("button", { onclick: ()=>this.remove(), class:'btn btn-secondary btn-sm'}, "Remove"),
                     m("button", { onclick: ()=>this.opencreate(), class:'btn btn-secondary btn-sm'}, "Create"),

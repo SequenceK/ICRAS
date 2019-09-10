@@ -117,84 +117,9 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"C:/Users/Omar/scoop/persist/yarn/global/node_modules/parcel/src/builtins/bundle-url.js":[function(require,module,exports) {
-var bundleURL = null;
+})({"../node_modules/construct-ui/lib/index.css":[function(require,module,exports) {
 
-function getBundleURLCached() {
-  if (!bundleURL) {
-    bundleURL = getBundleURL();
-  }
-
-  return bundleURL;
-}
-
-function getBundleURL() {
-  // Attempt to find the URL of the current script and use that as the base URL
-  try {
-    throw new Error();
-  } catch (err) {
-    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
-
-    if (matches) {
-      return getBaseURL(matches[0]);
-    }
-  }
-
-  return '/';
-}
-
-function getBaseURL(url) {
-  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)\/[^/]+$/, '$1') + '/';
-}
-
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-},{}],"C:/Users/Omar/scoop/persist/yarn/global/node_modules/parcel/src/builtins/css-loader.js":[function(require,module,exports) {
-var bundle = require('./bundle-url');
-
-function updateLink(link) {
-  var newLink = link.cloneNode();
-
-  newLink.onload = function () {
-    link.remove();
-  };
-
-  newLink.href = link.href.split('?')[0] + '?' + Date.now();
-  link.parentNode.insertBefore(newLink, link.nextSibling);
-}
-
-var cssTimeout = null;
-
-function reloadCSS() {
-  if (cssTimeout) {
-    return;
-  }
-
-  cssTimeout = setTimeout(function () {
-    var links = document.querySelectorAll('link[rel="stylesheet"]');
-
-    for (var i = 0; i < links.length; i++) {
-      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
-        updateLink(links[i]);
-      }
-    }
-
-    cssTimeout = null;
-  }, 50);
-}
-
-module.exports = reloadCSS;
-},{"./bundle-url":"C:/Users/Omar/scoop/persist/yarn/global/node_modules/parcel/src/builtins/bundle-url.js"}],"../node_modules/construct-ui/lib/index.css":[function(require,module,exports) {
-var reloadCSS = require('_css_loader');
-
-module.hot.dispose(reloadCSS);
-module.hot.accept(reloadCSS);
-},{"_css_loader":"C:/Users/Omar/scoop/persist/yarn/global/node_modules/parcel/src/builtins/css-loader.js"}],"scss/custom.scss":[function(require,module,exports) {
-var reloadCSS = require('_css_loader');
-
-module.hot.dispose(reloadCSS);
-module.hot.accept(reloadCSS);
-},{"_css_loader":"C:/Users/Omar/scoop/persist/yarn/global/node_modules/parcel/src/builtins/css-loader.js"}],"../node_modules/mithril/mithril.js":[function(require,module,exports) {
+},{}],"../node_modules/mithril/mithril.js":[function(require,module,exports) {
 var global = arguments[3];
 ;(function() {
 "use strict"
@@ -14204,13 +14129,13 @@ function () {
     value: function view(vnode) {
       var _this = this;
 
-      var b = mithril_1.default("button.btn", {
+      var b = mithril_1.default("button.btn.btn-primary", {
         size: "xl",
         onclick: function onclick() {
           _this.build();
         }
       }, "Build");
-      var d = mithril_1.default("button.btn", {
+      var d = mithril_1.default("button.btn.btn-secondary", {
         size: "xl",
         onclick: function onclick() {
           _this.download();
@@ -14309,7 +14234,7 @@ function () {
     };
 
     this.onchange = function (e) {
-      _this.attrs.vupdate(e.srcElement.value);
+      _this.attrs.vupdate(e.srcElement.value, _this.attrs.pid);
     };
   }
 
@@ -14345,7 +14270,7 @@ function () {
     };
 
     this.onchange = function (e) {
-      _this2.attrs.vupdate(e.srcElement.value);
+      _this2.attrs.vupdate(e.srcElement.value, _this2.attrs.pid);
     };
   }
 
@@ -14382,7 +14307,7 @@ function () {
     };
 
     this.onchange = function (e) {
-      _this3.attrs.vupdate(e.srcElement.value);
+      _this3.attrs.vupdate(e.srcElement.checked, _this3.attrs.pid);
     };
   }
 
@@ -14394,7 +14319,7 @@ function () {
         type: "checkbox",
         id: this.attrs.pid,
         class: this.attrs.class,
-        value: this.attrs.value,
+        checked: this.attrs.value,
         oncreate: this.inputcreated
       });
     }
@@ -14427,7 +14352,7 @@ function () {
     this.handleSelect = function (item) {
       _this4.selected = item;
 
-      _this4.attrs.vupdate(item);
+      _this4.attrs.vupdate(item, _this4.attrs.pid);
     };
   }
 
@@ -14488,7 +14413,7 @@ function () {
     this.handleSelect = function (item) {
       _this5.selected = item;
 
-      _this5.attrs.vupdate(item);
+      _this5.attrs.vupdate(item, _this5.attrs.pid);
     };
   }
 
@@ -14727,7 +14652,7 @@ function () {
             pid: id,
             id: id,
             ptype: type[id],
-            vupdate: function vupdate(value) {
+            vupdate: function vupdate(value, id) {
               _this.object[id] = value;
             },
             value: this.object[id],
@@ -14745,7 +14670,7 @@ function () {
           pid: id,
           id: id,
           ptype: type[id],
-          vupdate: function vupdate(value) {
+          vupdate: function vupdate(value, id) {
             _this.object[id] = value;
           },
           value: this.object[id],
@@ -14856,7 +14781,7 @@ function () {
         pid: this.id,
         value: this.id,
         vupdate: this.onselect,
-        class: "btn btn-outline-secondary"
+        class: "btn btn-outline-secondary bg-white"
       }), mithril_1.default("button", {
         onclick: function onclick() {
           return _this2.openadd();
@@ -15042,11 +14967,10 @@ function () {
 
       this.active = mithril_1.default.route.param("tab");
       return mithril_1.default('.topnav', {}, [mithril_1.default(construct_ui_1.Tabs, {
-        align: "center",
-        fluid: true,
-        bordered: true,
-        size: "lg",
-        class: "topnav-tabs"
+        align: "left",
+        //fluid: true,
+        //bordered: true,
+        size: "lg"
       }, [tabs.map(function (item) {
         return mithril_1.default(construct_ui_1.TabItem, {
           label: item.tabobj,
@@ -15114,7 +15038,7 @@ function () {
   _createClass(Home, [{
     key: "view",
     value: function view(vnode) {
-      return mithril_1.default(".container.content", [mithril_1.default.trust(readme_md_1.default)]);
+      return mithril_1.default(".container-fluid.content.profile", [mithril_1.default.trust(readme_md_1.default)]);
     }
   }]);
 
@@ -15194,7 +15118,7 @@ function () {
           body = "404";
       }
 
-      return mithril_1.default("div", [mithril_1.default(Header_1.Header), mithril_1.default('.container-fluid', body), mithril_1.default(util_1.OverlayWindow, {
+      return mithril_1.default(".fill", [mithril_1.default(Header_1.Header), mithril_1.default('.container-fluid', body), mithril_1.default(util_1.OverlayWindow, {
         isOpen: !util_1.Dept.isLoggedIn,
         content: mithril_1.default(LoginForm_1.LoginForm),
         title: mithril_1.default("h4", "Login")
@@ -15210,208 +15134,5 @@ mithril_1.default.route(document.getElementById("root"), "icras/home", {
   "icras/:page/:type": App,
   "icras/:page/:type/:id": App
 });
-},{"construct-ui/lib/index.css":"../node_modules/construct-ui/lib/index.css","./scss/custom.scss":"scss/custom.scss","mithril":"../node_modules/mithril/mithril.js","./util":"util.ts","./buildtab":"buildtab.ts","./readme.md":"readme.md","./LoginForm":"LoginForm.ts","./Profile":"Profile.ts","./Header":"Header.ts"}],"C:/Users/Omar/scoop/persist/yarn/global/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
-var global = arguments[3];
-var OVERLAY_ID = '__parcel__error__overlay__';
-var OldModule = module.bundle.Module;
-
-function Module(moduleName) {
-  OldModule.call(this, moduleName);
-  this.hot = {
-    data: module.bundle.hotData,
-    _acceptCallbacks: [],
-    _disposeCallbacks: [],
-    accept: function (fn) {
-      this._acceptCallbacks.push(fn || function () {});
-    },
-    dispose: function (fn) {
-      this._disposeCallbacks.push(fn);
-    }
-  };
-  module.bundle.hotData = null;
-}
-
-module.bundle.Module = Module;
-var checkedAssets, assetsToAccept;
-var parent = module.bundle.parent;
-
-if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
-  var hostname = "" || location.hostname;
-  var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51303" + '/');
-
-  ws.onmessage = function (event) {
-    checkedAssets = {};
-    assetsToAccept = [];
-    var data = JSON.parse(event.data);
-
-    if (data.type === 'update') {
-      var handled = false;
-      data.assets.forEach(function (asset) {
-        if (!asset.isNew) {
-          var didAccept = hmrAcceptCheck(global.parcelRequire, asset.id);
-
-          if (didAccept) {
-            handled = true;
-          }
-        }
-      }); // Enable HMR for CSS by default.
-
-      handled = handled || data.assets.every(function (asset) {
-        return asset.type === 'css' && asset.generated.js;
-      });
-
-      if (handled) {
-        console.clear();
-        data.assets.forEach(function (asset) {
-          hmrApply(global.parcelRequire, asset);
-        });
-        assetsToAccept.forEach(function (v) {
-          hmrAcceptRun(v[0], v[1]);
-        });
-      } else {
-        window.location.reload();
-      }
-    }
-
-    if (data.type === 'reload') {
-      ws.close();
-
-      ws.onclose = function () {
-        location.reload();
-      };
-    }
-
-    if (data.type === 'error-resolved') {
-      console.log('[parcel] ✨ Error resolved');
-      removeErrorOverlay();
-    }
-
-    if (data.type === 'error') {
-      console.error('[parcel] 🚨  ' + data.error.message + '\n' + data.error.stack);
-      removeErrorOverlay();
-      var overlay = createErrorOverlay(data);
-      document.body.appendChild(overlay);
-    }
-  };
-}
-
-function removeErrorOverlay() {
-  var overlay = document.getElementById(OVERLAY_ID);
-
-  if (overlay) {
-    overlay.remove();
-  }
-}
-
-function createErrorOverlay(data) {
-  var overlay = document.createElement('div');
-  overlay.id = OVERLAY_ID; // html encode message and stack trace
-
-  var message = document.createElement('div');
-  var stackTrace = document.createElement('pre');
-  message.innerText = data.error.message;
-  stackTrace.innerText = data.error.stack;
-  overlay.innerHTML = '<div style="background: black; font-size: 16px; color: white; position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; padding: 30px; opacity: 0.85; font-family: Menlo, Consolas, monospace; z-index: 9999;">' + '<span style="background: red; padding: 2px 4px; border-radius: 2px;">ERROR</span>' + '<span style="top: 2px; margin-left: 5px; position: relative;">🚨</span>' + '<div style="font-size: 18px; font-weight: bold; margin-top: 20px;">' + message.innerHTML + '</div>' + '<pre>' + stackTrace.innerHTML + '</pre>' + '</div>';
-  return overlay;
-}
-
-function getParents(bundle, id) {
-  var modules = bundle.modules;
-
-  if (!modules) {
-    return [];
-  }
-
-  var parents = [];
-  var k, d, dep;
-
-  for (k in modules) {
-    for (d in modules[k][1]) {
-      dep = modules[k][1][d];
-
-      if (dep === id || Array.isArray(dep) && dep[dep.length - 1] === id) {
-        parents.push(k);
-      }
-    }
-  }
-
-  if (bundle.parent) {
-    parents = parents.concat(getParents(bundle.parent, id));
-  }
-
-  return parents;
-}
-
-function hmrApply(bundle, asset) {
-  var modules = bundle.modules;
-
-  if (!modules) {
-    return;
-  }
-
-  if (modules[asset.id] || !bundle.parent) {
-    var fn = new Function('require', 'module', 'exports', asset.generated.js);
-    asset.isNew = !modules[asset.id];
-    modules[asset.id] = [fn, asset.deps];
-  } else if (bundle.parent) {
-    hmrApply(bundle.parent, asset);
-  }
-}
-
-function hmrAcceptCheck(bundle, id) {
-  var modules = bundle.modules;
-
-  if (!modules) {
-    return;
-  }
-
-  if (!modules[id] && bundle.parent) {
-    return hmrAcceptCheck(bundle.parent, id);
-  }
-
-  if (checkedAssets[id]) {
-    return;
-  }
-
-  checkedAssets[id] = true;
-  var cached = bundle.cache[id];
-  assetsToAccept.push([bundle, id]);
-
-  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
-    return true;
-  }
-
-  return getParents(global.parcelRequire, id).some(function (id) {
-    return hmrAcceptCheck(global.parcelRequire, id);
-  });
-}
-
-function hmrAcceptRun(bundle, id) {
-  var cached = bundle.cache[id];
-  bundle.hotData = {};
-
-  if (cached) {
-    cached.hot.data = bundle.hotData;
-  }
-
-  if (cached && cached.hot && cached.hot._disposeCallbacks.length) {
-    cached.hot._disposeCallbacks.forEach(function (cb) {
-      cb(bundle.hotData);
-    });
-  }
-
-  delete bundle.cache[id];
-  bundle(id);
-  cached = bundle.cache[id];
-
-  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
-    cached.hot._acceptCallbacks.forEach(function (cb) {
-      cb();
-    });
-
-    return true;
-  }
-}
-},{}]},{},["C:/Users/Omar/scoop/persist/yarn/global/node_modules/parcel/src/builtins/hmr-runtime.js","index.ts"], null)
+},{"construct-ui/lib/index.css":"../node_modules/construct-ui/lib/index.css","./scss/custom.scss":"../node_modules/construct-ui/lib/index.css","mithril":"../node_modules/mithril/mithril.js","./util":"util.ts","./buildtab":"buildtab.ts","./readme.md":"readme.md","./LoginForm":"LoginForm.ts","./Profile":"Profile.ts","./Header":"Header.ts"}]},{},["index.ts"], null)
 //# sourceMappingURL=/src.77de5100.js.map

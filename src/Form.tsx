@@ -34,7 +34,7 @@ export class PForm {
                         pid: id,
                         id: id,
                         ptype: type[id],
-                        vupdate: (value:any)=>{this.object[id] = value;},
+                        vupdate: (value:any, id:any)=>{this.object[id] = value;},
                         value: this.object[id],
                         class: "form-control"
                     })}
@@ -49,7 +49,7 @@ export class PForm {
                         pid: id,
                         id: id,
                         ptype: type[id],
-                        vupdate: (value:any)=>{this.object[id] = value;},
+                        vupdate: (value:any, id:any)=>{this.object[id] = value;},
                         value: this.object[id],
                         class: "form-control"
                     })}

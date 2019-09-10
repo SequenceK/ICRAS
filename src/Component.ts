@@ -19,7 +19,7 @@ export class FString {
         vnode.dom.addEventListener('propertychange', this.onchange);
     }
     onchange = (e) => {
-        this.attrs.vupdate(e.srcElement.value);
+        this.attrs.vupdate(e.srcElement.value, this.attrs.pid);
     }
 }
 
@@ -40,7 +40,7 @@ export class FInt {
         vnode.dom.addEventListener('propertychange', this.onchange);
     }
     onchange = (e) => {
-        this.attrs.vupdate(e.srcElement.value);
+        this.attrs.vupdate(e.srcElement.value, this.attrs.pid);
     }
 }
 
@@ -52,7 +52,7 @@ export class FBool {
             type: "checkbox",
             id: this.attrs.pid,
             class: this.attrs.class,
-            value: this.attrs.value,
+            checked: this.attrs.value,
             oncreate: this.inputcreated
         });
     }
@@ -61,7 +61,7 @@ export class FBool {
         vnode.dom.addEventListener('propertychange', this.onchange);
     }
     onchange = (e) => {
-        this.attrs.vupdate(e.srcElement.value);
+        this.attrs.vupdate(e.srcElement.checked, this.attrs.pid);
     }
 }
 
@@ -112,7 +112,7 @@ export class FDBPointer {
     
       handleSelect = (item: string) => {
           this.selected = item;
-          this.attrs.vupdate(item)
+          this.attrs.vupdate(item, this.attrs.pid)
       }
 }
 
@@ -160,7 +160,7 @@ export class FDeptPointer {
     
       handleSelect = (item: string) => {
           this.selected = item;
-          this.attrs.vupdate(item)
+          this.attrs.vupdate(item, this.attrs.pid)
       }
 }
 

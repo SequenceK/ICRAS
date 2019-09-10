@@ -23,11 +23,11 @@ class Tab {
     this.active = m.route.param("tab");
       return m('.topnav', {}, [
         m(Tabs, {
-          align: "center",
-          fluid: true,
-          bordered: true,
+          align: "left",
+          //fluid: true,
+          //bordered: true,
           size: "lg",
-          class: "topnav-tabs"
+          //class: "topnav"
         }, [
           tabs.map(item => m(TabItem, {
               label: item.tabobj,

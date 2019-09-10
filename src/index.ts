@@ -10,7 +10,7 @@ import { Header } from './Header';
 
 class Home {
   view(vnode: any) {
-    return m(".container.content", [
+    return m(".container-fluid.content.profile", [
       m.trust(readme)
     ])
   }
@@ -65,7 +65,7 @@ class App {
         body = "404"
     }
   
-    return m("div", [m(Header), m('.container-fluid', body), 
+    return m(".fill", [m(Header), m('.container-fluid', body), 
     m(OverlayWindow, {isOpen: !Dept.isLoggedIn, content:m(LoginForm), title:m("h4","Login")}),
   ]);
   }
