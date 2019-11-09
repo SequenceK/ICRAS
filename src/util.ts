@@ -121,7 +121,7 @@ export class DBUtil {
         m.request({
             method: "PUT",
             url: url,
-            data: item,
+            body: item,
         }).then((obj)=>{
             if(callback)
               callback()

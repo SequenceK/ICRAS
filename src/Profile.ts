@@ -27,6 +27,7 @@ export class Profile {
         if(!Dept.isLoggedIn || !Dept.types ||  !Dept.constraints) {
             return "";
         }
+        last_selected_id = {};
           this.type = m.route.param("type");
           var tdb = type_map[this.type];
           var id = m.route.param("id")
@@ -41,7 +42,7 @@ export class Profile {
           
           if(!this.id && last_selected_id[this.type]){
             this.id = last_selected_id[this.type];
-            m.route.set("icras/tab/"+this.type+"/"+this.id)
+            m.route.set("/icras/tab/"+this.type+"/"+this.id)
       
           }
           if(this.id) {
@@ -67,7 +68,7 @@ export class Profile {
     }
     onselect = (v)=>{
         if(v) {
-            m.route.set("icras/tab/"+this.type+"/"+v);
+            m.route.set("/icras/tab/"+this.type+"/"+v);
             this.item = DB.getItem(this.db, v);
         }
     }
@@ -97,7 +98,7 @@ export class Profile {
         if(this.item) {
           Dept.remove(this.db, this.id, ()=>{
             this.reset()
-            m.route.set("icras/tab/"+this.type)
+            m.route.set("/icras/tab/"+this.type)
             m.redraw();
           })
         }
@@ -105,7 +106,7 @@ export class Profile {
       add(id) {
         Dept.create(this.db, id, ()=>{
           this.addoverlay = false;
-          m.route.set("icras/tab/"+this.type+"/"+id)
+          m.route.set("/icras/tab/"+this.type+"/"+id)
           m.redraw();
         })
          
@@ -113,7 +114,7 @@ export class Profile {
       createNew() {
         Dept.create(this.db, this.newid, ()=>{
           this.creationOverlay = false;
-          m.route.set("icras/tab/"+this.type+"/"+this.newid)
+          m.route.set("/icras/tab/"+this.type+"/"+this.newid)
           m.redraw();
         })
          
@@ -123,7 +124,7 @@ export class Profile {
         if(this.item){
           Dept.delete(this.db, this.item, ()=>{
             this.reset()
-            m.route.set("icras/tab/"+this.type)
+            m.route.set("/icras/tab/"+this.type)
             m.redraw();
           })
     

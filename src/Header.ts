@@ -30,14 +30,11 @@ class Tab {
           //class: "topnav"
         }, [
           tabs.map(item => m(TabItem, {
-              label: item.tabobj,
+              label: m(m.route.Link, {href: item.attrs.href,}, m(".text-light", item.tabobj)),
               active: this.active === item.tabobj,
               loading: item.tabobj === 'Projects' && this.isLoading,
-              onclick: m.route.link,
               align: "center",
               class: "topnav-tab",
-              href: item.attrs.href,
-              oncreate: m.route.link
             }))
           ])
       ]);

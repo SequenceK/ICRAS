@@ -74,9 +74,9 @@ class App {
 }
 
 
-m.route(document.getElementById("root"), "icras/home", {
-  "icras/:page": App,
-  "icras/:page/:type": App,
-  "icras/:page/:type/:id": App
+m.route(document.getElementById("root"), "/icras/home", {
+  "/icras/:page": App,
+  "/icras/:page/:type": App,
+  "/icras/:page/:type/:id": App
 })
 

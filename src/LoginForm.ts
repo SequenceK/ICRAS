@@ -8,6 +8,7 @@ export class LoginForm {
 
     view(vnode:any) {
         var dep = getCookie("department")
+        console.log(dep)
         if(dep) {
         Dept.login(dep)
         }
