@@ -12,4 +12,4 @@ jobs:
     - name: Setup Go for use with actions
       uses: actions/setup-go@v1.0.0
     - name: Build server 
-      run: go build server -o backend
+      run: go build -o server_build ICRAS/server
