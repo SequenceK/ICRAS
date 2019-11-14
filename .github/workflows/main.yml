@@ -12,6 +12,6 @@ jobs:
     - name: Setup Go for use with actions
       uses: actions/setup-go@v1.0.0
       with:
-        go-version: '1.13.4' # The Go version to download (if necessary) and use.
+        go-version: '1.12.x' # The Go version to download (if necessary) and use.
     - name: Build server 
-      run: go build -o server_build ./server
+      run: go build -o server_build ICRAS/server
