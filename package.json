@@ -4,7 +4,7 @@
     "construct-ui": "^0.2.0",
     "file-saver": "^2.0.2",
     "flatpickr": "^4.6.1",
-    "jsoneditor": "^6.2.1",
+    "jsoneditor": "^9.5.6",
     "mithril": "^1.1.6"
   },
   "marked": {
